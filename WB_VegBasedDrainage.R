@@ -20,6 +20,7 @@ defineModule(sim, list(
     expectsInput(objectName = "cohortData", objectClass = "data.table", desc = "cohortData from Biomass_core", sourceURL = NA),
     expectsInput(objectName = "pixelGroupMap", objectClass = "SpatRast", desc = "pixelGroupMap from Biomass_core on which to align input and drainage maps", sourceURL = NA),
     expectsInput(objectName = "plotData", objectClass = "data.table", desc = "Plot data to extimate model", sourceURL = NA),
+    expectsInput(objectName = "TWIMap", objectClass = "SpatRast", desc = "TWI raster computed from Canada DEM", sourceURL = NA),
     expectsInput(objectName = "clayMap", objectClass = "SpatRast", desc = "Clay raster from NRCan", sourceURL = "https://sis.agr.gc.ca/cansis/nsdb/psm/Clay/Clay_X0_5_cm_100m1980-2000v1.tif"),
     expectsInput(objectName = "sandMap", objectClass = "SpatRast", desc = "Sand raster from NRCan", sourceURL = "https://sis.agr.gc.ca/cansis/nsdb/psm/Sand/Sand_X0_5_cm_100m1980-2000v1.tif"),
     expectsInput(objectName = "siltMap", objectClass = "SpatRast", desc = "Silt raster from NRCan", sourceURL = "https://sis.agr.gc.ca/cansis/nsdb/psm/Silt/Silt_X0_5_cm_100m1980-2000v1.tif"),
@@ -69,7 +70,7 @@ ReComputeDrainage <- function(sim) {
   message(currentModule(sim), ": using dataPath '", dPath, "'.")
 
   # ! ----- EDIT BELOW ----- ! #
-  # browser()
+  #browser()
   # generate a fake pixelGroupMap if it is not supplied
   if(!suppliedElsewhere("pixelGroupMap", sim)){
     nbGroup <- 200
@@ -83,7 +84,7 @@ ReComputeDrainage <- function(sim) {
             nbGroup,
             " groups...")
     
-    sim$pixelGroupMap <- getRandomPixelGroupMap(origin = c(1541912, 1072021),
+    sim$pixelGroupMap <- getRandomPixelGroupMap(origin = c(-1386681,2580084),
                                                 width = pixelGroupRastWidth,
                                                 crs = "ESRI:102002",
                                                 nbPixelGroup = nbGroup)
@@ -97,6 +98,8 @@ ReComputeDrainage <- function(sim) {
   sapply(mapToProcess, function(mapName){
     varMapName <- paste0("WB_VBD_", mapName, "Map") # e.g. WB_VBD_clayMap
     if (!suppliedElsewhere(varMapName, sim)){
+      message("Downloading/cropping/reprojecting/resampling and masking ", varMapName, " to sim$pixelGroupMap...") 
+              
       sim[[varMapName]] <- Cache(
         prepInputs,
         url = paste0(baseURL, mapName, "/", mapName, nameEnd),
@@ -105,12 +108,22 @@ ReComputeDrainage <- function(sim) {
         fun = terra::rast,
         rasterToMatch = sim$pixelGroupMap,
         maskWithRTM  = TRUE,
-        method = "average",
-        overwrite = TRUE
+        method = "average"
       )
     }
   })
-  
+  #browser()
+  if(!suppliedElsewhere("TWIMap", sim)){
+    message("Cropping/reprojecting/resampling and masking TWIMap to sim$pixelGroupMap...") 
+    inRast <- rast(file.path(getPaths()$modulePath, currentModule(sim), "data/TWI_boreal_forest_250m_average.tif"))
+    
+    sim$TWIMap <- Cache(postProcess,
+                        inRast,
+                        rasterToMatch = sim$pixelGroupMap,
+                        maskWithRTM  = TRUE,
+                        method = "average"
+                       )
+  }
 
   # ! ----- STOP EDITING ----- ! #
   return(invisible(sim))
