@@ -216,6 +216,95 @@ ReComputeDrainageMap <- function(sim) {
     sim$plotPoints <- project(plotPoints, crs(sim$WB_HartJohnstoneForestClassesMap))
     # writeVector(sim$plotPoints, "G:/Home/temp/plotPoints.shp", overwrite=TRUE)
   }
+ 
+  ##############################################################################
+  # Generate a TWI map from a massive downloaded DEM 
+  ##############################################################################
+  if(!suppliedElsewhere("TWIMap", sim)){
+    library(whitebox)
+    
+    nbSteps <- 5
+    
+    message("Computing TWIMap (1/", nbSteps, "): Downloading/cropping/reprojecting/resampling/masking medium resolution MRDEM dem (80GB) to union of studyarea and 100km buffered plot points...") 
+    # We will compute a WTI map for the area covered by the plotPoint (buffered 
+    # to 100 km) and the studyarea (represented by the WB_HartJohnstoneForestClassesMap)
+    
+    plotPoints100KmBuffers <- aggregate(buffer(sim$plotPoints, width = 100000))  # 1000 m buffer (if CRS is in meters)
+    
+    # extract the WB_HartJohnstoneForestClassesMap extent
+    WB_HartJohnstoneExtent <- ext(sim$WB_HartJohnstoneForestClassesMap)
+    WB_HartJohnstoneExtentPoly <- vect(WB_HartJohnstoneExtent, "polygons")
+    crs(WB_HartJohnstoneExtentPoly) <- crs(sim$WB_HartJohnstoneForestClassesMap)
+    
+    # merge them together
+    sim$plotAndPixeGroupArea <- aggregate(rbind(plotPoints100KmBuffers, WB_HartJohnstoneExtentPoly))
+    # mapView(sim$plotAndPixeGroupArea)
+    # writeVector(sim$plotAndPixeGroupArea, file.path(getPaths()$cache, "plotAndPixeGroupArea.shp"), overwrite = TRUE)
+    
+    # define the output path
+    cachePath <- getPaths()$cachePath
+    plotAndPixeGroupAreaDemPath <- file.path(cachePath, "plotAndPixeGroupAreaDem.tif")
+    
+    # download and process the big thing
+    # https://open.canada.ca/data/en/dataset/18752265-bda3-498c-a4ba-9dfe68cb98da
+
+    plotAndPixeGroupAreaDem <- Cache(
+      prepInputs,
+      url = "https://canelevation-dem.s3.ca-central-1.amazonaws.com/mrdem-30/mrdem-30-dtm.tif",
+      targetFile = "mrdem-30-dtm.tif",
+      destinationPath = cachePath,
+      fun = terra::rast,
+      cropTo = sim$plotAndPixeGroupArea,
+      projectTo = extend(sim$WB_HartJohnstoneForestClassesMap, sim$plotAndPixeGroupArea),
+      align_only= TRUE,
+      maskTo = sim$plotAndPixeGroupArea,
+      method = "bilinear",
+      writeTo = plotAndPixeGroupAreaDemPath
+    )
+
+    # plotAndPixeGroupAreaDemExtPoly = vect(ext(plotAndPixeGroupAreaDem), "polygons")
+    # crs(plotAndPixeGroupAreaDemExtPoly) <- crs(plotAndPixeGroupAreaDem)
+    # mapview(plotAndPixeGroupAreaDemExtPoly)+mapview(plotAndPixeGroupArea)
+    # writeRaster(plotAndPixeGroupAreaDem, file.path(getPaths()$cache, "plotAndPixeGroupAreaDem.tif"), overwrite = TRUE)
+    
+    # message("Computing TWIMap (3/", nbSteps, "): Writing plotAndPixeGroupAreaDem as a file in the cache folder for whitebox...")
+
+    # define other paths
+    dem_filled_path <- file.path(cachePath, "plotAndPixeGroupAreaDem_filled.tif")
+    slope_path <- file.path(cachePath, "plotAndPixeGroupAreaDem_slope.tif")
+    flow_acc_path <- file.path(cachePath, "plotAndPixeGroupAreaDem_flowAccum.tif")
+    final_twi_path <- file.path(cachePath, "plotAndPixeGroupAreaDem_TWI.tif")
+    
+    message("Computing TWIMap (2/", nbSteps, "): Filling depressions...")
+    Cache(wbt_fill_depressions,
+          dem = plotAndPixeGroupAreaDemPath,
+          output = dem_filled_path
+    )
+    
+    message("Computing TWIMap (3/", nbSteps, "): Computing slopes...")
+    Cache(wbt_slope,
+          dem = plotAndPixeGroupAreaDemPath,
+          output = slope_path,
+          zfactor = 1
+    )
+    
+    message("Computing TWIMap (4/", nbSteps, "): Flow accumulation...")
+    Cache(wbt_d8_flow_accumulation,
+          input = plotAndPixeGroupAreaDemPath,
+          output = flow_acc_path,
+          out_type = "specific contributing area"
+    )
+    message("Computing TWIMap (5/", nbSteps, "): Final step...")
+    # Step 4: Wetness Index
+    Cache(wbt_wetness_index,
+          sca = flow_acc_path,
+          slope = slope_path,
+          output = final_twi_path
+    )
+    
+    # Crop the 
+    sim$TWIMap <- rast(final_twi_path)
+  }
   
   ##############################################################################
   # Download, process and cache CANSIS soil data if it is not supplied
