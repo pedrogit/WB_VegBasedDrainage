@@ -308,22 +308,25 @@ ReComputeDrainageMap <- function(sim) {
   
   ##############################################################################
   # Download, process and cache CANSIS soil data if it is not supplied
+  #
   # https://sis.agr.gc.ca/cansis/nsdb/slc/index.html
   # https://sis.agr.gc.ca/cansis/nsdb/psm/index.html
   # https://www.nature.com/articles/s41597-025-05460-4
   # https://open.canada.ca/data/en/dataset/4d39c9f9-a85c-4bf2-b920-138fdd423384
   # https://agriculture.canada.ca/atlas/data_donnees/griddedSoilsCanada/supportdocument_documentdesupport/en/ISO_19131_Soil_Landscape_Grids_of_Canada_100m_%e2%80%93_Data_Product_Specifications.pdf
   # https://agriculture.canada.ca/atlas/data_donnees/griddedSoilsCanada/data_donnees/raster/Silt/
+  #
   ##############################################################################
   mapToProcess <- c("Clay", "Sand", "Silt", "BD") # BD is bulk_density
   baseURL <- "https://sis.agr.gc.ca/cansis/nsdb/psm/"
-  nameEnd <- "_X0_5_cm_100m1980-2000v1.tif"
+  nameEnd <- "_X0_5_cm_100m1980-2000v1"
+  ext <- ".tif"
   sapply(mapToProcess, function(mapName){
     varMapName <- paste0("WB_VBD_", mapName, "Map") # e.g. WB_VBD_clayMap
     # browser()
     if (!suppliedElsewhere(varMapName, sim)){
       message("Downloading/cropping/reprojecting/resampling and masking ", varMapName, " to sim$pixelGroupMap...") 
-      fileName <- paste0(mapName, nameEnd)
+      fileName <- paste0(mapName, nameEnd, ext)
       sim[[varMapName]] <- Cache(
         prepInputs,
         url = paste0(baseURL, mapName, "/", fileName),
@@ -333,6 +336,7 @@ ReComputeDrainageMap <- function(sim) {
         cropTo = sim$plotAndPixeGroupArea,
         projectTo = extend(sim$WB_HartJohnstoneForestClassesMap, sim$plotAndPixeGroupArea),
         maskTo = sim$plotAndPixeGroupArea,
+        writeTo = paste0(mapName, nameEnd, "_processed", ext),
         method = "bilinear"
       )
     }
