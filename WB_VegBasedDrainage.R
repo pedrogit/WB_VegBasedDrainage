@@ -155,8 +155,9 @@ ReComputeDrainageMap <- function(sim) {
   dPath <- asPath(getOption("reproducible.destinationPath", dataPath(sim)), 1)
   message(currentModule(sim), ": using dataPath '", dPath, "'.")
 
-  # ! ----- EDIT BELOW ----- ! #
-  # generate a fake WB_HartJohnstoneForestClassesMap if it is not supplied
+  ##############################################################################
+  # Generate a fake WB_HartJohnstoneForestClassesMap if it is not supplied
+  ##############################################################################
   if(!suppliedElsewhere("WB_HartJohnstoneForestClassesMap", sim)){
     rastWidth <- 1000
     message("WB_HartJohnstoneForestClassesMap not supplied. Please couple ",
@@ -179,6 +180,9 @@ ReComputeDrainageMap <- function(sim) {
     # mapView(sim$WB_HartJohnstoneForestClassesMap)
   }
   
+  ##############################################################################
+  # Use our own plotPoints data if none is supplied
+  ##############################################################################
   if(!suppliedElsewhere("plotPoints", sim) && !suppliedElsewhere("drainageModel", sim)){
     message("plotPoints not supplied. You must provide a CSV table with \"latitude\", ",
             "\"longitude\", \"standtype\" and \"drainage\" following the ",
@@ -212,9 +216,16 @@ ReComputeDrainageMap <- function(sim) {
     # writeVector(sim$plotPoints, "G:/Home/temp/plotPoints.shp", overwrite=TRUE)
   }
   
-  # download and cache CANSIS soil data
-# if (FALSE){
-  mapToProcess <- c("Clay", "Sand", "Silt", "BD")
+  ##############################################################################
+  # Download, process and cache CANSIS soil data if it is not supplied
+  # https://sis.agr.gc.ca/cansis/nsdb/slc/index.html
+  # https://sis.agr.gc.ca/cansis/nsdb/psm/index.html
+  # https://www.nature.com/articles/s41597-025-05460-4
+  # https://open.canada.ca/data/en/dataset/4d39c9f9-a85c-4bf2-b920-138fdd423384
+  # https://agriculture.canada.ca/atlas/data_donnees/griddedSoilsCanada/supportdocument_documentdesupport/en/ISO_19131_Soil_Landscape_Grids_of_Canada_100m_%e2%80%93_Data_Product_Specifications.pdf
+  # https://agriculture.canada.ca/atlas/data_donnees/griddedSoilsCanada/data_donnees/raster/Silt/
+  ##############################################################################
+  mapToProcess <- c("Clay", "Sand", "Silt", "BD") # BD is bulk_density
   baseURL <- "https://sis.agr.gc.ca/cansis/nsdb/psm/"
   nameEnd <- "_X0_5_cm_100m1980-2000v1.tif"
   sapply(mapToProcess, function(mapName){
@@ -253,6 +264,22 @@ ReComputeDrainageMap <- function(sim) {
                         method = "bilinear"
                        )
   }
+
+  ##############################################################################
+  # Fit a model of drainage based on :
+  #
+  #   1) plot data if they are provided (drainage, standtype, latitude, longitude).
+  #      If plot data is not provided, use the provided plot data points (cover 
+  #      some part of Canada western boreal). 
+  #      If plot data is provided but standtype is not, determine standtype from 
+  #      sim$WB_HartJohnstoneForestClassesMap.
+  #   2) sim$TWIMap computed for the merged area of the plot data and the 
+  #      sim$WB_HartJohnstoneForestClassesMap
+  #   4) clay, sand, silt and BD (bulk_density). These datasets contains many NA 
+  #      areas. Those areas are considered water or rock.
+  #
+  ##############################################################################
+
   # ! ----- STOP EDITING ----- ! #
   return(invisible(sim))
 }
