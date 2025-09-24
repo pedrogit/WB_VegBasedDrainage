@@ -255,7 +255,7 @@ ReComputeDrainageMap <- function(sim) {
       fun = terra::rast,
       cropTo = sim$plotAndPixeGroupArea,
       projectTo = extend(sim$WB_HartJohnstoneForestClassesMap, sim$plotAndPixeGroupArea),
-      align_only= TRUE,
+      align_only = TRUE,
       maskTo = sim$plotAndPixeGroupArea,
       method = "bilinear",
       writeTo = plotAndPixeGroupAreaDemPath
@@ -300,8 +300,8 @@ ReComputeDrainageMap <- function(sim) {
           slope = slope_path,
           output = final_twi_path
     )
-    
-    # Crop the 
+
+    # Assign resulting map to sim
     sim$TWIMap <- rast(final_twi_path)
   }
   
