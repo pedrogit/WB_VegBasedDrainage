@@ -175,7 +175,8 @@ ReComputeDrainageMap <- function(sim) {
                            width = rastWidth,
                            crs = "ESRI:102002",
                            nbregion = 2000,
-                           valuevect = 1:6
+                           valuevect = 1:6,
+                           seed = 100
     )
     # mapView(sim$WB_HartJohnstoneForestClassesMap)
   }
