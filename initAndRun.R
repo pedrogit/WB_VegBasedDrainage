@@ -1,5 +1,5 @@
 source("G:/Home/MyTools/myFunctions.R")
-source("G:/Home/MyTests/reclassModel/modules/common/randomInputs.R")
+source("G:/Home/MyTests/reclassModel/modules/rutils/rutils.R")
 library(SpaDES)
 library(SpaDES.core)
 library(SpaDES.tools)
