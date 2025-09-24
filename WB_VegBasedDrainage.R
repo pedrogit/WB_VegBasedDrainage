@@ -324,36 +324,19 @@ ReComputeDrainageMap <- function(sim) {
     if (!suppliedElsewhere(varMapName, sim)){
       message("Downloading/cropping/reprojecting/resampling and masking ", varMapName, " to sim$pixelGroupMap...") 
       fileName <- paste0(mapName, nameEnd)
-      bigMap <- Cache(
+      sim[[varMapName]] <- Cache(
         prepInputs,
         url = paste0(baseURL, mapName, "/", fileName),
         targetFile = fileName,
         destinationPath = getPaths()$cache,
-        fun = terra::rast
-      )
-      sim[[varMapName]] <- Cache(
-        postProcessTo,
-        bigMap,
-        rasterToMatch = sim$WB_HartJohnstoneForestClassesMap,
-        maskWithRTM  = TRUE,
+        fun = terra::rast,
+        cropTo = sim$plotAndPixeGroupArea,
+        projectTo = extend(sim$WB_HartJohnstoneForestClassesMap, sim$plotAndPixeGroupArea),
+        maskTo = sim$plotAndPixeGroupArea,
         method = "bilinear"
       )
     }
   })
-# }
-  
-# browser()
-  if(!suppliedElsewhere("TWIMap", sim)){
-    message("Cropping/reprojecting/resampling and masking TWIMap to sim$WB_HartJohnstoneForestClassesMap") 
-    inRast <- rast(file.path(getPaths()$modulePath, currentModule(sim), "data/TWI_WB_250m.tif"))
-    
-    sim$TWIMap <- Cache(postProcess,
-                        inRast,
-                        rasterToMatch = sim$WB_HartJohnstoneForestClassesMap,
-                        maskWithRTM  = TRUE,
-                        method = "bilinear"
-                       )
-  }
 
   ##############################################################################
   # Fit a model of drainage based on :
