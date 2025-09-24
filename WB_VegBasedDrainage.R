@@ -87,55 +87,6 @@ doEvent.WB_VegBasedDrainage = function(sim, eventTime, eventType) {
 ### template initialization
 Init <- function(sim) {
   # # ! ----- EDIT BELOW ----- ! #
-  # fit a model based on:
-  #    standtype from sim$plotPoints if it has a standtype column or cohortData and pixelGroupMap otherwise.
-  #    TWIMap, WB_VBD_ClayMap, WB_VBD_SandMap, WB_VBD_SiltMap, WB_VBD_BDMap (Bulk Density)
-  # we assume all maps are projected to the same crs
-  covariatesMaps <- c("TWIMap" = "twi", 
-                      "WB_VBD_ClayMap" = "clay", 
-                      "WB_VBD_SandMap" = "sand",
-                      "WB_VBD_SiltMap" = "silt",
-                      "WB_VBD_BDMap" = "bulk_den")
-  
-  sim$plotPoints <- sim$plotPoints[, !(names(sim$plotPoints) %in% unname(covariatesMaps))]
-  
-  for (i in seq_along(covariatesMaps)) {
-    sim$plotPoints <- cbind(sim$plotPoints, extract(sim[[names(covariatesMaps)[i]]], sim$plotPoints)[, -1])  # Remove ID column from extract
-    if (! covariatesMaps[i] %in% names(sim$plotPoints)){
-      names(sim$plotPoints)[names(sim$plotPoints) == "y"] <- covariatesMaps[i]
-    }
-  }
-
-  # Keep rows where specified columns are not NA
-  covariatesMaps <- c(unname(covariatesMaps), "drainage")
-  modelData <- as.data.frame(sim$plotPoints)
-  keeps <- complete.cases(modelData[, covariatesMaps])
-  modelData <- modelData[keeps, ]
-  
-  modelData <- modelData[, !(names(modelData) %in% c("X", "plot"))]
-  
-  
-  # split the data frame into training and test data
-  inTraining <- createDataPartition(modelData$drainage, p = 0.7, list = FALSE)
-  trainSet <- modelData[inTraining, ]
-  testSet <- modelData[-inTraining, ]
-  
-  fitControl <- trainControl(method = "repeatedcv",
-                             number = 5,
-                             repeats = 5,
-                             search = "random")
-  
-  # fit the model
-  modelFit <- train(
-    drainage ~ ., # Can consider subsets of covariates here say; e.g. `slope + elevation + age`; `.` considers all the predictors with no interaction terms
-    data = trainSet,
-    method = "rf", # "rf" = random forest or "xgbTree" = boosted regression trees, # See topepo.github.io/caret for more model tags that can be used here
-    trControl = fitControl,
-    tuneLength = 10,
-    verbose = FALSE
-  )
-  
-  sim$WB_VegBasedDrainageModel <- modelFit
   # ! ----- STOP EDITING ----- ! #
 
   return(invisible(sim))
@@ -338,24 +289,90 @@ ReComputeDrainageMap <- function(sim) {
         writeTo = paste0(mapName, nameEnd, "_processed", ext),
         method = "bilinear"
       )
+#browser()
     }
   })
 
   ##############################################################################
   # Fit a model of drainage based on :
   #
-  #   1) plot data if they are provided (drainage, standtype, latitude, longitude).
-  #      If plot data is not provided, use the provided plot data points (cover 
-  #      some part of Canada western boreal). 
-  #      If plot data is provided but standtype is not, determine standtype from 
-  #      sim$WB_HartJohnstoneForestClassesMap.
-  #   2) sim$TWIMap computed for the merged area of the plot data and the 
-  #      sim$WB_HartJohnstoneForestClassesMap
-  #   4) clay, sand, silt and BD (bulk_density). These datasets contains many NA 
-  #      areas. Those areas are considered water or rock.
+  #   - sim$plotPoints - Must contains the drainage, standtype, latitude, 
+  #     longitude attributes.
+  #     If plot data is not provided, use the default plot data points (covers 
+  #     some part of Canada western boreal) to fit a default model. 
+  #     If plot data is provided but standtype is not part of it, determine 
+  #     standtype from sim$WB_HartJohnstoneForestClassesMap.
+  #
+  #   - sim$TWIMap computed for the merged area of the plot data and the 
+  #     sim$WB_HartJohnstoneForestClassesMap
+  #
+  #   - Soild data (sim$WB_VBD_ClayMap, sim$WB_VBD_SandMap, sim$WB_VBD_SiltMap 
+  #     and sim$WB_VBD_BDMap).
+  #     This dataset contains many NA areas. Those areas are considered water or
+  #     rock.
   #
   ##############################################################################
+  if(!suppliedElsewhere("drainageModel", sim)){
+#    browser()
+    message("drainageModel not supplied. Fitting a model using the provided",
+            "plotPoints, soil and TWI maps and TWI maps...") 
+    covariatesMaps <- c("TWIMap" = "twi", 
+                        "WB_VBD_ClayMap" = "clay", 
+                        "WB_VBD_SandMap" = "sand",
+                        "WB_VBD_SiltMap" = "silt",
+                        "WB_VBD_BDMap" = "bulk_den")
+    
+    # if standtype is not part of the plot data, get the types from sim$WB_HartJohnstoneForestClassesMap
+    if (!"standtype2" %in% names(sim$plotPoints)){
+      covariatesMaps <- c("WB_HartJohnstoneForestClassesMap" = "standtype2", covariatesMaps)
+    }
+  
+    # Remove already extracted values from the provided plotPoints if they were 
+    # previously extracted
+    # sim$plotPoints <- sim$plotPoints[, !(names(sim$plotPoints) %in% unname(covariatesMaps))]
+    
+    # Extract values from covariate maps
+    for (i in seq_along(covariatesMaps)) {
+      sim$plotPoints <- cbind(sim$plotPoints, extract(sim[[names(covariatesMaps)[i]]], sim$plotPoints)[, -1])  # Remove ID column from extract
+      if (! covariatesMaps[i] %in% names(sim$plotPoints)){
+        names(sim$plotPoints)[names(sim$plotPoints) == "y"] <- covariatesMaps[i]
+      }
+    }
+    
+    # Keep rows where specified columns are not NA
+    covariatesMaps <- c(unname(covariatesMaps), "drainage")
+    modelData <- as.data.frame(sim$plotPoints)
+    keeps <- complete.cases(modelData[, covariatesMaps])
+    modelData <- modelData[keeps, ]
 
+    modelData <- modelData[, !(names(modelData) %in% c("X", "plot"))]
+    
+    
+    # Split the data frame into training and test data
+    inTraining <- createDataPartition(modelData$drainage, p = 0.7, list = FALSE)
+    trainSet <- modelData[inTraining, ]
+    testSet <- modelData[-inTraining, ]
+    
+    fitControl <- trainControl(method = "repeatedcv",
+                               number = 5,
+                               repeats = 5,
+                               search = "random")
+    
+    # Fit the model
+    modelFit <- Cache(
+      train,
+      drainage ~ ., # Can consider subsets of covariates here say; e.g. `slope + elevation + age`; `.` considers all the predictors with no interaction terms
+      data = trainSet,
+      method = "rf", # "rf" = random forest or "xgbTree" = boosted regression trees, # See topepo.github.io/caret for more model tags that can be used here
+      trControl = fitControl,
+      tuneLength = 10,
+      verbose = FALSE
+    )
+    
+    modelFit
+    
+    sim$WB_VegBasedDrainageModel <- modelFit
+  }
   # ! ----- STOP EDITING ----- ! #
   return(invisible(sim))
 }
