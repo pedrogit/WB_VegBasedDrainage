@@ -168,7 +168,6 @@ ReComputeDrainageMap <- function(sim) {
             " pixels for the 6 classes (\"deci\", \"mixed\", \"conimix\", ",
             "\"jackpine\", \"larch\" and \"spruce\")...")
 
-    source(file.path(getPaths()$modulePath, "common/randomInputs.R"))
     sim$WB_HartJohnstoneForestClassesMap <- Cache(
                            getRandomCategoricalMap,
                            origin = c(-667296, 1758502),
