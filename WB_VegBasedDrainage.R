@@ -17,15 +17,6 @@ defineModule(sim, list(
                     "Simulation time at which the drainage map is regenerated.")
   ),
   inputObjects = rbind(
-    # expectsInput(objectName = "cohortData", 
-    #              objectClass = "data.table", 
-    #              desc = "cohortData from Biomass_core", 
-    #              sourceURL = NA),
-    # expectsInput(objectName = "pixelGroupMap", 
-    #              objectClass = "SpatRast", 
-    #              desc = paste("pixelGroupMap from Biomass_core on which to align ",
-    #                           "input and drainage maps"), 
-    #              sourceURL = NA),
     expectsInput(objectName = "WB_HartJohnstoneForestClassesMap",
                  objectClass = "SpatRast",
                  desc = paste("WB_HartJohnstoneForestClassesMap from the ",
@@ -116,8 +107,8 @@ ReComputeDrainageMap <- function(sim) {
             rastWidth,
             " pixels by ",
             rastWidth,
-            " pixels for the 6 classes (\"deci\", \"mixed\", \"conimix\", ",
-            "\"jackpine\", \"larch\" and \"spruce\")...")
+            " pixels for 6 forest classes (\"deci (1)\", \"mixed (2)\", \"conimix (3)\", ",
+            "\"jackpine (4)\", \"larch (5)\" and \"spruce (6)\")...")
 
     sim$WB_HartJohnstoneForestClassesMap <- Cache(
                            getRandomCategoricalMap,
@@ -183,7 +174,7 @@ ReComputeDrainageMap <- function(sim) {
     
     # extract the WB_HartJohnstoneForestClassesMap extent
     WB_HartJohnstoneExtent <- ext(sim$WB_HartJohnstoneForestClassesMap)
-    WB_HartJohnstoneExtentPoly <- vect(WB_HartJohnstoneExtent, "polygons")
+    WB_HartJohnstoneExtentPoly <- vect(WB_HartJohnstoneExtent, crs = crs(sim$WB_HartJohnstoneForestClassesMap))
     crs(WB_HartJohnstoneExtentPoly) <- crs(sim$WB_HartJohnstoneForestClassesMap)
     
     # merge them together
