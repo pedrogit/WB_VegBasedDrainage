@@ -129,23 +129,24 @@ ReComputeDrainageMap <- function(sim) {
     message("plotPoints not supplied. You must provide a CSV table with \"latitude\", ",
             "\"longitude\", \"standtype\" and \"drainage\" following the ",
             "WB_HartJohnstone classification. Loading default plot data points ",
-            "as sim$plotPoints...") 
+            "as sim$plotPoints (n=516)...")
+
     plotFile <- file.path(getPaths()$modulePath, currentModule(sim), "data/plotData.csv")
     plotDF <- read.csv(plotFile)
     
-    # purge standtype of drainage info
+    # Purge standtype of drainage info
     if ("standtype" %in% names(plotDF)){
       plotDF$standtype <- sub("Poorly-drained ", "", plotDF$standtype)
       plotDF$standtype <- sub("Well-drained ", "", plotDF$standtype)
     }
     
-    # convert character columns to factor
+    # Convert character columns to factor
     plotDF[] <- lapply(plotDF, function(col){
       if (is.character(col)) factor(col) else col
     })
     
   # browser()
-    # reassign factors to match WB_HartJohnstone classification used in the WB_WB_HartJohnstoneClasse module
+    # Reassign factors to match WB_HartJohnstone classification used in the WB_WB_HartJohnstoneClasse module
     # labels = c("deci", "mixed", "conimix", "jackpine", "larch", "spruce")
     # levels = c(1L, 2L, 3L, 4L, 5L, 6L)
     new_codes <- c(3L, 1L, 2L, 4L, 5L, 6L)[as.integer(plotDF$standtype)]
@@ -172,21 +173,21 @@ ReComputeDrainageMap <- function(sim) {
     
     plotPoints100KmBuffers <- aggregate(buffer(sim$plotPoints, width = 100000))  # 1000 m buffer (if CRS is in meters)
     
-    # extract the WB_HartJohnstoneForestClassesMap extent
+    # Extract the WB_HartJohnstoneForestClassesMap extent
     WB_HartJohnstoneExtent <- ext(sim$WB_HartJohnstoneForestClassesMap)
     WB_HartJohnstoneExtentPoly <- vect(WB_HartJohnstoneExtent, crs = crs(sim$WB_HartJohnstoneForestClassesMap))
     crs(WB_HartJohnstoneExtentPoly) <- crs(sim$WB_HartJohnstoneForestClassesMap)
     
-    # merge them together
+    # Merge them together
     sim$plotAndPixeGroupArea <- aggregate(rbind(plotPoints100KmBuffers, WB_HartJohnstoneExtentPoly))
     # mapView(sim$plotAndPixeGroupArea)
     # writeVector(sim$plotAndPixeGroupArea, file.path(getPaths()$cache, "plotAndPixeGroupArea.shp"), overwrite = TRUE)
     
-    # define the output path
+    # Define the output path
     cachePath <- getPaths()$cachePath
     plotAndPixeGroupAreaDemPath <- file.path(cachePath, "plotAndPixeGroupAreaDem.tif")
     
-    # download and process the big thing
+    # Download and process the big thing
     # https://open.canada.ca/data/en/dataset/18752265-bda3-498c-a4ba-9dfe68cb98da
 
     plotAndPixeGroupAreaDem <- Cache(
@@ -210,7 +211,7 @@ ReComputeDrainageMap <- function(sim) {
     
     # message("Computing TWIMap (3/", nbSteps, "): Writing plotAndPixeGroupAreaDem as a file in the cache folder for whitebox...")
 
-    # define other paths
+    # Define other paths
     dem_filled_path <- file.path(cachePath, "plotAndPixeGroupAreaDem_filled.tif")
     slope_path <- file.path(cachePath, "plotAndPixeGroupAreaDem_slope.tif")
     flow_acc_path <- file.path(cachePath, "plotAndPixeGroupAreaDem_flowAccum.tif")
@@ -264,7 +265,7 @@ ReComputeDrainageMap <- function(sim) {
   ext <- ".tif"
   sapply(mapToProcess, function(mapName){
     varMapName <- paste0("WB_VBD_", mapName, "Map") # e.g. WB_VBD_clayMap
-    # browser()
+
     if (!suppliedElsewhere(varMapName, sim)){
       message("Downloading/cropping/reprojecting/resampling and masking ", varMapName, " to sim$pixelGroupMap...") 
       fileName <- paste0(mapName, nameEnd, ext)
@@ -304,24 +305,20 @@ ReComputeDrainageMap <- function(sim) {
   #
   ##############################################################################
   if(!suppliedElsewhere("drainageModel", sim)){
-#    browser()
+    nbPLotPoints <- nrow(sim$plotPoints)
     message("drainageModel not supplied. Fitting a model using the provided",
-            "plotPoints, soil and TWI maps and TWI maps...") 
+            "plot points (n=", nbPLotPoints, "), soil and TWI maps...") 
     covariatesMaps <- c("TWIMap" = "twi", 
                         "WB_VBD_ClayMap" = "clay", 
                         "WB_VBD_SandMap" = "sand",
                         "WB_VBD_SiltMap" = "silt",
                         "WB_VBD_BDMap" = "bulk_den")
     
-    # if standtype is not part of the plot data, get the types from sim$WB_HartJohnstoneForestClassesMap
-    if (!"standtype2" %in% names(sim$plotPoints)){
-      covariatesMaps <- c("WB_HartJohnstoneForestClassesMap" = "standtype2", covariatesMaps)
+    # If standtype is not part of the plot data, get the types from sim$WB_HartJohnstoneForestClassesMap
+    if (!"standtype" %in% names(sim$plotPoints)){
+      covariatesMaps <- c("WB_HartJohnstoneForestClassesMap" = "standtype", covariatesMaps)
     }
   
-    # Remove already extracted values from the provided plotPoints if they were 
-    # previously extracted
-    # sim$plotPoints <- sim$plotPoints[, !(names(sim$plotPoints) %in% unname(covariatesMaps))]
-    
     # Extract values from covariate maps
     for (i in seq_along(covariatesMaps)) {
       sim$plotPoints <- cbind(sim$plotPoints, extract(sim[[names(covariatesMaps)[i]]], sim$plotPoints)[, -1])  # Remove ID column from extract
@@ -335,6 +332,12 @@ ReComputeDrainageMap <- function(sim) {
     modelData <- as.data.frame(sim$plotPoints)
     keeps <- complete.cases(modelData[, covariatesMaps])
     modelData <- modelData[keeps, ]
+    if (nrow(modelData) < nbPLotPoints){
+      message("Removed plot points where covariates could not be extracted. n went from ",
+              nbPLotPoints, " to ", nrow(modelData), ". To fix this, make sure ",
+              "plot points fall into soil and sim$WB_HartJohnstoneForestClassesMap ",
+              "extents and into pixels having values (not NA)...")
+    }
 
     modelData <- modelData[, !(names(modelData) %in% c("X", "plot"))]
     
@@ -343,6 +346,8 @@ ReComputeDrainageMap <- function(sim) {
     inTraining <- createDataPartition(modelData$drainage, p = 0.7, list = FALSE)
     trainSet <- modelData[inTraining, ]
     testSet <- modelData[-inTraining, ]
+    message("plot points (n=", nrow(modelData), ") were split between training (n=", 
+            nrow(trainSet), ") and test (n=", nrow(testSet), ")...")
     
     fitControl <- trainControl(method = "repeatedcv",
                                number = 5,
@@ -360,7 +365,7 @@ ReComputeDrainageMap <- function(sim) {
       verbose = FALSE
     )
     
-    modelFit
+    print(modelFit)
     
     sim$WB_VegBasedDrainageModel <- modelFit
   }
