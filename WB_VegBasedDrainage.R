@@ -237,7 +237,6 @@ ReComputeDrainageMap <- function(sim) {
           out_type = "specific contributing area"
     )
     message("Computing TWIMap (5/", nbSteps, "): Final step...")
-    # Step 4: Wetness Index
     Cache(wbt_wetness_index,
           sca = flow_acc_path,
           slope = slope_path,
@@ -328,9 +327,8 @@ ReComputeDrainageMap <- function(sim) {
     }
     
     # Keep rows where specified columns are not NA
-    covariatesMaps <- c(unname(covariatesMaps), "drainage")
     modelData <- as.data.frame(sim$plotPoints)
-    keeps <- complete.cases(modelData[, covariatesMaps])
+    keeps <- complete.cases(modelData[, c(unname(covariatesMaps), "drainage")])
     modelData <- modelData[keeps, ]
     if (nrow(modelData) < nbPLotPoints){
       message("Removed plot points where covariates could not be extracted. n went from ",
@@ -364,8 +362,17 @@ ReComputeDrainageMap <- function(sim) {
       tuneLength = 10,
       verbose = FALSE
     )
-    
-    print(modelFit)
+
+    # Crop covariate maps back to groupPixelMap now that the model is fitted and 
+    # we don't new to extract covariate values at plot points anymore
+    for (i in seq_along(covariatesMaps[names(covariatesMaps) != "WB_HartJohnstoneForestClassesMap"])) {
+      message("Cropping sim$", names(covariatesMaps)[i], " from the groupPixelMap + pointPlot area to the groupPixelMap area...")
+      sim[[names(covariatesMaps)[i]]] <- Cache(
+        postProcessTo,
+        sim[[names(covariatesMaps)[i]]],
+        cropTo = sim$WB_HartJohnstoneForestClassesMap
+      )
+    }
     
     sim$WB_VegBasedDrainageModel <- modelFit
   }
