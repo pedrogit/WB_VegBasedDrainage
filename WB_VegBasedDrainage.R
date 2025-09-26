@@ -179,72 +179,87 @@ ReComputeDrainageMap <- function(sim) {
     crs(WB_HartJohnstoneExtentPoly) <- crs(sim$WB_HartJohnstoneForestClassesMap)
     
     # Merge them together
-    sim$plotAndPixeGroupArea <- aggregate(rbind(plotPoints100KmBuffers, WB_HartJohnstoneExtentPoly))
-    # mapView(sim$plotAndPixeGroupArea)
-    # writeVector(sim$plotAndPixeGroupArea, file.path(getPaths()$cache, "plotAndPixeGroupArea.shp"), overwrite = TRUE)
+    sim$plotAndPixelGroupArea <- aggregate(rbind(plotPoints100KmBuffers, WB_HartJohnstoneExtentPoly))
+    # mapView(sim$plotAndPixelGroupArea)
+    # writeVector(sim$plotAndPixelGroupArea, file.path(getPaths()$cache, "plotAndPixelGroupArea.shp"), overwrite = TRUE)
     
     # Define the output path
     cachePath <- getPaths()$cachePath
-    plotAndPixeGroupAreaDemPath <- file.path(cachePath, "plotAndPixeGroupAreaDem.tif")
+    plotAndPixelGroupAreaDemPath <- file.path(cachePath, "plotAndPixelGroupAreaDem.tif")
     
     # Download and process the big thing
     # https://open.canada.ca/data/en/dataset/18752265-bda3-498c-a4ba-9dfe68cb98da
 
-    plotAndPixeGroupAreaDem <- Cache(
+    plotAndPixelGroupAreaDem <- Cache(
       prepInputs,
       url = "https://canelevation-dem.s3.ca-central-1.amazonaws.com/mrdem-30/mrdem-30-dtm.tif",
       targetFile = "mrdem-30-dtm.tif",
       destinationPath = cachePath,
       fun = terra::rast,
-      cropTo = sim$plotAndPixeGroupArea,
-      projectTo = extend(sim$WB_HartJohnstoneForestClassesMap, sim$plotAndPixeGroupArea),
+      cropTo = sim$plotAndPixelGroupArea,
+      projectTo = extend(sim$WB_HartJohnstoneForestClassesMap, sim$plotAndPixelGroupArea),
       align_only = TRUE,
-      maskTo = sim$plotAndPixeGroupArea,
+      maskTo = sim$plotAndPixelGroupArea,
       method = "bilinear",
-      writeTo = plotAndPixeGroupAreaDemPath
+      writeTo = plotAndPixelGroupAreaDemPath,
     )
 
-    # plotAndPixeGroupAreaDemExtPoly = vect(ext(plotAndPixeGroupAreaDem), "polygons")
-    # crs(plotAndPixeGroupAreaDemExtPoly) <- crs(plotAndPixeGroupAreaDem)
-    # mapview(plotAndPixeGroupAreaDemExtPoly)+mapview(plotAndPixeGroupArea)
-    # writeRaster(plotAndPixeGroupAreaDem, file.path(getPaths()$cache, "plotAndPixeGroupAreaDem.tif"), overwrite = TRUE)
+    # plotAndPixelGroupAreaDemExtPoly = vect(ext(plotAndPixelGroupAreaDem), "polygons")
+    # crs(plotAndPixelGroupAreaDemExtPoly) <- crs(plotAndPixelGroupAreaDem)
+    # mapview(plotAndPixelGroupAreaDemExtPoly)+mapview(plotAndPixelGroupArea)
+    # writeRaster(plotAndPixelGroupAreaDem, file.path(getPaths()$cache, "plotAndPixelGroupAreaDem.tif"), overwrite = TRUE)
     
-    # message("Computing TWIMap (3/", nbSteps, "): Writing plotAndPixeGroupAreaDem as a file in the cache folder for whitebox...")
-
-    # Define other paths
-    dem_filled_path <- file.path(cachePath, "plotAndPixeGroupAreaDem_filled.tif")
-    slope_path <- file.path(cachePath, "plotAndPixeGroupAreaDem_slope.tif")
-    flow_acc_path <- file.path(cachePath, "plotAndPixeGroupAreaDem_flowAccum.tif")
-    final_twi_path <- file.path(cachePath, "plotAndPixeGroupAreaDem_TWI.tif")
-    
+    # Define a wrapper function around whitebox function to make their arguments and result cachable
+    cachableWhiteboxFct <- function(fun_name, ...){
+      browser()
+      dots <- list(...)
+      dots["cachable_input"] <- NULL
+      # output <- dots$output
+      # dots["output"] <- NULL
+      # do.call(fun_name, output = output, dots)
+      do.call(fun_name, dots)
+      return (rast(dots$output))
+    }
+    #browser()
     message("Computing TWIMap (2/", nbSteps, "): Filling depressions...")
-    Cache(wbt_fill_depressions,
-          dem = plotAndPixeGroupAreaDemPath,
-          output = dem_filled_path
+    dem_filled_path <- file.path(cachePath, "plotAndPixelGroupAreaDem_filled.tif")
+    dep <- Cache(cachableWhiteboxFct,
+                 cachable_input = plotAndPixelGroupAreaDem,
+                 fun_name = "wbt_fill_depressions",
+                 dem = plotAndPixelGroupAreaDemPath,
+                 output = dem_filled_path
     )
+    #browser()
     
     message("Computing TWIMap (3/", nbSteps, "): Computing slopes...")
-    Cache(wbt_slope,
-          dem = plotAndPixeGroupAreaDemPath,
-          output = slope_path,
-          zfactor = 1
+    slope_path <- file.path(cachePath, "plotAndPixelGroupAreaDem_slope.tif")
+    slope <- Cache(cachableWhiteboxFct,
+                   cachable_input = dep,
+                   fun_name = "wbt_slope",
+                   dem = plotAndPixelGroupAreaDemPath,
+                   output = slope_path,
+                   zfactor = 1
     )
     
     message("Computing TWIMap (4/", nbSteps, "): Flow accumulation...")
-    Cache(wbt_d8_flow_accumulation,
-          input = plotAndPixeGroupAreaDemPath,
-          output = flow_acc_path,
-          out_type = "specific contributing area"
+    flow_acc_path <- file.path(cachePath, "plotAndPixelGroupAreaDem_flowAccum.tif")
+    flow <- Cache(cachableWhiteboxFct,
+                  cachable_input = slope,
+                  fun_name = "wbt_d8_flow_accumulation",
+                  input = plotAndPixelGroupAreaDemPath,
+                  output = flow_acc_path,
+                  out_type = "specific contributing area"
     )
+    
     message("Computing TWIMap (5/", nbSteps, "): Final step...")
-    Cache(wbt_wetness_index,
-          sca = flow_acc_path,
-          slope = slope_path,
-          output = final_twi_path
+    final_twi_path <- file.path(cachePath, "plotAndPixelGroupAreaDem_TWI.tif")
+    sim$TWIMap <- Cache(cachableWhiteboxFct,
+                        cachable_input = flow + slope,
+                        fun_name = "wbt_wetness_index",
+                        sca = flow_acc_path,
+                        slope = slope_path,
+                        output = final_twi_path
     )
-
-    # Assign resulting map to sim
-    sim$TWIMap <- rast(final_twi_path)
   }
   
   ##############################################################################
@@ -264,6 +279,7 @@ ReComputeDrainageMap <- function(sim) {
   ext <- ".tif"
   sapply(mapToProcess, function(mapName){
     varMapName <- paste0("WB_VBD_", mapName, "Map") # e.g. WB_VBD_clayMap
+    # browser()
 
     if (!suppliedElsewhere(varMapName, sim)){
       message("Downloading/cropping/reprojecting/resampling and masking ", varMapName, " to sim$pixelGroupMap...") 
@@ -274,9 +290,9 @@ ReComputeDrainageMap <- function(sim) {
         targetFile = fileName,
         destinationPath = getPaths()$cache,
         fun = terra::rast,
-        cropTo = sim$plotAndPixeGroupArea,
-        projectTo = extend(sim$WB_HartJohnstoneForestClassesMap, sim$plotAndPixeGroupArea),
-        maskTo = sim$plotAndPixeGroupArea,
+        cropTo = sim$plotAndPixelGroupArea,
+        projectTo = extend(sim$WB_HartJohnstoneForestClassesMap, sim$plotAndPixelGroupArea),
+        maskTo = sim$plotAndPixelGroupArea,
         writeTo = paste0(mapName, nameEnd, "_processed", ext),
         method = "bilinear"
       )
