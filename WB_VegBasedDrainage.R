@@ -126,13 +126,12 @@ ReComputeDrainageMap <- function(sim) {
   # Use our own plotPoints data if none is supplied
   ##############################################################################
   if(!suppliedElsewhere("plotPoints", sim) && !suppliedElsewhere("drainageModel", sim)){
+    plotFile <- file.path(getPaths()$modulePath, currentModule(sim), "data/plotData.csv")
+    plotDF <- read.csv(plotFile)
     message("plotPoints not supplied. You must provide a CSV table with \"latitude\", ",
             "\"longitude\", \"standtype\" and \"drainage\" following the ",
             "WB_HartJohnstone classification. Loading default plot data points ",
-            "as sim$plotPoints (n=516)...")
-
-    plotFile <- file.path(getPaths()$modulePath, currentModule(sim), "data/plotData.csv")
-    plotDF <- read.csv(plotFile)
+            "as sim$plotPoints (n=", nrow(plotDF), ")...")
     
     # Purge standtype of drainage info
     if ("standtype" %in% names(plotDF)){
