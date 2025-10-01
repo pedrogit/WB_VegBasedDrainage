@@ -111,13 +111,13 @@ ReComputeDrainageMap <- function(sim) {
             "\"jackpine (4)\", \"larch (5)\" and \"spruce (6)\")...")
 
     sim$WB_HartJohnstoneForestClassesMap <- Cache(
-                           getRandomCategoricalMap,
-                           origin = c(-667296, 1758502),
-                           width = rastWidth,
-                           crs = "ESRI:102002",
-                           nbregion = 2000,
-                           valuevect = 1:6,
-                           seed = 100
+      getRandomCategoricalMap,
+      origin = c(-667296, 1758502),
+      width = rastWidth,
+      crs = "ESRI:102002",
+      nbregion = 2000,
+      valuevect = 1:6,
+      seed = 100
     )
     # mapView(sim$WB_HartJohnstoneForestClassesMap)
   }
@@ -222,42 +222,46 @@ ReComputeDrainageMap <- function(sim) {
     #browser()
     message("Computing TWIMap (2/", nbSteps, "): Filling depressions...")
     dem_filled_path <- file.path(cachePath, "plotAndPixelGroupAreaDem_filled.tif")
-    dep <- Cache(cachableWhiteboxFct,
-                 cachable_input = plotAndPixelGroupAreaDem,
-                 fun_name = "wbt_fill_depressions",
-                 dem = plotAndPixelGroupAreaDemPath,
-                 output = dem_filled_path
+    dep <- Cache(
+      cachableWhiteboxFct,
+      cachable_input = plotAndPixelGroupAreaDem,
+      fun_name = "wbt_fill_depressions",
+      dem = plotAndPixelGroupAreaDemPath,
+      output = dem_filled_path
     )
     #browser()
     
     message("Computing TWIMap (3/", nbSteps, "): Computing slopes...")
     slope_path <- file.path(cachePath, "plotAndPixelGroupAreaDem_slope.tif")
-    slope <- Cache(cachableWhiteboxFct,
-                   cachable_input = dep,
-                   fun_name = "wbt_slope",
-                   dem = plotAndPixelGroupAreaDemPath,
-                   output = slope_path,
-                   zfactor = 1
+    slope <- Cache(
+      cachableWhiteboxFct,
+      cachable_input = dep,
+      fun_name = "wbt_slope",
+      dem = plotAndPixelGroupAreaDemPath,
+      output = slope_path,
+      zfactor = 1
     )
     
     message("Computing TWIMap (4/", nbSteps, "): Flow accumulation...")
     flow_acc_path <- file.path(cachePath, "plotAndPixelGroupAreaDem_flowAccum.tif")
-    flow <- Cache(cachableWhiteboxFct,
-                  cachable_input = slope,
-                  fun_name = "wbt_d8_flow_accumulation",
-                  input = plotAndPixelGroupAreaDemPath,
-                  output = flow_acc_path,
-                  out_type = "specific contributing area"
+    flow <- Cache(
+      cachableWhiteboxFct,
+      cachable_input = slope,
+      fun_name = "wbt_d8_flow_accumulation",
+      input = plotAndPixelGroupAreaDemPath,
+      output = flow_acc_path,
+      out_type = "specific contributing area"
     )
     
     message("Computing TWIMap (5/", nbSteps, "): Final step...")
     final_twi_path <- file.path(cachePath, "plotAndPixelGroupAreaDem_TWI.tif")
-    sim$TWIMap <- Cache(cachableWhiteboxFct,
-                        cachable_input = flow + slope,
-                        fun_name = "wbt_wetness_index",
-                        sca = flow_acc_path,
-                        slope = slope_path,
-                        output = final_twi_path
+    sim$TWIMap <- Cache(
+      cachableWhiteboxFct,
+      cachable_input = flow + slope,
+      fun_name = "wbt_wetness_index",
+      sca = flow_acc_path,
+      slope = slope_path,
+      output = final_twi_path
     )
   }
   
