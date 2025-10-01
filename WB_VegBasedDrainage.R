@@ -276,11 +276,29 @@ ReComputeDrainageMap <- function(sim) {
   # https://agriculture.canada.ca/atlas/data_donnees/griddedSoilsCanada/data_donnees/raster/Silt/
   #
   ##############################################################################
-  mapToProcess <- c("Clay", "Sand", "Silt", "BD") # BD is bulk_density
+  CANSISMapToProcess <- c("Clay", "Sand", "Silt", "BD") # BD is bulk_density
+  equivSoilGridsMaps <- c("clay", "sand", "silt", "bdod") # bdod is bulk_density
   baseURL <- "https://sis.agr.gc.ca/cansis/nsdb/psm/"
   nameEnd <- "_X0_5_cm_100m1980-2000v1"
   ext <- ".tif"
-  sapply(mapToProcess, function(mapName){
+  
+  # Define a wrapper around gdalTranslate so it's output becomes cachable
+  cachableGdalTranslateVRT <- function(mapName, destinationPath){
+    baseURL="/vsicurl?max_retry=3&retry_delay=1&list_dir=no&url=https://files.isric.org/soilgrids/latest/data/"
+    bbox = c(-13597717,7513741,-10879995,5233135)
+    igh = '+proj=igh +lat_0=0 +lon_0=0 +datum=WGS84 +units=m +no_defs' # proj string for Homolosine projection
+    
+    targetPath <- gdal_translate(
+      paste0(baseURL, mapName, "/", mapName, "_0-5cm_mean.vrt"),
+      file.path(destinationPath, paste0(mapName, '_SoilGrids', "_0-5cm_mean.tif")),
+      tr = c(250, 250),
+      projwin = bbox,
+      projwin_srs = igh
+    )
+    return(rast(targetPath))
+  }
+  
+  sapply(CANSISMapToProcess, function(mapName){
     varMapName <- paste0("WB_VBD_", mapName, "Map") # e.g. WB_VBD_clayMap
     # browser()
 
@@ -296,10 +314,39 @@ ReComputeDrainageMap <- function(sim) {
         cropTo = sim$plotAndPixelGroupArea,
         projectTo = extend(sim$WB_HartJohnstoneForestClassesMap, sim$plotAndPixelGroupArea),
         maskTo = sim$plotAndPixelGroupArea,
-        writeTo = paste0(mapName, nameEnd, "_processed", ext),
+        writeTo = paste0("CANSIS_", mapName, nameEnd, "_postProcessed", ext),
+        method = "bilinear"
+      )
+
+      ##############################################################################
+      # Download, process and cache SoilGrids soil data to patch CANSIS one
+      # https://www.isric.org/explore/soilgrids
+      # https://files.isric.org/soilgrids/latest/data/
+      SGMapName <- equivSoilGridsMaps[[which(CANSISMapToProcess == mapName)]]
+      message("Downloading SoilGrids ", SGMapName, "...") 
+      rast <- Cache(
+        cachableGdalTranslateVRT, 
+        SGMapName, 
+        destinationPath = getPaths()$cache
+      )
+      
+      message("Cropping/reprojecting/resampling and masking SoilGrids ", SGMapName, "...") 
+      patchRast <- Cache(
+        postProcess,
+        rast,
+        cropTo = sim$plotAndPixelGroupArea,
+        projectTo = extend(sim$WB_HartJohnstoneForestClassesMap, sim$plotAndPixelGroupArea),
+        maskTo = sim$plotAndPixelGroupArea,
+        writeTo = file.path(getPaths()$cache, paste0("SoilGrids_", SGMapName, "_0-5cm_mean_postProcessed.tif")),
         method = "bilinear"
       )
 #browser()
+      message("Patching CANSIS soil ", mapName, " raster NAs with SoilGrids values...") 
+      sim[[varMapName]] <- Cache(
+        cover,
+        sim[[varMapName]],
+        patchRast / 10
+      )
     }
   })
 
