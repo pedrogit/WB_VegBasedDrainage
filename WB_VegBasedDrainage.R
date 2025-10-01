@@ -156,111 +156,165 @@ ReComputeDrainageMap <- function(sim) {
     sim$plotPoints <- project(plotPoints, crs(sim$WB_HartJohnstoneForestClassesMap))
     # writeVector(sim$plotPoints, "G:/Home/temp/plotPoints.shp", overwrite=TRUE)
   }
- 
+  
   ##############################################################################
-  # Generate a TWI map from a massive downloaded DEM 
+  # Download and postProcess a DEM if required
   ##############################################################################
-  if(!suppliedElsewhere("TWIMap", sim)){
-    library(whitebox)
+  if(!suppliedElsewhere("MRDEMMap", sim) && ( 
+     !suppliedElsewhere("TWIMap", sim) || 
+     !suppliedElsewhere("DistToWaterMap", sim) || 
+     !suppliedElsewhere("AspectMap", sim))){
     
-    nbSteps <- 5
+    message("Downloading/cropping/reprojecting/resampling/masking medium ", 
+            "resolution MRDEM dem (80GB) to union of studyarea and a 100km buffer ", 
+            "around  buffered plot points...")
     
-    message("Computing TWIMap (1/", nbSteps, "): Downloading/cropping/reprojecting/resampling/masking medium resolution MRDEM dem (80GB) to union of studyarea and 100km buffered plot points...") 
-    # We will compute a WTI map for the area covered by the plotPoint (buffered 
-    # to 100 km) and the studyarea (represented by the WB_HartJohnstoneForestClassesMap)
-    
+    # Make the buffer
     plotPoints100KmBuffers <- aggregate(buffer(sim$plotPoints, width = 100000))  # 1000 m buffer (if CRS is in meters)
-    
+
     # Extract the WB_HartJohnstoneForestClassesMap extent
     WB_HartJohnstoneExtent <- ext(sim$WB_HartJohnstoneForestClassesMap)
     WB_HartJohnstoneExtentPoly <- vect(WB_HartJohnstoneExtent, crs = crs(sim$WB_HartJohnstoneForestClassesMap))
     crs(WB_HartJohnstoneExtentPoly) <- crs(sim$WB_HartJohnstoneForestClassesMap)
-    
+
     # Merge them together
     sim$plotAndPixelGroupArea <- aggregate(rbind(plotPoints100KmBuffers, WB_HartJohnstoneExtentPoly))
     # mapView(sim$plotAndPixelGroupArea)
     # writeVector(sim$plotAndPixelGroupArea, file.path(getPaths()$cache, "plotAndPixelGroupArea.shp"), overwrite = TRUE)
     
-    # Define the output path
-    cachePath <- getPaths()$cachePath
-    plotAndPixelGroupAreaDemPath <- file.path(cachePath, "plotAndPixelGroupAreaDem.tif")
+    # Define the path where to save the dem
+    plotAndPixelGroupAreaDemPath <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem.tif")
     
     # Download and process the big thing
     # https://open.canada.ca/data/en/dataset/18752265-bda3-498c-a4ba-9dfe68cb98da
-
-    plotAndPixelGroupAreaDem <- Cache(
+    sim$MRDEMMap <- Cache(
       prepInputs,
       url = "https://canelevation-dem.s3.ca-central-1.amazonaws.com/mrdem-30/mrdem-30-dtm.tif",
       targetFile = "mrdem-30-dtm.tif",
-      destinationPath = cachePath,
+      destinationPath = getPaths()$cachePath,
       fun = terra::rast,
       cropTo = sim$plotAndPixelGroupArea,
       projectTo = extend(sim$WB_HartJohnstoneForestClassesMap, sim$plotAndPixelGroupArea),
       align_only = TRUE,
       maskTo = sim$plotAndPixelGroupArea,
       method = "bilinear",
-      writeTo = plotAndPixelGroupAreaDemPath
+      writeTo = plotAndPixelGroupAreaDemPath,
+      purge=7
     )
-
-    # plotAndPixelGroupAreaDemExtPoly = vect(ext(plotAndPixelGroupAreaDem), "polygons")
-    # crs(plotAndPixelGroupAreaDemExtPoly) <- crs(plotAndPixelGroupAreaDem)
-    # mapview(plotAndPixelGroupAreaDemExtPoly)+mapview(plotAndPixelGroupArea)
-    # writeRaster(plotAndPixelGroupAreaDem, file.path(getPaths()$cache, "plotAndPixelGroupAreaDem.tif"), overwrite = TRUE)
+  }
+ 
+  # Define a wrapper function around whitebox functions to make their arguments
+  # and result cacheable
+  cacheableWhiteboxFct <- function(fun_name, ...){
+    dots <- list(...)
+    dots["cacheable_input"] <- NULL
+    # output <- dots$output
+    # dots["output"] <- NULL
+    # do.call(fun_name, output = output, dots)
+    do.call(fun_name, dots)
+    return (rast(dots$output))
+  }
+  
+  ##############################################################################
+  # Generate a TWI map from a massive downloaded DEM 
+  ##############################################################################
+  if(!suppliedElsewhere("TWIMap", sim)){
     
-    # Define a wrapper function around whitebox function to make their arguments and result cachable
-    cachableWhiteboxFct <- function(fun_name, ...){
-      dots <- list(...)
-      dots["cachable_input"] <- NULL
-      # output <- dots$output
-      # dots["output"] <- NULL
-      # do.call(fun_name, output = output, dots)
-      do.call(fun_name, dots)
-      return (rast(dots$output))
-    }
-
-    message("Computing TWIMap (2/", nbSteps, "): Filling depressions...")
-    dem_filled_path <- file.path(cachePath, "plotAndPixelGroupAreaDem_filled.tif")
+    nbSteps <- 4
+    
+    message("Computing TWIMap (1/", nbSteps, ") from MRDEMMap: Filling depressions...")
+    dem_filled_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_filled.tif")
     dep <- Cache(
-      cachableWhiteboxFct,
-      cachable_input = plotAndPixelGroupAreaDem,
+      cacheableWhiteboxFct,
+      cacheable_input = sim$MRDEMMap,
       fun_name = "wbt_fill_depressions",
       dem = plotAndPixelGroupAreaDemPath,
       output = dem_filled_path
     )
 
-    message("Computing TWIMap (3/", nbSteps, "): Computing slopes...")
-    slope_path <- file.path(cachePath, "plotAndPixelGroupAreaDem_slope.tif")
+    message("Computing TWIMap (2/", nbSteps, ") from MRDEMMap: Computing slopes...")
+    slope_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_slope.tif")
     slope <- Cache(
-      cachableWhiteboxFct,
-      cachable_input = dep,
+      cacheableWhiteboxFct,
+      cacheable_input = dep,
       fun_name = "wbt_slope",
-      dem = plotAndPixelGroupAreaDemPath,
+      dem = dem_filled_path,
       output = slope_path,
       zfactor = 1
     )
     
-    message("Computing TWIMap (4/", nbSteps, "): Flow accumulation...")
-    flow_acc_path <- file.path(cachePath, "plotAndPixelGroupAreaDem_flowAccum.tif")
+    message("Computing TWIMap (3/", nbSteps, ") from MRDEMMap: Flow accumulation...")
+    flow_acc_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_flowAccum.tif")
     flow <- Cache(
-      cachableWhiteboxFct,
-      cachable_input = slope,
+      cacheableWhiteboxFct,
+      cacheable_input = dep,
       fun_name = "wbt_d8_flow_accumulation",
-      input = plotAndPixelGroupAreaDemPath,
+      input = dem_filled_path,
       output = flow_acc_path,
       out_type = "specific contributing area"
     )
     
-    message("Computing TWIMap (5/", nbSteps, "): Final step...")
-    final_twi_path <- file.path(cachePath, "plotAndPixelGroupAreaDem_TWI.tif")
+    message("Computing TWIMap (4/", nbSteps, ") from MRDEMMap: Final step...")
+    final_twi_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_TWI.tif")
     sim$TWIMap <- Cache(
-      cachableWhiteboxFct,
-      cachable_input = flow + slope,
+      cacheableWhiteboxFct,
+      cacheable_input = flow + slope,
       fun_name = "wbt_wetness_index",
       sca = flow_acc_path,
       slope = slope_path,
       output = final_twi_path
     )
   }
+  
+  if(!suppliedElsewhere("AspectMap", sim)){
+ #browser()   
+    nbSteps <- 4
+    
+    message("Computing AspectMap (1/", nbSteps, ") from MRDEMMap: Breaching depressions...")
+    dem_breach_filled_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_breachFilledDep.tif")
+    breach_dep <- Cache(
+      cacheableWhiteboxFct,
+      cacheable_input = sim$MRDEMMap,
+      fun_name = "wbt_breach_depressions_least_cost",
+      dem = plotAndPixelGroupAreaDemPath,
+      dist = 3,
+      output = dem_breach_filled_path
+    )
+    
+    message("Computing AspectMap (2/", nbSteps, ") from MRDEMMap: Flow accumulation from breach filled...")
+    bf_flow_acc_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_breachFilledFlowAccum.tif")
+    flow <- Cache(
+      cacheableWhiteboxFct,
+      cacheable_input = breach_dep,
+      fun_name = "wbt_d8_flow_accumulation",
+      input = dem_breach_filled_path,
+      output = bf_flow_acc_path,
+      out_type = "cells"
+    )
+    
+    message("Computing AspectMap (3/", nbSteps, ") from MRDEMMap: Extract streams...")
+    streams_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_streams.tif")
+    streams <- Cache(
+      cacheableWhiteboxFct,
+      cacheable_input = flow,
+      fun_name = "wbt_extract_streams",
+      flow_accum = bf_flow_acc_path,
+      output = streams_path,
+      threshold = 1000
+    )
+
+    message("Computing AspectMap (4/", nbSteps, ") from MRDEMMap: Final step...")
+    downslope_dist_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_downslopeDist.tif")
+    sim$AspectMap <- Cache(
+      cacheableWhiteboxFct,
+      cacheable_input = breach_dep + streams,
+      fun_name = "wbt_downslope_distance_to_stream",
+      dem = dem_breach_filled_path,
+      streams = streams_path,
+      output = downslope_dist_path
+    )
+    
+  }    
   
   ##############################################################################
   # Download, process and cache CANSIS soil data if it is not supplied
@@ -279,8 +333,8 @@ ReComputeDrainageMap <- function(sim) {
   nameEnd <- "_X0_5_cm_100m1980-2000v1"
   ext <- ".tif"
   
-  # Define a wrapper around gdalTranslate so it's output becomes cachable
-  cachableGdalTranslateVRT <- function(mapName, destinationPath){
+  # Define a wrapper around gdalTranslate so it's output becomes cacheable
+  cacheableGdalTranslateVRT <- function(mapName, destinationPath){
     baseURL="/vsicurl?max_retry=3&retry_delay=1&list_dir=no&url=https://files.isric.org/soilgrids/latest/data/"
     bbox = c(-13597717,7513741,-10879995,5233135)
     igh = '+proj=igh +lat_0=0 +lon_0=0 +datum=WGS84 +units=m +no_defs' # proj string for Homolosine projection
@@ -320,7 +374,7 @@ ReComputeDrainageMap <- function(sim) {
       SGMapName <- equivSoilGridsMaps[[which(CANSISMapToProcess == mapName)]]
       message("Downloading SoilGrids ", SGMapName, "...") 
       rast <- Cache(
-        cachableGdalTranslateVRT, 
+        cacheableGdalTranslateVRT, 
         SGMapName, 
         destinationPath = getPaths()$cache
       )
@@ -369,7 +423,8 @@ ReComputeDrainageMap <- function(sim) {
     nbPLotPoints <- nrow(sim$plotPoints)
     message("drainageModel not supplied. Fitting a model using the provided",
             "plot points (n=", nbPLotPoints, "), soil and TWI maps...") 
-    covariatesMaps <- c("TWIMap" = "twi", 
+    covariatesMaps <- c("TWIMap" = "twi",
+                        "AspectMap" = "aspect", 
                         "WB_VBD_ClayMap" = "clay", 
                         "WB_VBD_SandMap" = "sand",
                         "WB_VBD_SiltMap" = "silt",
@@ -414,7 +469,7 @@ ReComputeDrainageMap <- function(sim) {
                                repeats = 5,
                                search = "random")
     
-    # Fit the model
+    message("Fitting the drainage model...")
     modelFit <- Cache(
       train,
       drainage ~ ., # Can consider subsets of covariates here say; e.g. `slope + elevation + age`; `.` considers all the predictors with no interaction terms
@@ -424,7 +479,10 @@ ReComputeDrainageMap <- function(sim) {
       tuneLength = 10,
       verbose = FALSE
     )
-
+    
+    message("Fitting the drainage model. Done...")
+    print(modelFit)
+    
     # Crop covariate maps back to groupPixelMap now that the model is fitted and 
     # we don't new to extract covariate values at plot points anymore
     for (i in seq_along(covariatesMaps[names(covariatesMaps) != "WB_HartJohnstoneForestClassesMap"])) {
