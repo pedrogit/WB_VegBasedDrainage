@@ -144,7 +144,6 @@ ReComputeDrainageMap <- function(sim) {
       if (is.character(col)) factor(col) else col
     })
     
-  # browser()
     # Reassign factors to match WB_HartJohnstone classification used in the WB_WB_HartJohnstoneClasse module
     # labels = c("deci", "mixed", "conimix", "jackpine", "larch", "spruce", "non forested")
     # levels = c(1L, 2L, 3L, 4L, 5L, 6L, 7L)
@@ -200,7 +199,7 @@ ReComputeDrainageMap <- function(sim) {
       align_only = TRUE,
       maskTo = sim$plotAndPixelGroupArea,
       method = "bilinear",
-      writeTo = plotAndPixelGroupAreaDemPath,
+      writeTo = plotAndPixelGroupAreaDemPath
     )
 
     # plotAndPixelGroupAreaDemExtPoly = vect(ext(plotAndPixelGroupAreaDem), "polygons")
@@ -210,7 +209,6 @@ ReComputeDrainageMap <- function(sim) {
     
     # Define a wrapper function around whitebox function to make their arguments and result cachable
     cachableWhiteboxFct <- function(fun_name, ...){
-      browser()
       dots <- list(...)
       dots["cachable_input"] <- NULL
       # output <- dots$output
@@ -219,7 +217,7 @@ ReComputeDrainageMap <- function(sim) {
       do.call(fun_name, dots)
       return (rast(dots$output))
     }
-    #browser()
+
     message("Computing TWIMap (2/", nbSteps, "): Filling depressions...")
     dem_filled_path <- file.path(cachePath, "plotAndPixelGroupAreaDem_filled.tif")
     dep <- Cache(
@@ -229,8 +227,7 @@ ReComputeDrainageMap <- function(sim) {
       dem = plotAndPixelGroupAreaDemPath,
       output = dem_filled_path
     )
-    #browser()
-    
+
     message("Computing TWIMap (3/", nbSteps, "): Computing slopes...")
     slope_path <- file.path(cachePath, "plotAndPixelGroupAreaDem_slope.tif")
     slope <- Cache(
@@ -300,8 +297,6 @@ ReComputeDrainageMap <- function(sim) {
   
   sapply(CANSISMapToProcess, function(mapName){
     varMapName <- paste0("WB_VBD_", mapName, "Map") # e.g. WB_VBD_clayMap
-    # browser()
-
     if (!suppliedElsewhere(varMapName, sim)){
       message("Downloading/cropping/reprojecting/resampling and masking ", varMapName, " to sim$pixelGroupMap...") 
       fileName <- paste0(mapName, nameEnd, ext)
@@ -340,7 +335,7 @@ ReComputeDrainageMap <- function(sim) {
         writeTo = file.path(getPaths()$cache, paste0("SoilGrids_", SGMapName, "_0-5cm_mean_postProcessed.tif")),
         method = "bilinear"
       )
-#browser()
+      
       message("Patching CANSIS soil ", mapName, " raster NAs with SoilGrids values...") 
       sim[[varMapName]] <- Cache(
         cover,
@@ -369,7 +364,8 @@ ReComputeDrainageMap <- function(sim) {
   #     rock.
   #
   ##############################################################################
-  if(!suppliedElsewhere("drainageModel", sim)){
+  if (!suppliedElsewhere("drainageModel", sim)){
+
     nbPLotPoints <- nrow(sim$plotPoints)
     message("drainageModel not supplied. Fitting a model using the provided",
             "plot points (n=", nbPLotPoints, "), soil and TWI maps...") 
