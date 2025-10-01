@@ -146,12 +146,12 @@ ReComputeDrainageMap <- function(sim) {
     
   # browser()
     # Reassign factors to match WB_HartJohnstone classification used in the WB_WB_HartJohnstoneClasse module
-    # labels = c("deci", "mixed", "conimix", "jackpine", "larch", "spruce")
-    # levels = c(1L, 2L, 3L, 4L, 5L, 6L)
-    new_codes <- c(3L, 1L, 2L, 4L, 5L, 6L)[as.integer(plotDF$standtype)]
+    # labels = c("deci", "mixed", "conimix", "jackpine", "larch", "spruce", "non forested")
+    # levels = c(1L, 2L, 3L, 4L, 5L, 6L, 7L)
+    new_codes <- c(3L, 1L, 2L, 4L, 5L, 7L, 6L)[as.integer(plotDF$standtype)]
     
     # Assign new codes while keeping levels the same
-    plotDF$standtype <- factor(new_codes, levels = 1:6, labels = levels(plotDF$standtype))
+    plotDF$standtype <- factor(new_codes, levels = 1:7, labels = levels(plotDF$standtype))
       
     plotPoints <- vect(plotDF, geom = c("Longitude", "Latitude"), crs = "EPSG:4326")  # WGS84
     sim$plotPoints <- project(plotPoints, crs(sim$WB_HartJohnstoneForestClassesMap))
