@@ -390,11 +390,11 @@ ReComputeDrainageMap <- function(sim) {
         method = "bilinear"
       )
       
-      message("Patching CANSIS soil ", mapName, " raster NAs with SoilGrids values...") 
+      message("Patching CANSIS soil ", mapName, " raster NAs with SoilGrids values...")
       sim[[varMapName]] <- Cache(
         cover,
         sim[[varMapName]],
-        patchRast / 10
+        patchRast / ifelse(SGMapName == "bdod", 100, 10)
       )
     }
   })
