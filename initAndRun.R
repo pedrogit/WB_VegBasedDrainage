@@ -8,7 +8,7 @@ library(terra)
 library(data.table)
 library(caret)
 library(gdalUtilities)
-
+library(whitebox)
 
 setBasePath("G:/Home/MyTests/reclassModel")
 getPaths() # shows where the 4 relevant paths are
