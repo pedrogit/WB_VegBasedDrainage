@@ -1,517 +1,915 @@
-"","plot","standtype","Latitude","Longitude","drainage"
-"1","C1-14A","Jack pine",62.731584,-115.648558,NA
-"2","C1-14B","Poorly-drained spruce",62.731995,-115.650513,"Poorly-drained"
-"3","C1-17B","Poorly-drained spruce",62.729495,-115.697965,"Poorly-drained"
-"4","C1-17C","Well-drained spruce",62.732082,-115.697505,"Well-drained"
-"5","C1-19A","Conifer mix",62.690862,-115.470054,NA
-"6","C1-19B","Conifer mix",62.691898,-115.469811,NA
-"7","C1-21A","Poorly-drained spruce",62.727336,-115.629471,"Poorly-drained"
-"8","C1-21B","Jack pine",62.726469,-115.632376,NA
-"9","C1-32A","Deciduous",62.660851,-115.347666,NA
-"10","C1-32B","Jack pine",62.660989,-115.350219,NA
-"11","C1-32C","Poorly-drained spruce",62.662726,-115.347985,"Poorly-drained"
-"12","C1-8A","Well-drained spruce",62.706916,-115.603876,"Well-drained"
-"13","C1-8B","Poorly-drained spruce",62.708606,-115.600581,"Poorly-drained"
-"14","C1-8C","Jack pine",62.710002,-115.600861,NA
-"15","C2-11A","Jack pine",62.460224,-114.543084,NA
-"16","C2-11B","Poorly-drained spruce",62.458804,-114.541818,"Poorly-drained"
-"17","C2-17A","Jack pine",62.462836,-114.591784,NA
-"18","C2-17B","Well-drained spruce",62.463317,-114.594367,"Well-drained"
-"19","C2-2A","Poorly-drained spruce",62.467739,-114.590179,"Poorly-drained"
-"20","C2-2B","Jack pine",62.464602,-114.590133,NA
-"21","C2-3A","Jack pine",62.454493,-114.549338,NA
-"22","C2-3B","Well-drained spruce",62.455459,-114.54562,"Well-drained"
-"23","C2-3C","Conifer mix",62.454137,-114.546715,NA
-"24","C3-3A","Deciduous-conifer mix",63.111516,-113.778915,NA
-"25","C3-3B","Conifer mix",63.112205,-113.776568,NA
-"26","C4-5A","Well-drained spruce",63.213214,-114.040845,"Well-drained"
-"27","C4-5B","Well-drained spruce",63.213793,-114.04327,"Well-drained"
-"28","C5-11A","Jack pine",62.985838,-114.056467,NA
-"29","C5-4A","Poorly-drained spruce",63.02294,-114.102887,"Poorly-drained"
-"30","C5-4B","Well-drained spruce",63.024426,-114.103356,"Well-drained"
-"31","C6-12A","Well-drained spruce",62.905779,-114.262612,"Well-drained"
-"32","C6-12B","Well-drained spruce",62.903947,-114.264738,"Well-drained"
-"33","C6-2A","Well-drained spruce",62.876039,-114.284554,"Well-drained"
-"34","C6-2B","Well-drained spruce",62.877908,-114.288231,"Well-drained"
-"35","C7-18A","Poorly-drained spruce",65.170895,-126.814895,"Poorly-drained"
-"36","C7-18B","Well-drained spruce",65.171458,-126.811862,"Well-drained"
-"37","C7-5A","Poorly-drained spruce",65.17003,-126.820415,"Poorly-drained"
-"38","C7-9A","Poorly-drained spruce",65.153138,-126.847868,"Poorly-drained"
-"39","C7-9B","Poorly-drained spruce",65.151877,-126.851958,"Poorly-drained"
-"40","C8-4A","Poorly-drained spruce",65.267716,-126.702246,"Poorly-drained"
-"41","C8-4B","Poorly-drained spruce",65.270075,-126.700611,"Poorly-drained"
-"42","C9-1A","Well-drained spruce",65.592113,-127.41744,"Well-drained"
-"43","C9-5A","Poorly-drained spruce",65.626861,-127.54165,"Poorly-drained"
-"44","C9-9A","Poorly-drained spruce",65.64198,-127.407658,"Poorly-drained"
-"45","C9-9B","Well-drained spruce",65.643716,-127.408401,"Well-drained"
-"46","C9-9C","Poorly-drained spruce",65.642613,-127.41059,"Poorly-drained"
-"47","CG1-157A","Well-drained spruce",61.059132,-118.371563,"Well-drained"
-"48","CG1-157B","Well-drained spruce",61.057698,-118.372589,"Well-drained"
-"49","CG1-157C","Well-drained spruce",61.056168,-118.373676,"Well-drained"
-"50","CG1-15A","Conifer mix",61.13575,-117.92352,NA
-"51","CG1-15B","Conifer mix",61.136242,-117.926256,NA
-"52","CG1-15C","Poorly-drained spruce",61.133716,-117.921627,"Poorly-drained"
-"53","CG1-18A","Jack pine",61.05874,-118.40642,NA
-"54","CG1-18B","Conifer mix",61.058971,-118.403456,NA
-"55","CG1-18C","Conifer mix",61.05814,-118.401964,NA
-"56","CG1-24A","Well-drained spruce",61.13797,-117.84549,"Well-drained"
-"57","CG1-24B","Poorly-drained spruce",61.134652,-117.846828,"Poorly-drained"
-"58","CG1-24C","Deciduous-conifer mix",61.132829,-117.848539,NA
-"59","CG1-25A","Conifer mix",61.062986,-118.484804,NA
-"60","CG1-25B","Conifer mix",61.06455,-118.484082,NA
-"61","CG1-25C","Well-drained spruce",61.063844,-118.481954,"Well-drained"
-"62","CG1-67A","Jack pine",61.118177,-118.025001,NA
-"63","CG1-67B","Well-drained spruce",61.119783,-118.028477,"Well-drained"
-"64","CG1-6A","Larch",61.13364,-117.77177,NA
-"65","CG1-6B","Jack pine",61.134303,-117.773869,NA
-"66","CG1-6C","Well-drained spruce",61.13559,-117.77515,"Well-drained"
-"67","CG1-87A","Jack pine",61.126001,-117.846992,NA
-"68","CG1-87B","Well-drained spruce",61.129159,-117.845354,"Well-drained"
-"69","CG1-8A","Well-drained spruce",60.9903,-117.25178,"Well-drained"
-"70","CG1-8B","Well-drained spruce",60.988685,-117.249617,"Well-drained"
-"71","CG2-11B","Well-drained spruce",62.231972,-116.35132,"Well-drained"
-"72","CG2-1A","Jack pine",62.231808,-116.335162,NA
-"73","CG2-1B","Well-drained spruce",62.233845,-116.332771,"Well-drained"
-"74","CG2-20A","Well-drained spruce",62.60786,-116.32681,"Well-drained"
-"75","CG2-20B","Well-drained spruce",62.609009,-116.32677,"Well-drained"
-"76","CG2-20C","Well-drained spruce",62.606749,-116.325672,"Well-drained"
-"77","CG2-21A","Conifer mix",62.60802,-116.30892,NA
-"78","CG2-21B","Well-drained spruce",62.605637,-116.308032,"Well-drained"
-"79","CG2-21C","Well-drained spruce",62.607553,-116.314926,"Well-drained"
-"80","CG2-33A","Well-drained spruce",62.60384,-116.31809,"Well-drained"
-"81","CG2-33B","Well-drained spruce",62.603686,-116.315851,"Well-drained"
-"82","CG2-33C","Well-drained spruce",62.601589,-116.315038,"Well-drained"
-"83","CG2-35A","Well-drained spruce",62.21648,-116.32717,"Well-drained"
-"84","CG2-35B","Well-drained spruce",62.216958,-116.324167,"Well-drained"
-"85","CG2-4A","Jack pine",62.635922,-116.253709,NA
-"86","CG2-5A","Poorly-drained spruce",62.21217,-116.31332,"Poorly-drained"
-"87","CG2-5B","Well-drained spruce",62.211792,-116.315899,"Well-drained"
-"88","CG2-5C","Deciduous",62.211965,-116.318531,NA
-"89","CG3-10A","Well-drained spruce",60.69804,-116.457819,"Well-drained"
-"90","CG3-10B","Well-drained spruce",60.697538,-116.46023,"Well-drained"
-"91","CG3-10C","Well-drained spruce",60.698863,-116.459672,"Well-drained"
-"92","CG3-12A","Conifer mix",60.699271,-116.469889,NA
-"93","CG3-12B","Conifer mix",60.698749,-116.466791,NA
-"94","CG3-12C","Poorly-drained spruce",60.699865,-116.463675,"Poorly-drained"
-"95","CG3-22A","Conifer mix",60.65396,-116.386498,NA
-"96","CG3-22B","Deciduous-conifer mix",60.656863,-116.388104,NA
-"97","CG3-2A","Well-drained spruce",60.721087,-115.129849,"Well-drained"
-"98","CG3-2B","Conifer mix",60.722677,-115.121002,NA
-"99","CG3-2C","Well-drained spruce",60.724363,-115.125913,"Well-drained"
-"100","CG3-30A","Well-drained spruce",60.579345,-116.164555,"Well-drained"
-"101","CG3-30B","Conifer mix",60.580573,-116.166296,NA
-"102","CG3-30C","Well-drained spruce",60.581579,-116.169941,"Well-drained"
-"103","CG3-31A","Conifer mix",60.76557,-116.5615,NA
-"104","CG3-31B","Jack pine",60.767475,-116.561224,NA
-"105","CG3-31C","Well-drained spruce",60.770676,-116.55959,"Well-drained"
-"106","CG3-32A","Well-drained spruce",60.636963,-116.373181,"Well-drained"
-"107","CG3-32B","Poorly-drained spruce",60.636317,-116.369153,"Poorly-drained"
-"108","CG3-37A","Poorly-drained spruce",60.73245,-115.510059,"Poorly-drained"
-"109","CG3-37B","Well-drained spruce",60.733485,-115.505764,"Well-drained"
-"110","CG3-37C","Jack pine",60.731876,-115.502123,NA
-"111","CG3-38A","Conifer mix",60.66908,-116.41945,NA
-"112","CG3-38B","Well-drained spruce",60.669309,-116.416201,"Well-drained"
-"113","CG3-38C","Well-drained spruce",60.670189,-116.418604,"Well-drained"
-"114","CG3-40A","Larch",60.609024,-116.244607,NA
-"115","CG3-40B","Poorly-drained spruce",60.606394,-116.241929,"Poorly-drained"
-"116","CG3-4A","Jack pine",60.735472,-115.209623,NA
-"117","CG3-4B","Well-drained spruce",60.733953,-115.209606,"Well-drained"
-"118","CG3-4C","Well-drained spruce",60.733804,-115.207913,"Well-drained"
-"119","CS-103A","Jack pine",62.50349,-113.62193,NA
-"120","CS-103B","Poorly-drained spruce",62.505258,-113.620913,"Poorly-drained"
-"121","CS-104A","Well-drained spruce",62.50596,-113.65829,"Well-drained"
-"122","CS-104B","Jack pine",62.505276,-113.660086,NA
-"123","CS-108A","Well-drained spruce",62.50886,-113.64855,"Well-drained"
-"124","CS-108B","Deciduous-conifer mix",62.509582,-113.650338,NA
-"125","CS-108C","Jack pine",62.507569,-113.649894,NA
-"126","CS-117A","Jack pine",62.49505,-113.53572,NA
-"127","CS-117B","Well-drained spruce",62.496497,-113.535587,"Well-drained"
-"128","CS-14A","Well-drained spruce",62.51044,-113.65462,"Well-drained"
-"129","CS-14B","Jack pine",62.508638,-113.655261,NA
-"130","CS-14C","Well-drained spruce",62.508032,-113.657405,"Well-drained"
-"131","CS-26A","Well-drained spruce",62.5701,-114.03628,"Well-drained"
-"132","CS-26B","Well-drained spruce",62.570834,-114.03839,"Well-drained"
-"133","CS-26C","Jack pine",62.57007,-114.040607,NA
-"134","CS-3A","Conifer mix",62.49994,-113.6294,NA
-"135","CS-3B","Well-drained spruce",62.498774,-113.630431,"Well-drained"
-"136","CS-3C","Jack pine",62.500886,-113.629709,NA
-"137","CS-46A","Well-drained spruce",62.53118,-113.82884,"Well-drained"
-"138","CS-46B","Jack pine",62.52944,-113.829196,NA
-"139","CS-59A","Jack pine",62.54397,-113.9249,NA
-"140","CS-59B","Poorly-drained spruce",62.544983,-113.927437,"Poorly-drained"
-"141","CS-89A","Jack pine",62.51703,-113.7253,NA
-"142","CS-89B","Jack pine",62.517441,-113.72356,NA
-"143","CS-96A","Jack pine",62.53782,-113.8856,NA
-"144","CS-96B","Poorly-drained spruce",62.537906,-113.888197,"Poorly-drained"
-"145","CS-96C","Jack pine",62.536739,-113.887389,NA
-"146","F1-12A","Deciduous",60.692783,-115.926968,NA
-"147","F1-12B","Conifer mix",60.693655,-115.929011,NA
-"148","F1-12C","Well-drained spruce",60.692516,-115.929906,"Well-drained"
-"149","F1-18A","Conifer mix",60.732485,-115.893457,NA
-"150","F1-18B","Conifer mix",60.734545,-115.896609,NA
-"151","F1-22A","Poorly-drained spruce",60.698847,-115.904973,"Poorly-drained"
-"152","F1-22B","Conifer mix",60.701668,-115.904654,NA
-"153","F1-22C","Well-drained spruce",60.697109,-115.902937,"Well-drained"
-"154","F1-25A","Well-drained spruce",60.641754,-116.098916,"Well-drained"
-"155","F1-25B","Conifer mix",60.642792,-116.100461,NA
-"156","F1-25C","Larch",60.643934,-116.100723,NA
-"157","F1-31B","Conifer mix",60.641512,-116.091489,NA
-"158","F1-38A","Well-drained spruce",60.651482,-116.070845,"Well-drained"
-"159","F1-38B","Jack pine",60.653839,-116.076353,NA
-"160","F1-3A","Conifer mix",60.717063,-115.897468,NA
-"161","F1-47A","Larch",60.736111,-115.900901,NA
-"162","F1-47B","Well-drained spruce",60.738209,-115.902612,"Well-drained"
-"163","F1-4A","Conifer mix",60.699171,-115.913212,NA
-"164","F1-4B","Deciduous-conifer mix",60.698045,-115.913518,NA
-"165","F1-4C","Poorly-drained spruce",60.697238,-115.915227,"Poorly-drained"
-"166","F1-52A","Larch",60.683273,-115.968795,NA
-"167","F1-52B","Conifer mix",60.682381,-115.966498,NA
-"168","F10-1A","Jack pine",62.955702,-115.8573,NA
-"169","F10-1B","Deciduous-conifer mix",62.957434,-115.856298,NA
-"170","F10-20A","Conifer mix",63.010712,-115.833897,NA
-"171","F10-20B","Jack pine",63.01033,-115.831876,NA
-"172","F10-29A","Jack pine",62.985126,-115.84171,NA
-"173","F10-29B","Deciduous-conifer mix",62.98486,-115.837603,NA
-"174","F10-2A","Deciduous",62.979281,-115.831851,NA
-"175","F10-2B","Jack pine",62.980457,-115.831578,NA
-"176","F10-3A","Deciduous",63.013675,-115.830783,NA
-"177","F10-3B","Jack pine",63.013193,-115.829066,NA
-"178","F10-4A","Deciduous",62.958771,-115.854128,NA
-"179","F10-4B","Jack pine",62.957736,-115.850128,NA
-"180","F11-10A","Well-drained spruce",62.762868,-115.810033,"Well-drained"
-"181","F11-10B","Poorly-drained spruce",62.760979,-115.812894,"Poorly-drained"
-"182","F11-10C","Jack pine",62.760219,-115.812288,NA
-"183","F11-15A","Conifer mix",62.759174,-115.786097,NA
-"184","F11-15B","Jack pine",62.758211,-115.788487,NA
-"185","F11-19A","Conifer mix",62.754223,-115.771504,NA
-"186","F11-19B","Jack pine",62.75557,-115.773404,NA
-"187","F11-1B","Well-drained spruce",62.756694,-115.775803,"Well-drained"
-"188","F11-1C","Jack pine",62.754451,-115.779436,NA
-"189","F11-20A","Deciduous-conifer mix",62.770068,-115.842088,NA
-"190","F11-20B","Jack pine",62.768446,-115.844804,NA
-"191","F11-20C","Poorly-drained spruce",62.767633,-115.842202,"Poorly-drained"
-"192","F11-21A","Jack pine",62.769305,-115.831301,NA
-"193","F11-21B","Well-drained spruce",62.766347,-115.831252,"Well-drained"
-"194","F12-10A","Well-drained spruce",63.06146,-113.809291,"Well-drained"
-"195","F12-10B","Jack pine",63.060901,-113.812338,NA
-"196","F12-15A","Well-drained spruce",63.089699,-113.780184,"Well-drained"
-"197","F12-15B","Jack pine",63.088267,-113.782592,NA
-"198","F12-15C","Conifer mix",63.086854,-113.782784,NA
-"199","F12-1A","Deciduous-conifer mix",63.072305,-113.800462,NA
-"200","F12-1B","Jack pine",63.070922,-113.797375,NA
-"201","F12-1C","Poorly-drained spruce",63.06986,-113.795577,"Poorly-drained"
-"202","F13-11A","Conifer mix",63.046449,-114.124455,NA
-"203","F13-11B","Conifer mix",63.044337,-114.125891,NA
-"204","F13-11C","Poorly-drained spruce",63.045483,-114.127571,"Poorly-drained"
-"205","F13-15A","Conifer mix",63.033862,-114.350585,NA
-"206","F13-15B","Poorly-drained spruce",63.034375,-114.347756,"Poorly-drained"
-"207","F13-15C","Jack pine",63.034321,-114.344858,NA
-"208","F13-5A","Poorly-drained spruce",63.003379,-114.206875,"Poorly-drained"
-"209","F13-5B","Jack pine",63.00266,-114.205656,NA
-"210","F14-13A","Jack pine",63.197061,-114.259997,NA
-"211","F14-13B","Deciduous-conifer mix",63.196675,-114.257314,NA
-"212","F14-13C","Jack pine",63.196633,-114.254809,NA
-"213","F14-2A","Jack pine",63.223216,-114.24593,NA
-"214","F14-2B","Poorly-drained spruce",63.219368,-114.242772,"Poorly-drained"
-"215","F14-7A","Jack pine",63.229006,-114.239089,NA
-"216","F14-7B","Jack pine",63.229734,-114.236697,NA
-"217","F15-13A","Well-drained spruce",65.891033,-128.243545,"Well-drained"
-"218","F15-16A","Well-drained spruce",65.88102,-128.229419,"Well-drained"
-"219","F15-9A","Well-drained spruce",65.897405,-128.239341,"Well-drained"
-"220","F15-9B","Conifer mix",65.898512,-128.237237,NA
-"221","F2-10A","Jack pine",62.645211,-116.260019,NA
-"222","F2-10B","Well-drained spruce",62.646736,-116.254505,"Well-drained"
-"223","F2-137A","Jack pine",62.645383,-116.228137,NA
-"224","F2-137B","Jack pine",62.644113,-116.228326,NA
-"225","F2-13A","Jack pine",62.669951,-116.199016,NA
-"226","F2-13B","Jack pine",62.668193,-116.200387,NA
-"227","F2-13C","Jack pine",62.66854,-116.196637,NA
-"228","F2-18A","Well-drained spruce",62.659908,-116.213965,"Well-drained"
-"229","F2-18B","Jack pine",62.6577,-116.214914,NA
-"230","F2-18C","Well-drained spruce",62.657282,-116.2107,"Well-drained"
-"231","F2-22A","Jack pine",62.636725,-116.24857,NA
-"232","F2-22B","Jack pine",62.636464,-116.245598,NA
-"233","F2-3A","Well-drained spruce",62.653229,-116.248947,"Well-drained"
-"234","F2-3B","Jack pine",62.65314,-116.245678,NA
-"235","F2-3C","Well-drained spruce",62.651448,-116.243043,"Well-drained"
-"236","F2-4A","Jack pine",62.649582,-116.263091,NA
-"237","F2-4B","Well-drained spruce",62.650703,-116.261716,"Well-drained"
-"238","F2-4C","Conifer mix",62.647541,-116.260888,NA
-"239","F2-6A","Conifer mix",62.659426,-116.226211,NA
-"240","F2-6C","Deciduous-conifer mix",62.658069,-116.228643,NA
-"241","F2-7A","Well-drained spruce",62.664776,-116.168704,"Well-drained"
-"242","F2-7C","Jack pine",62.667162,-116.176464,NA
-"243","F3-11A","Well-drained spruce",60.786169,-116.571305,"Well-drained"
-"244","F3-11B","Well-drained spruce",60.785368,-116.575158,"Well-drained"
-"245","F3-13A","Jack pine",60.818779,-116.60989,NA
-"246","F3-19A","Larch",60.801452,-116.582316,NA
-"247","F3-19B","Well-drained spruce",60.801064,-116.586369,"Well-drained"
-"248","F3-19C","Jack pine",60.801025,-116.589843,NA
-"249","F3-1A","Jack pine",60.859201,-116.624822,NA
-"250","F3-20A","Poorly-drained spruce",60.794951,-116.57756,"Poorly-drained"
-"251","F3-20B","Conifer mix",60.794468,-116.582309,NA
-"252","F3-20C","Well-drained spruce",60.796072,-116.583216,"Well-drained"
-"253","F3-3A","Conifer mix",60.865297,-116.638496,NA
-"254","F3-3B","Conifer mix",60.86611,-116.634939,NA
-"255","F3-3C","Well-drained spruce",60.863776,-116.637318,"Well-drained"
-"256","F3-8A","Well-drained spruce",60.792031,-116.580227,"Well-drained"
-"257","F3-8B","Poorly-drained spruce",60.792221,-116.583376,"Poorly-drained"
-"258","F3-8C","Jack pine",60.791888,-116.587351,NA
-"259","F4-17A","Deciduous-conifer mix",61.096341,-118.831678,NA
-"260","F4-17B","Jack pine",61.094899,-118.830372,NA
-"261","F4-17C","Larch",61.093968,-118.830219,NA
-"262","F4-1A","Larch",61.096699,-118.816519,NA
-"263","F4-1B","Poorly-drained spruce",61.096423,-118.813276,"Poorly-drained"
-"264","F4-1C","Conifer mix",61.095929,-118.810584,NA
-"265","F4-20A","Jack pine",61.090515,-118.795787,NA
-"266","F4-20B","Conifer mix",61.089603,-118.80098,NA
-"267","F4-20C","Conifer mix",61.094201,-118.797045,NA
-"268","F4-21A","Jack pine",61.13496,-119.032657,NA
-"269","F4-21B","Jack pine",61.133958,-119.034243,NA
-"270","F4-2A","Deciduous",61.139993,-119.027535,NA
-"271","F4-30A","Jack pine",61.075882,-118.5844,NA
-"272","F4-30B","Jack pine",61.076985,-118.586639,NA
-"273","F4-30C","Deciduous-conifer mix",61.079096,-118.58606,NA
-"274","F4-31A","Jack pine",61.064205,-118.437105,NA
-"275","F4-31B","Larch",61.064045,-118.440032,NA
-"276","F4-35A","Well-drained spruce",61.067436,-118.459996,"Well-drained"
-"277","F4-35B","Well-drained spruce",61.066933,-118.46746,"Well-drained"
-"278","F4-6A","Larch",61.083315,-118.595237,NA
-"279","F4-6B","Conifer mix",61.081929,-118.596493,NA
-"280","F4-6C","Jack pine",61.079842,-118.598532,NA
-"281","F6-15A","Jack pine",60.705382,-115.059969,NA
-"282","F6-15B","Well-drained spruce",60.704224,-115.062838,"Well-drained"
-"283","F6-15C","Well-drained spruce",60.70688,-115.061798,"Well-drained"
-"284","F6-16B","Jack pine",60.71338,-115.057961,NA
-"285","F6-16C","Larch",60.715478,-115.057835,NA
-"286","F6-1A","Larch",60.702441,-115.003305,NA
-"287","F6-1B","Jack pine",60.700281,-115.000563,NA
-"288","F6-1C","Well-drained spruce",60.701568,-114.998619,"Well-drained"
-"289","F6-20A","Larch",60.710712,-115.103178,NA
-"290","F6-20B","Conifer mix",60.713053,-115.098905,NA
-"291","F6-21A","Jack pine",60.700916,-114.982359,NA
-"292","F6-21B","Jack pine",60.701192,-114.979775,NA
-"293","F6-26A","Jack pine",60.73513,-115.238601,NA
-"294","F6-26C","Jack pine",60.734476,-115.241896,NA
-"295","F6-32A","Jack pine",60.711395,-115.068576,NA
-"296","F6-32B","Jack pine",60.712138,-115.072769,NA
-"297","F6-32C","Well-drained spruce",60.712383,-115.069518,"Well-drained"
-"298","F6-33A","Conifer mix",60.70137,-115.037556,NA
-"299","F6-33B","Jack pine",60.699464,-115.035812,NA
-"300","F6-7A","Well-drained spruce",60.717427,-115.107241,"Well-drained"
-"301","F6-7B","Larch",60.718901,-115.105437,NA
-"302","F6-7C","Conifer mix",60.720412,-115.109021,NA
-"303","F7-1A","Conifer mix",61.148158,-119.515365,NA
-"304","F7-1B","Well-drained spruce",61.149157,-119.51558,"Well-drained"
-"305","F7-2A","Jack pine",61.144601,-119.509224,NA
-"306","F7-2B","Conifer mix",61.145641,-119.511627,NA
-"307","F8-1A","Jack pine",61.135331,-119.594551,NA
-"308","F8-1B","Well-drained spruce",61.1363,-119.595529,"Well-drained"
-"309","F8-2A","Jack pine",61.146217,-119.551974,NA
-"310","F8-2B","Jack pine",61.147001,-119.554703,NA
-"311","F8-3A","Jack pine",61.148313,-119.553748,NA
-"312","F8-3B","Jack pine",61.147958,-119.551484,NA
-"313","F9-11A","Jack pine",62.967079,-116.145113,NA
-"314","F9-15A","Jack pine",62.969306,-116.146798,NA
-"315","F9-15B","Jack pine",62.969931,-116.149874,NA
-"316","F9-2A","Poorly-drained spruce",62.948007,-116.173603,"Poorly-drained"
-"317","F9-2B","Well-drained spruce",62.946265,-116.175708,"Well-drained"
-"318","F9-2C","Well-drained spruce",62.945788,-116.181253,"Well-drained"
-"319","F9-3A","Jack pine",62.960443,-116.172266,NA
-"320","F9-3B","Well-drained spruce",62.959024,-116.171509,"Well-drained"
-"321","F9-3C","Deciduous-conifer mix",62.961734,-116.169975,NA
-"322","F9-6A","Poorly-drained spruce",62.950201,-116.175261,"Poorly-drained"
-"323","F9-6B","Conifer mix",62.951273,-116.175393,NA
-"324","F9-6C","Well-drained spruce",62.948381,-116.180419,"Well-drained"
-"325","F9-9A","Deciduous-conifer mix",62.968561,-116.151724,NA
-"326","F9-9B","Deciduous",62.967955,-116.15473,NA
-"327","2015-001","Jack pine",57.2761706450727,-105.818635309543,NA
-"328","2015-002","Jack pine",57.3377864160427,-105.737057206151,NA
-"329","2015-004","Jack pine",57.3199485586988,-105.693383274016,NA
-"330","2015-005","Jack pine",57.3488096122657,-105.67729283759,NA
-"331","2015-006","Jack pine",57.3560341678,-105.672389725859,NA
-"332","2015-007","Jack pine",57.3643161184984,-105.640982482149,NA
-"333","2015-008","Jack pine",57.467284007206,-105.516108325572,NA
-"334","2015-009","Jack pine",57.4909300864741,-105.451377018391,NA
-"335","2015-010","Jack pine",57.4891242959421,-105.444610550566,NA
-"336","2015-011","Jack pine",57.6477713613468,-105.237169927407,NA
-"337","2015-012","Jack pine",57.7738065598751,-104.918646932674,NA
-"338","2015-013","Jack pine",57.7477987816816,-104.962346419605,NA
-"339","2015-015","Jack pine",57.3400379078918,-105.429593324268,NA
-"340","2015-017","Jack pine",57.3415149705249,-105.511026789479,NA
-"341","2015-018","Jack pine",57.2211278688513,-105.703082751416,NA
-"342","2015-019","Jack pine",57.2186972014148,-105.814017190174,NA
-"343","2015-020","Jack pine",57.2268041766949,-105.804218165353,NA
-"344","2015-021","Poorly-drained spruce",57.153800533648,-105.860612221878,"Poorly-drained"
-"345","2015-022","Conifer mix",56.9101756896372,-106.109559672014,NA
-"346","2015-023","Jack pine",56.6898883400748,-103.136482344304,NA
-"347","2015-024","Jack pine",56.5359654947031,-103.057834455766,NA
-"348","2015-025","Conifer mix",56.4953131543569,-102.722103221227,NA
-"349","2015-029","Well-drained spruce",56.4604025886491,-102.944704170844,"Well-drained"
-"350","2015-030","Conifer mix",56.4669864862088,-102.848896490944,NA
-"351","2015-031","Poorly-drained spruce",56.4879314415814,-103.272751157363,"Poorly-drained"
-"352","2015-032","Well-drained spruce",56.4955829037126,-103.235173962722,"Well-drained"
-"353","2015-033","Deciduous-conifer mix",56.583390773277,-102.931519447174,NA
-"354","2015-034","Well-drained spruce",56.5436199219468,-102.976071316167,"Well-drained"
-"355","2015-035","Deciduous-conifer mix",56.5304264314444,-102.939569264232,NA
-"356","2015-036","Jack pine",56.4246921791181,-103.249902217681,NA
-"357","2015-037","Well-drained spruce",56.4442594723044,-103.234390345508,"Well-drained"
-"358","2015-038","Well-drained spruce",56.3451702578728,-103.417048748516,"Well-drained"
-"359","2015-039","Deciduous",56.0178426180494,-103.972918960325,NA
-"360","2015-040","Deciduous-conifer mix",55.8894880744622,-102.008988569839,NA
-"361","2015-041","Deciduous",55.7983768136417,-102.105312502558,NA
-"362","2015-042","Deciduous-conifer mix",55.8060769366076,-102.092089487682,NA
-"363","2015-043","Deciduous",55.7282125034704,-102.185788413515,NA
-"364","2015-044","Deciduous",55.7434263749808,-102.601764880456,NA
-"365","2015-045","Conifer mix",55.7353997020952,-102.602352895929,NA
-"366","2015-046","Deciduous-conifer mix",55.6959053559093,-102.60327140839,NA
-"367","2015-047","Deciduous-conifer mix",55.4786074745127,-102.762099634507,NA
-"368","2015-048","Deciduous",55.6025520720368,-102.756336254081,NA
-"369","2015-049","Well-drained spruce",55.5707878164345,-102.696388443154,"Well-drained"
-"370","2015-050","Jack pine",58.3533274866447,-104.358367965874,NA
-"371","2015-051","Jack pine",58.4451075415037,-104.391183686742,NA
-"372","2015-052","Jack pine",58.497626748135,-104.494914754817,NA
-"373","2015-053","Jack pine",58.5675060906536,-104.456174818749,NA
-"374","2015-054","Jack pine",58.5621322219237,-104.456110288554,NA
-"375","2015-055","Well-drained spruce",58.553867318356,-104.420127150439,"Well-drained"
-"376","2015-056","Jack pine",58.2816810304803,-104.242162191131,NA
-"377","2015-057","Poorly-drained spruce",58.2487988087354,-104.133888845333,"Poorly-drained"
-"378","2015-058","Jack pine",58.2208003028352,-104.117593229123,NA
-"379","2015-059","Jack pine",58.1529829799137,-104.569484538903,NA
-"380","2015-060","Conifer mix",58.2156204377898,-104.486903870091,NA
-"381","2015-061","Jack pine",58.2117720009108,-104.260722219623,NA
-"382","2015-062","Jack pine",58.1018216211883,-104.358096404276,NA
-"383","2015-063","Jack pine",58.0974068721664,-104.373436875406,NA
-"384","2015-064","Poorly-drained spruce",58.1234408887632,-104.364401625068,"Poorly-drained"
-"385","2015-065","Jack pine",58.0590233790718,-104.421490467378,NA
-"386","2015-066","Jack pine",58.0787675739109,-104.424579128549,NA
-"387","2015-067","Jack pine",58.0908244418954,-104.516032777836,NA
-"388","2015-068","Well-drained spruce",58.0606366810553,-104.221365825372,"Well-drained"
-"389","2015-069","Jack pine",58.0631300776919,-104.341751005299,NA
-"390","2015-071","Jack pine",58.2398036577128,-103.810372230649,NA
-"391","2015-072","Jack pine",58.2249656744513,-103.860359151813,NA
-"392","2015-073","Poorly-drained spruce",58.2254713267257,-103.635560236799,"Poorly-drained"
-"393","2015-074","Poorly-drained spruce",58.2990765788665,-103.554291282258,"Poorly-drained"
-"394","2015-075","Jack pine",58.2279947573987,-103.710365441562,NA
-"395","2015-076","Jack pine",58.2305606226983,-103.695014030584,NA
-"396","2015-077","Jack pine",58.2406114596194,-103.708187059169,NA
-"397","2015-078","Deciduous",58.176337301973,-103.732764510844,NA
-"398","2015-079","Well-drained spruce",58.1769697916567,-103.722323865179,"Well-drained"
-"399","2015-080","Well-drained spruce",58.1450072421354,-103.764366999812,"Well-drained"
-"400","2015-081","Well-drained spruce",58.0785118285918,-103.658231834432,"Well-drained"
-"401","2015-082","Jack pine",58.0847529210284,-103.669767780717,NA
-"402","2015-083","Well-drained spruce",58.1199509905937,-103.676939604472,"Well-drained"
-"403","2015-084","Jack pine",58.2132017098204,-104.140031969176,NA
-"404","2015-085","Conifer mix",58.1403614931721,-103.837475997102,NA
-"405","2015-086","Well-drained spruce",58.0304626134708,-103.808870430076,"Well-drained"
-"406","2015-087","Well-drained spruce",58.0250080298681,-103.795581252425,"Well-drained"
-"407","2015-088","Poorly-drained spruce",58.0567511654586,-103.740277884389,"Poorly-drained"
-"408","2015-089","Poorly-drained spruce",58.0807303959921,-103.710757329413,"Poorly-drained"
-"409","2015-090","Deciduous-conifer mix",58.0519989659187,-103.799778376833,NA
-"410","2015-091","Well-drained spruce",58.0835308425122,-103.799053994949,"Well-drained"
-"411","2015-092","Well-drained spruce",58.0549177970785,-103.645412459344,"Well-drained"
-"412","2015-093","Well-drained spruce",57.8739567320222,-103.778792500745,"Well-drained"
-"413","2015-095","Well-drained spruce",58.0202045486923,-103.685696332184,"Well-drained"
-"414","2015-096","Well-drained spruce",57.6404011440284,-104.108263246949,"Well-drained"
-"415","2015-099","Poorly-drained spruce",57.8656558454033,-103.586812983272,"Poorly-drained"
-"416","2015-101","Well-drained spruce",57.8018372283352,-103.853567620876,"Well-drained"
-"417","2015-104","Jack pine",57.7784720684788,-103.850884527527,NA
-"418","2015-105","Jack pine",57.7828397906802,-103.83730175338,NA
-"419","2015-106","Well-drained spruce",57.0905621108789,-103.783213257618,"Well-drained"
-"420","2015-107","Conifer mix",56.2906380244323,-103.588947413981,NA
-"421","2015-108","Poorly-drained spruce",56.3625426032422,-103.58806126478,"Poorly-drained"
-"422","2015-109","Well-drained spruce",56.9143286372352,-103.593400732986,"Well-drained"
-"423","2015-110","Jack pine",56.9224315559067,-103.601294110208,NA
-"424","2015-111","Well-drained spruce",56.8425254986939,-103.688007282938,"Well-drained"
-"425","2015-112","Deciduous",56.8120875627981,-103.787076280104,NA
-"426","2015-113","Well-drained spruce",56.8466972251744,-103.664797223017,"Well-drained"
-"427","2015-114","Conifer mix",56.7984787618232,-103.684491160068,NA
-"428","2016-001","Jack pine",56.2206186370102,-103.760828428552,NA
-"429","2016-003","Deciduous-conifer mix",56.0329412151491,-103.599898902636,NA
-"430","2016-005","Deciduous-conifer mix",56.0153389652195,-103.637470950602,NA
-"431","2016-006","Well-drained spruce",56.0318914084981,-103.591902811743,"Well-drained"
-"432","2016-007","Deciduous-conifer mix",56.0205070170819,-103.613067123139,NA
-"433","2016-008","Deciduous-conifer mix",56.0209553869972,-103.653285351138,NA
-"434","2016-009","Conifer mix",56.024508676776,-103.654711672529,NA
-"435","2016-010","Conifer mix",56.0414583501838,-103.644586574734,NA
-"436","2016-011","Jack pine",57.355206441409,-106.259189836172,NA
-"437","2016-012","Jack pine",57.367267046653,-106.306126309433,NA
-"438","2016-013","Jack pine",57.4160830689155,-106.281257980962,NA
-"439","2016-014","Jack pine",57.3476267559123,-106.381969237492,NA
-"440","2016-015","Poorly-drained spruce",57.3140420442502,-106.41049066767,"Poorly-drained"
-"441","2016-016","Conifer mix",57.357994750208,-106.704775234151,NA
-"442","2016-018","Jack pine",57.6238326668851,-106.574817166964,NA
-"443","2016-019","Jack pine",57.5329802002074,-106.789843140611,NA
-"444","2016-020","Jack pine",57.4954351217739,-106.572661270617,NA
-"445","2016-021","Jack pine",57.3763493928742,-106.810391436863,NA
-"446","2016-022","Conifer mix",57.3928508149785,-106.869492762874,NA
-"447","2016-023","Poorly-drained spruce",57.3890438186582,-106.870708254694,"Poorly-drained"
-"448","2016-024","Jack pine",57.4906760952281,-106.861542710324,NA
-"449","2016-025","Larch",57.4644500270225,-106.88904903891,NA
-"450","2016-026","Jack pine",57.4566876255037,-106.856780730126,NA
-"451","2016-027","Jack pine",57.3188719654166,-106.855305118541,NA
-"452","2016-028","Jack pine",57.3250895612755,-106.865451752506,NA
-"453","2016-029","Poorly-drained spruce",57.3064817495648,-106.891664937581,"Poorly-drained"
-"454","2016-030","Well-drained spruce",57.3016145544617,-106.920175810863,"Well-drained"
-"455","2016-031","Well-drained spruce",57.2943444433857,-106.947470183727,"Well-drained"
-"456","2016-035","Conifer mix",57.2214488056222,-107.015514888911,NA
-"457","2016-036","Poorly-drained spruce",57.2816859412921,-106.911655279524,"Poorly-drained"
-"458","2016-037","Jack pine",57.2554411886659,-106.948676257396,NA
-"459","2016-038","Well-drained spruce",57.3368462117891,-106.871818412216,"Well-drained"
-"460","2016-039","Poorly-drained spruce",57.296208864179,-107.001537604523,"Poorly-drained"
-"461","2016-040","Jack pine",57.3327522910838,-107.11755034937,NA
-"462","2016-041","Jack pine",57.3802401345861,-107.135466677309,NA
-"463","2016-042","Jack pine",57.3778194975379,-107.086378812564,NA
-"464","2016-043","Jack pine",57.3180052834749,-107.039358976153,NA
-"465","2016-044","Jack pine",57.3496254108259,-107.256506947711,NA
-"466","2016-046","Jack pine",57.3931273893555,-107.091126383204,NA
-"467","2016-047","Poorly-drained spruce",57.466189106433,-107.096982762243,"Poorly-drained"
-"468","2016-049","Jack pine",57.4487051203046,-107.065659146727,NA
-"469","2016-050","Jack pine",57.474654216168,-106.980566172954,NA
-"470","2016-053","Jack pine",57.4007142068125,-106.951307164147,NA
-"471","2016-054","Conifer mix",55.8539603274864,-103.00407251157,NA
-"472","2016-055","Conifer mix",55.9436888587236,-102.999490606212,NA
-"473","2016-056","Deciduous-conifer mix",55.9280310351076,-102.979529048018,NA
-"474","2016-057","Well-drained spruce",55.9188708453647,-103.075896468179,"Well-drained"
-"475","2016-059","Deciduous-conifer mix",55.9291567263816,-103.036908036116,NA
-"476","2016-060","Jack pine",55.9233578289902,-103.131741432798,NA
-"477","2016-061","Well-drained spruce",55.9799953931497,-103.072969292835,"Well-drained"
-"478","2016-062","Well-drained spruce",55.9775139731196,-103.08593592075,"Well-drained"
-"479","2016-063","Deciduous",55.9562055456793,-103.106254012549,NA
-"480","2016-064","Well-drained spruce",55.9189357924671,-103.019900448074,"Well-drained"
-"481","2016-065","Deciduous",55.9060791500189,-102.955095063841,NA
-"482","2016-066","Deciduous-conifer mix",55.9017932031193,-102.961655504516,NA
-"483","2016-067","Deciduous-conifer mix",55.8962730075343,-102.953947604931,NA
-"484","2016-068","Conifer mix",55.9008216147781,-102.956880254777,NA
-"485","2016-069","Poorly-drained spruce",55.927312148308,-102.985953488959,"Poorly-drained"
-"486","2016-070","Deciduous-conifer mix",55.8847595449624,-102.964195588191,NA
-"487","2016-071","Conifer mix",55.811957164009,-103.06515236791,NA
-"488","2016-072","Well-drained spruce",55.8286265340621,-103.04854956773,"Well-drained"
-"489","2016-073","Well-drained spruce",57.3414039349247,-104.073209133742,"Well-drained"
-"490","2016-074","Well-drained spruce",57.3095102848157,-104.128970533922,"Well-drained"
-"491","2016-075","Well-drained spruce",56.2546046270905,-103.29650650483,"Well-drained"
-"492","2016-076","Well-drained spruce",56.0614620823057,-103.663077787332,"Well-drained"
-"493","2016-077","Deciduous-conifer mix",56.0139998478739,-103.674557604677,NA
-"494","2016-078","Well-drained spruce",56.2837059491907,-103.873517342484,"Well-drained"
-"495","2016-079","Jack pine",56.2645015456247,-103.840111405422,NA
-"496","2016-080","Deciduous-conifer mix",56.2471374162315,-103.914893267409,NA
-"497","2016-081","Poorly-drained spruce",56.1896974491842,-103.805333893887,"Poorly-drained"
-"498","2016-082","Deciduous-conifer mix",56.2310764747969,-103.920144795632,NA
-"499","2016-083","Well-drained spruce",56.0663550284173,-103.878269295149,"Well-drained"
-"500","2016-084","Well-drained spruce",56.9516804479046,-104.767432027324,"Well-drained"
-"501","2016-085","Conifer mix",56.9246763627215,-104.772664882297,NA
-"502","2016-086","Deciduous-conifer mix",57.0169108769695,-104.62550648488,NA
-"503","2016-087","Deciduous-conifer mix",57.0382369487082,-104.603919318018,NA
-"504","2016-088","Jack pine",56.9838839345893,-104.718091774806,NA
-"505","2016-089","Conifer mix",56.9587375733187,-104.728039136798,NA
-"506","2016-090","Poorly-drained spruce",56.9712584630933,-104.704858610263,"Poorly-drained"
-"507","2016-091","Deciduous-conifer mix",56.9041139234309,-104.795683281788,NA
-"508","2016-092","Well-drained spruce",56.9667932569306,-104.716352483521,"Well-drained"
-"509","2016-093","Jack pine",56.9426818619394,-104.778981925443,NA
-"510","2016-094","Conifer mix",56.9399167771218,-104.736360794634,NA
-"511","2016-095","Jack pine",56.9433723770514,-104.713313665595,NA
-"512","2016-096","Jack pine",56.947160669947,-104.739557876046,NA
-"513","2016-097","Deciduous-conifer mix",56.9192920164189,-104.762748389455,NA
-"514","2016-098","Jack pine",56.9121439610812,-104.78419270235,NA
-"515","2016-099","Well-drained spruce",56.9165481240738,-104.790760197695,"Well-drained"
-"516","2016-100","Well-drained spruce",56.9282757277256,-104.770983571527,"Well-drained"
+plot,standtype,Latitude,Longitude,drainage
+C1-14A,jack pine,62.731584,-115.648558,well-drained
+C1-14B,spruce,62.731995,-115.650513,poorly-drained
+C1-17A,spruce,62.728687,-115.69965,well-drained
+C1-17B,spruce,62.729495,-115.697965,poorly-drained
+C1-17C,spruce,62.732082,-115.697505,well-drained
+C1-19A,conifer mix,62.690862,-115.470054,poorly-drained
+C1-19B,conifer mix,62.691898,-115.469811,poorly-drained
+C1-21A,spruce,62.727336,-115.629471,poorly-drained
+C1-21B,jack pine,62.726469,-115.632376,poorly-drained
+C1-32A,deciduous,62.660851,-115.347666,poorly-drained
+C1-32B,jack pine,62.660989,-115.350219,poorly-drained
+C1-32C,spruce,62.662726,-115.347985,poorly-drained
+C1-8A,spruce,62.706916,-115.603876,well-drained
+C1-8B,spruce,62.708606,-115.600581,poorly-drained
+C1-8C,jack pine,62.710002,-115.600861,well-drained
+C2-11A,jack pine,62.460224,-114.543084,well-drained
+C2-11B,spruce,62.458804,-114.541818,poorly-drained
+C2-17A,jack pine,62.462836,-114.591784,well-drained
+C2-17B,spruce,62.463317,-114.594367,well-drained
+C2-2A,spruce,62.467739,-114.590179,poorly-drained
+C2-2B,jack pine,62.464602,-114.590133,well-drained
+C2-3A,jack pine,62.454493,-114.549338,well-drained
+C2-3B,spruce,62.455459,-114.54562,well-drained
+C2-3C,conifer mix,62.454137,-114.546715,poorly-drained
+C3-3A,deciduous-conifer mix,63.111516,-113.778915,poorly-drained
+C3-3B,conifer mix,63.112205,-113.776568,poorly-drained
+C4-5A,spruce,63.213214,-114.040845,poorly-drained
+C4-5B,spruce,63.213793,-114.04327,well-drained
+C5-11A,jack pine,62.985838,-114.056467,well-drained
+C5-11B,jack pine,62.98644,-114.054095,poorly-drained
+C5-4A,spruce,63.02294,-114.102887,poorly-drained
+C5-4B,spruce,63.024426,-114.103356,poorly-drained
+C6-12A,spruce,62.905779,-114.262612,well-drained
+C6-12B,conifer mix,62.903947,-114.264738,poorly-drained
+C6-2A,spruce,62.876039,-114.284554,well-drained
+C6-2B,spruce,62.877908,-114.288231,poorly-drained
+C7-18A,spruce,65.170895,-126.814895,poorly-drained
+C7-18B,spruce,65.171458,-126.811862,well-drained
+C7-5A,spruce,65.17003,-126.820415,poorly-drained
+C7-9A,spruce,65.153138,-126.847868,poorly-drained
+C7-9B,spruce,65.151877,-126.851958,poorly-drained
+C8-4A,spruce,65.267716,-126.702246,poorly-drained
+C8-4B,spruce,65.270075,-126.700611,poorly-drained
+C9-1A,spruce,65.592113,-127.41744,well-drained
+C9-1B,spruce,65.59224,-127.411746,poorly-drained
+C9-5A,spruce,65.626861,-127.54165,poorly-drained
+C9-9A,spruce,65.64198,-127.407658,poorly-drained
+C9-9B,spruce,65.643716,-127.408401,well-drained
+C9-9C,spruce,65.642613,-127.41059,poorly-drained
+CG1-12A,non-forest,61.015953,-117.302403,well-drained
+CG1-157A,spruce,61.059132,-118.371563,well-drained
+CG1-157B,spruce,61.057698,-118.372589,well-drained
+CG1-157C,spruce,61.056168,-118.373676,well-drained
+CG1-15A,conifer mix,61.13575,-117.92352,well-drained
+CG1-15B,conifer mix,61.136242,-117.926256,well-drained
+CG1-15C,spruce,61.133716,-117.921627,well-drained
+CG1-18A,jack pine,61.05874,-118.40642,well-drained
+CG1-18B,conifer mix,61.058971,-118.403456,well-drained
+CG1-18C,conifer mix,61.05814,-118.401964,well-drained
+CG1-24A,spruce,61.13797,-117.84549,well-drained
+CG1-24B,spruce,61.134652,-117.846828,poorly-drained
+CG1-24C,deciduous-conifer mix,61.132829,-117.848539,well-drained
+CG1-25A,conifer mix,61.062986,-118.484804,well-drained
+CG1-25B,conifer mix,61.06455,-118.484082,well-drained
+CG1-25C,spruce,61.063844,-118.481954,well-drained
+CG1-67A,jack pine,61.118177,-118.025001,well-drained
+CG1-67B,spruce,61.119783,-118.028477,well-drained
+CG1-6A,larch,61.13364,-117.77177,well-drained
+CG1-6B,jack pine,61.134303,-117.773869,well-drained
+CG1-6C,spruce,61.13559,-117.77515,well-drained
+CG1-87A,jack pine,61.126001,-117.846992,well-drained
+CG1-87B,spruce,61.129159,-117.845354,well-drained
+CG1-8A,spruce,60.9903,-117.25178,well-drained
+CG1-8B,spruce,60.988685,-117.249617,well-drained
+CG2-11A,spruce,62.23145,-116.35482,well-drained
+CG2-11B,spruce,62.231972,-116.35132,well-drained
+CG2-13A,non-forest,62.2436,-116.36022,well-drained
+CG2-1A,jack pine,62.231808,-116.335162,well-drained
+CG2-1B,spruce,62.233845,-116.332771,well-drained
+CG2-20A,spruce,62.60786,-116.32681,well-drained
+CG2-20B,spruce,62.609009,-116.32677,well-drained
+CG2-20C,spruce,62.606749,-116.325672,well-drained
+CG2-21A,conifer mix,62.60802,-116.30892,well-drained
+CG2-21B,spruce,62.605637,-116.308032,well-drained
+CG2-21C,spruce,62.607553,-116.314926,well-drained
+CG2-22A,non-forest,62.24427,-116.3501,well-drained
+CG2-27A,non-forest,62.235725,-116.331943,well-drained
+CG2-31A,non-forest,62.224983,-116.331908,well-drained
+CG2-33A,spruce,62.60384,-116.31809,well-drained
+CG2-33B,spruce,62.603686,-116.315851,well-drained
+CG2-33C,spruce,62.601589,-116.315038,well-drained
+CG2-35A,spruce,62.21648,-116.32717,well-drained
+CG2-35B,spruce,62.216958,-116.324167,well-drained
+CG2-4A,jack pine,62.635922,-116.253709,well-drained
+CG2-5A,spruce,62.21217,-116.31332,poorly-drained
+CG2-5B,spruce,62.211792,-116.315899,well-drained
+CG2-5C,deciduous,62.211965,-116.318531,well-drained
+CG2-7A,non-forest,62.21639,-116.33662,well-drained
+CG2-8A,non-forest,62.25286,-116.35493,well-drained
+CG3-10A,spruce,60.69804,-116.457819,well-drained
+CG3-10B,spruce,60.697538,-116.46023,well-drained
+CG3-10C,spruce,60.698863,-116.459672,well-drained
+CG3-12A,conifer mix,60.699271,-116.469889,well-drained
+CG3-12B,conifer mix,60.698749,-116.466791,well-drained
+CG3-12C,spruce,60.699865,-116.463675,well-drained
+CG3-22A,conifer mix,60.65396,-116.386498,poorly-drained
+CG3-22B,deciduous-conifer mix,60.656863,-116.388104,well-drained
+CG3-2A,spruce,60.721087,-115.129849,well-drained
+CG3-2B,conifer mix,60.722677,-115.121002,well-drained
+CG3-2C,spruce,60.724363,-115.125913,well-drained
+CG3-30A,spruce,60.579345,-116.164555,well-drained
+CG3-30B,conifer mix,60.580573,-116.166296,poorly-drained
+CG3-30C,spruce,60.581579,-116.169941,well-drained
+CG3-31A,conifer mix,60.76557,-116.5615,well-drained
+CG3-31B,jack pine,60.767475,-116.561224,well-drained
+CG3-31C,spruce,60.770676,-116.55959,well-drained
+CG3-32A,spruce,60.636963,-116.373181,well-drained
+CG3-32B,spruce,60.636317,-116.369153,well-drained
+CG3-37A,spruce,60.73245,-115.510059,poorly-drained
+CG3-37B,spruce,60.733485,-115.505764,well-drained
+CG3-37C,jack pine,60.731876,-115.502123,well-drained
+CG3-38A,conifer mix,60.66908,-116.41945,well-drained
+CG3-38B,spruce,60.669309,-116.416201,well-drained
+CG3-38C,spruce,60.670189,-116.418604,well-drained
+CG3-40A,larch,60.609024,-116.244607,well-drained
+CG3-40B,spruce,60.606394,-116.241929,well-drained
+CG3-4A,jack pine,60.735472,-115.209623,well-drained
+CG3-4B,spruce,60.733953,-115.209606,well-drained
+CG3-4C,spruce,60.733804,-115.207913,well-drained
+CS-100A,non-forest,62.54889,-113.90667,well-drained
+CS-103A,jack pine,62.50349,-113.62193,well-drained
+CS-103B,spruce,62.505258,-113.620913,poorly-drained
+CS-104A,spruce,62.50596,-113.65829,well-drained
+CS-104B,jack pine,62.505276,-113.660086,poorly-drained
+CS-108A,spruce,62.50886,-113.64855,well-drained
+CS-108B,deciduous-conifer mix,62.509582,-113.650338,poorly-drained
+CS-108C,jack pine,62.507569,-113.649894,well-drained
+CS-109A,non-forest,62.49761,-113.57154,well-drained
+CS-10A,non-forest,62.65001,-113.59849,well-drained
+CS-117A,jack pine,62.49505,-113.53572,well-drained
+CS-117B,spruce,62.496497,-113.535587,well-drained
+CS-130A,non-forest,62.5482,-113.95303,well-drained
+CS-14A,spruce,62.51044,-113.65462,well-drained
+CS-14B,jack pine,62.508638,-113.655261,poorly-drained
+CS-14C,spruce,62.508032,-113.657405,well-drained
+CS-26A,spruce,62.5701,-114.03628,well-drained
+CS-26B,spruce,62.570834,-114.03839,poorly-drained
+CS-26C,jack pine,62.57007,-114.040607,poorly-drained
+CS-3A,conifer mix,62.49994,-113.6294,well-drained
+CS-3B,spruce,62.498774,-113.630431,well-drained
+CS-3C,jack pine,62.500886,-113.629709,well-drained
+CS-44A,non-forest,62.56353,-114.01656,well-drained
+CS-46A,spruce,62.53118,-113.82884,well-drained
+CS-46B,jack pine,62.52944,-113.829196,poorly-drained
+CS-57A,non-forest,62.53254,-113.85198,well-drained
+CS-59A,jack pine,62.54397,-113.9249,well-drained
+CS-59B,spruce,62.544983,-113.927437,poorly-drained
+CS-89A,jack pine,62.51703,-113.7253,well-drained
+CS-89B,jack pine,62.517441,-113.72356,poorly-drained
+CS-96A,jack pine,62.53782,-113.8856,well-drained
+CS-96B,spruce,62.537906,-113.888197,poorly-drained
+CS-96C,jack pine,62.536739,-113.887389,well-drained
+CS-9A,non-forest,62.50509,-113.66511,well-drained
+F1-12A,deciduous,60.692783,-115.926968,well-drained
+F1-12B,conifer mix,60.693655,-115.929011,well-drained
+F1-12C,spruce,60.692516,-115.929906,well-drained
+F1-18A,conifer mix,60.732485,-115.893457,well-drained
+F1-18B,conifer mix,60.734545,-115.896609,poorly-drained
+F1-22A,spruce,60.698847,-115.904973,poorly-drained
+F1-22B,conifer mix,60.701668,-115.904654,well-drained
+F1-22C,spruce,60.697109,-115.902937,well-drained
+F1-25A,spruce,60.641754,-116.098916,well-drained
+F1-25B,conifer mix,60.642792,-116.100461,well-drained
+F1-25C,larch,60.643934,-116.100723,poorly-drained
+F1-31A,larch,60.640355,-116.093036,poorly-drained
+F1-31B,conifer mix,60.641512,-116.091489,well-drained
+F1-38A,spruce,60.651482,-116.070845,well-drained
+F1-38B,jack pine,60.653839,-116.076353,well-drained
+F1-3A,conifer mix,60.717063,-115.897468,poorly-drained
+F1-47A,larch,60.736111,-115.900901,well-drained
+F1-47B,spruce,60.738209,-115.902612,well-drained
+F1-4A,spruce,60.699171,-115.913212,well-drained
+F1-4B,deciduous-conifer mix,60.698045,-115.913518,well-drained
+F1-4C,spruce,60.697238,-115.915227,well-drained
+F1-52A,larch,60.683273,-115.968795,poorly-drained
+F1-52B,conifer mix,60.682381,-115.966498,poorly-drained
+F10-1A,jack pine,62.955702,-115.8573,well-drained
+F10-1B,deciduous-conifer mix,62.957434,-115.856298,well-drained
+F10-20A,conifer mix,63.010712,-115.833897,well-drained
+F10-20B,jack pine,63.01033,-115.831876,well-drained
+F10-29A,jack pine,62.985126,-115.84171,poorly-drained
+F10-29B,deciduous-conifer mix,62.98486,-115.837603,well-drained
+F10-2A,deciduous,62.979281,-115.831851,well-drained
+F10-2B,jack pine,62.980457,-115.831578,well-drained
+F10-3A,deciduous,63.013675,-115.830783,well-drained
+F10-3B,jack pine,63.013193,-115.829066,well-drained
+F10-4A,deciduous,62.958771,-115.854128,poorly-drained
+F10-4B,jack pine,62.957736,-115.850128,poorly-drained
+F11-10A,spruce,62.762868,-115.810033,well-drained
+F11-10B,spruce,62.760979,-115.812894,poorly-drained
+F11-10C,jack pine,62.760219,-115.812288,well-drained
+F11-15A,conifer mix,62.759174,-115.786097,poorly-drained
+F11-15B,jack pine,62.758211,-115.788487,well-drained
+F11-19A,conifer mix,62.754223,-115.771504,poorly-drained
+F11-19B,jack pine,62.75557,-115.773404,well-drained
+F11-1A,larch,62.758527,-115.774912,poorly-drained
+F11-1B,spruce,62.756694,-115.775803,well-drained
+F11-1C,jack pine,62.754451,-115.779436,well-drained
+F11-20A,deciduous-conifer mix,62.770068,-115.842088,poorly-drained
+F11-20B,jack pine,62.768446,-115.844804,well-drained
+F11-20C,spruce,62.767633,-115.842202,poorly-drained
+F11-21A,jack pine,62.769305,-115.831301,well-drained
+F11-21B,spruce,62.766347,-115.831252,well-drained
+F12-10A,spruce,63.06146,-113.809291,poorly-drained
+F12-10B,jack pine,63.060901,-113.812338,well-drained
+F12-15A,spruce,63.089699,-113.780184,poorly-drained
+F12-15B,jack pine,63.088267,-113.782592,well-drained
+F12-15C,conifer mix,63.086854,-113.782784,poorly-drained
+F12-1A,deciduous-conifer mix,63.072305,-113.800462,poorly-drained
+F12-1B,jack pine,63.070922,-113.797375,poorly-drained
+F12-1C,spruce,63.06986,-113.795577,poorly-drained
+F13-11A,conifer mix,63.046449,-114.124455,well-drained
+F13-11B,conifer mix,63.044337,-114.125891,well-drained
+F13-11C,spruce,63.045483,-114.127571,poorly-drained
+F13-15A,conifer mix,63.033862,-114.350585,well-drained
+F13-15B,spruce,63.034375,-114.347756,poorly-drained
+F13-15C,jack pine,63.034321,-114.344858,poorly-drained
+F13-5A,spruce,63.033862,-114.350585,poorly-drained
+F13-5B,jack pine,63.034375,-114.347756,poorly-drained
+F14-13A,jack pine,63.197061,-114.259997,poorly-drained
+F14-13B,deciduous-conifer mix,63.196675,-114.257314,well-drained
+F14-13C,jack pine,63.196633,-114.254809,well-drained
+F14-2A,jack pine,63.223216,-114.24593,well-drained
+F14-2B,spruce,63.219368,-114.242772,poorly-drained
+F14-7A,jack pine,63.229006,-114.239089,poorly-drained
+F14-7B,jack pine,63.229734,-114.236697,well-drained
+F15-13A,spruce,65.891033,-128.243545,well-drained
+F15-13B,spruce,65.890347,-128.241855,poorly-drained
+F15-16A,spruce,65.88102,-128.229419,well-drained
+F15-16B,spruce,65.879975,-128.230796,poorly-drained
+F15-9A,spruce,65.897405,-128.239341,well-drained
+F15-9B,conifer mix,65.898512,-128.237237,well-drained
+F17-4A,non-forest,65.575886,-127.453098,poorly-drained
+F17-4B,non-forest,65.575581,-127.4477,well-drained
+F17-5A,non-forest,65.605003,-127.498967,poorly-drained
+F17-5B,non-forest,65.60578,-127.496535,well-drained
+F17-7A,non-forest,65.598749,-127.490976,poorly-drained
+F17-7B,non-forest,65.598237,-127.497443,well-drained
+F2-10A,jack pine,62.645211,-116.260019,well-drained
+F2-10B,spruce,62.646736,-116.254505,well-drained
+F2-137A,jack pine,62.645383,-116.228137,well-drained
+F2-137B,jack pine,62.644113,-116.228326,well-drained
+F2-137C,jack pine,62.645421,-116.231283,well-drained
+F2-13A,jack pine,62.669951,-116.199016,well-drained
+F2-13B,jack pine,62.668193,-116.200387,well-drained
+F2-13C,jack pine,62.66854,-116.196637,well-drained
+F2-18A,spruce,62.659908,-116.213965,well-drained
+F2-18B,jack pine,62.6577,-116.214914,well-drained
+F2-18C,spruce,62.657282,-116.2107,well-drained
+F2-22A,jack pine,62.636725,-116.24857,well-drained
+F2-22B,jack pine,62.636464,-116.245598,well-drained
+F2-3A,spruce,62.653229,-116.248947,well-drained
+F2-3B,jack pine,62.65314,-116.245678,well-drained
+F2-3C,spruce,62.651448,-116.243043,well-drained
+F2-4A,jack pine,62.649582,-116.263091,well-drained
+F2-4B,spruce,62.650703,-116.261716,well-drained
+F2-4C,conifer mix,62.647541,-116.260888,well-drained
+F2-6A,conifer mix,62.659426,-116.226211,well-drained
+F2-6B,spruce,62.660198,-116.228442,well-drained
+F2-6C,deciduous-conifer mix,62.658069,-116.228643,well-drained
+F2-7A,spruce,62.664776,-116.168704,well-drained
+F2-7B,spruce,62.666512,-116.169191,well-drained
+F2-7C,jack pine,62.667162,-116.176464,well-drained
+F3-11A,spruce,60.786169,-116.571305,well-drained
+F3-11B,spruce,60.785368,-116.575158,well-drained
+F3-13A,jack pine,60.818779,-116.60989,well-drained
+F3-19A,larch,60.801452,-116.582316,poorly-drained
+F3-19B,spruce,60.801064,-116.586369,well-drained
+F3-19C,jack pine,60.801025,-116.589843,well-drained
+F3-1A,jack pine,60.859201,-116.624822,well-drained
+F3-20A,spruce,60.794951,-116.57756,poorly-drained
+F3-20B,conifer mix,60.794468,-116.582309,well-drained
+F3-20C,spruce,60.796072,-116.583216,well-drained
+F3-3A,conifer mix,60.865297,-116.638496,well-drained
+F3-3B,conifer mix,60.86611,-116.634939,well-drained
+F3-3C,spruce,60.863776,-116.637318,well-drained
+F3-8A,spruce,60.792031,-116.580227,well-drained
+F3-8B,spruce,60.792221,-116.583376,poorly-drained
+F3-8C,jack pine,60.791888,-116.587351,well-drained
+F4-17A,deciduous-conifer mix,61.096341,-118.831678,well-drained
+F4-17B,jack pine,61.094899,-118.830372,well-drained
+F4-17C,larch,61.093968,-118.830219,poorly-drained
+F4-1A,larch,61.096699,-118.816519,well-drained
+F4-1B,spruce,61.096423,-118.813276,poorly-drained
+F4-1C,conifer mix,61.095929,-118.810584,well-drained
+F4-20A,jack pine,61.090515,-118.795787,well-drained
+F4-20B,conifer mix,61.089603,-118.80098,well-drained
+F4-20C,conifer mix,61.094201,-118.797045,well-drained
+F4-21A,jack pine,61.13496,-119.032657,well-drained
+F4-21B,jack pine,61.133958,-119.034243,well-drained
+F4-2A,deciduous,61.139993,-119.027535,well-drained
+F4-30A,jack pine,61.075882,-118.5844,well-drained
+F4-30B,jack pine,61.076985,-118.586639,well-drained
+F4-30C,deciduous-conifer mix,61.079096,-118.58606,well-drained
+F4-31A,jack pine,61.064205,-118.437105,well-drained
+F4-31B,larch,61.064045,-118.440032,well-drained
+F4-35A,spruce,61.067436,-118.459996,well-drained
+F4-35B,spruce,61.066933,-118.46746,well-drained
+F4-6A,larch,61.083315,-118.595237,poorly-drained
+F4-6B,conifer mix,61.081929,-118.596493,well-drained
+F4-6C,jack pine,61.079842,-118.598532,poorly-drained
+F6-15A,jack pine,60.705382,-115.059969,well-drained
+F6-15B,spruce,60.704224,-115.062838,well-drained
+F6-15C,spruce,60.70688,-115.061798,well-drained
+F6-16A,spruce,60.713575,-115.055311,well-drained
+F6-16B,jack pine,60.71338,-115.057961,well-drained
+F6-16C,larch,60.715478,-115.057835,poorly-drained
+F6-1A,larch,60.702441,-115.003305,poorly-drained
+F6-1B,jack pine,60.700281,-115.000563,well-drained
+F6-1C,spruce,60.701568,-114.998619,well-drained
+F6-20A,larch,60.710712,-115.103178,poorly-drained
+F6-20B,conifer mix,60.713053,-115.098905,well-drained
+F6-21A,jack pine,60.700916,-114.982359,well-drained
+F6-21B,jack pine,60.701192,-114.979775,well-drained
+F6-26A,jack pine,60.73513,-115.238601,well-drained
+F6-26B,jack pine,60.73582,-115.240606,poorly-drained
+F6-26C,jack pine,60.734476,-115.241896,well-drained
+F6-32A,jack pine,60.711395,-115.068576,well-drained
+F6-32B,jack pine,60.712138,-115.072769,well-drained
+F6-32C,spruce,60.712383,-115.069518,well-drained
+F6-33A,conifer mix,60.70137,-115.037556,poorly-drained
+F6-33B,jack pine,60.699464,-115.035812,well-drained
+F6-7A,spruce,60.717427,-115.107241,well-drained
+F6-7B,larch,60.718901,-115.105437,well-drained
+F6-7C,conifer mix,60.720412,-115.109021,well-drained
+F7-1A,conifer mix,61.148158,-119.515365,well-drained
+F7-1B,spruce,61.149157,-119.51558,well-drained
+F7-2A,jack pine,61.144601,-119.509224,well-drained
+F7-2B,conifer mix,61.145641,-119.511627,well-drained
+F8-1A,jack pine,61.135331,-119.594551,well-drained
+F8-1B,spruce,61.1363,-119.595529,well-drained
+F8-2A,jack pine,61.146217,-119.551974,well-drained
+F8-2B,jack pine,61.147001,-119.554703,well-drained
+F8-3A,jack pine,61.148313,-119.553748,well-drained
+F8-3B,jack pine,61.147958,-119.551484,well-drained
+F9-11A,jack pine,62.967079,-116.145113,well-drained
+F9-11B,deciduous-conifer mix,62.966915,-116.142826,poorly-drained
+F9-15A,jack pine,62.969306,-116.146798,poorly-drained
+F9-15B,jack pine,62.969931,-116.149874,poorly-drained
+F9-2A,spruce,62.948007,-116.173603,poorly-drained
+F9-2B,spruce,62.946265,-116.175708,poorly-drained
+F9-2C,spruce,62.945788,-116.181253,poorly-drained
+F9-3A,jack pine,62.960443,-116.172266,well-drained
+F9-3B,spruce,62.959024,-116.171509,well-drained
+F9-3C,deciduous-conifer mix,62.961734,-116.169975,well-drained
+F9-6A,spruce,62.950201,-116.175261,poorly-drained
+F9-6B,conifer mix,62.951273,-116.175393,poorly-drained
+F9-6C,spruce,62.948381,-116.180419,well-drained
+F9-9A,deciduous-conifer mix,62.968561,-116.151724,poorly-drained
+F9-9B,deciduous,62.967955,-116.15473,well-drained
+GAM-UB-1A,spruce,64.152768,-117.390958,well-drained
+GAM-UB-1B,spruce,64.152206,-117.393842,well-drained
+GAM-UB-1C,spruce,64.151359,-117.394983,well-drained
+HWY3-UB-1A,spruce,62.028194,-116.315902,well-drained
+HWY3-UB-1B,jack pine,62.026978,-116.315314,well-drained
+HWY3-UB-1C,spruce,62.024271,-116.32048,well-drained
+JM2011-1A,non-forest,61.354649,-121.011134,well-drained
+KAK-UB-1A,conifer mix,60.961486,-117.274956,well-drained
+KAK-UB-1B,spruce,60.9601,-117.277023,well-drained
+LL-1,non-forest,63.133498,-114.003373,well-drained
+LL-2,non-forest,63.135925,-114.002826,well-drained
+SD2013B-1A,non-forest,61.197998,-120.092798,well-drained
+SD2013B-1B,non-forest,61.200333,-120.09259,well-drained
+SD2013B-2A,non-forest,61.153464,-119.92586,well-drained
+SD2013B-2B,non-forest,61.157184,-119.920106,well-drained
+SS33-11A,non-forest,60.948179,-117.355502,well-drained
+SS33-11B,non-forest,60.951288,-117.355,well-drained
+SS33-1A,non-forest,60.937382,-117.124736,well-drained
+SS33-1B,non-forest,60.937885,-117.12263,well-drained
+SS33-1C,non-forest,60.935171,-117.124533,well-drained
+SS33-21A,non-forest,60.874129,-117.410443,well-drained
+SS33-21B,deciduous,60.87551,-117.413792,well-drained
+SS33-25A,larch,60.862199,-117.421913,well-drained
+SS33-26A,spruce,60.848119,-117.446905,well-drained
+SS33-27A,non-forest,60.84574,-117.460025,well-drained
+SS33-27B,non-forest,60.844911,-117.461767,well-drained
+SS33-27C,non-forest,60.844663,-117.463766,well-drained
+SS33-3A,non-forest,60.937674,-117.37271,well-drained
+SS33-3B,non-forest,60.937328,-117.375708,well-drained
+SS33-3C,non-forest,60.939872,-117.377964,well-drained
+SS33-4A,non-forest,60.942348,-117.378873,well-drained
+SS33-4B,spruce,60.942067,-117.376038,well-drained
+SS33-582A,non-forest,60.930709,-117.079577,well-drained
+SS33-582B,jack pine,60.93193,-117.07915,well-drained
+SS33-6A,non-forest,60.952144,-117.333247,well-drained
+SS33-6B,non-forest,60.953576,-117.345774,well-drained
+SS33-6C,non-forest,60.957272,-117.338616,well-drained
+SS33-877A,non-forest,60.911057,-117.009511,well-drained
+SS33-877B,non-forest,60.91304,-117.006087,well-drained
+SS33-9A,non-forest,60.94142,-117.36523,well-drained
+SS33-9B,non-forest,60.943163,-117.373109,well-drained
+SS33-9C,non-forest,60.943105,-117.377029,well-drained
+WEK-UB-1A,spruce,64.163354,-114.096253,well-drained
+WEK-UB-1B,spruce,64.165249,-114.097597,well-drained
+WEK-UB-1C,spruce,64.171386,-114.10132,well-drained
+ZF104-107A,non-forest,63.106936,-113.9682,well-drained
+ZF104-107B,non-forest,63.107699,-113.965567,well-drained
+ZF104-110A,non-forest,63.109017,-113.97014,well-drained
+ZF104-110B,jack pine,63.109623,-113.965522,well-drained
+ZF104-12A,non-forest,63.208954,-113.897998,well-drained
+ZF104-12B,non-forest,63.210038,-113.896815,well-drained
+ZF104-22A,jack pine,63.188907,-114.023936,well-drained
+ZF104-22B,non-forest,63.18843,-114.02265,well-drained
+ZF104-26A,spruce,63.191725,-114.020536,well-drained
+ZF104-26B,non-forest,63.19203,-114.018279,well-drained
+ZF104-4A,jack pine,63.20805,-113.902863,well-drained
+ZF104-4B,non-forest,63.206944,-113.902896,well-drained
+ZF104-57A,non-forest,63.058882,-113.738984,well-drained
+ZF104-57B,non-forest,63.058698,-113.742942,well-drained
+ZF104-58A,non-forest,63.061356,-113.7399,well-drained
+ZF104-62A,non-forest,63.064875,-113.731549,well-drained
+ZF104-63A,jack pine,63.065539,-113.726722,well-drained
+ZF104-63B,deciduous-conifer mix,63.067362,-113.732768,well-drained
+ZF104-65A,jack pine,63.06787,-113.727843,well-drained
+ZF104-65B,spruce,63.067338,-113.730795,well-drained
+ZF104-79A,non-forest,63.043286,-114.026327,well-drained
+ZF104-79B,spruce,63.042606,-114.025326,well-drained
+ZF104-83A,jack pine,63.046273,-114.022868,well-drained
+ZF104-83B,non-forest,63.045648,-114.024431,well-drained
+ZF20-10A,non-forest,61.804445,-116.724757,well-drained
+ZF20-10B,non-forest,61.802328,-116.720101,well-drained
+ZF20-10C,non-forest,61.804104,-116.716295,well-drained
+ZF20-11A,spruce,61.749284,-116.818274,well-drained
+ZF20-11B,non-forest,61.750481,-116.818607,well-drained
+ZF20-11C,non-forest,61.752234,-116.816996,well-drained
+ZF20-125A,non-forest,61.59656,-117.151978,well-drained
+ZF20-125B,non-forest,61.596459,-117.154841,well-drained
+ZF20-125C,non-forest,61.594791,-117.151046,well-drained
+ZF20-12A,non-forest,61.73695,-116.83429,well-drained
+ZF20-12B,non-forest,61.735526,-116.833622,well-drained
+ZF20-12C,non-forest,61.733873,-116.832386,well-drained
+ZF20-34A,non-forest,61.606805,-117.149564,well-drained
+ZF20-34B,non-forest,61.607539,-117.153469,well-drained
+ZF20-34C,non-forest,61.607776,-117.156656,well-drained
+ZF20-35A,non-forest,61.632267,-117.101575,well-drained
+ZF20-35B,non-forest,61.631342,-117.105477,well-drained
+ZF20-40A,non-forest,61.631902,-117.132345,well-drained
+ZF20-40B,non-forest,61.632131,-117.130096,well-drained
+ZF20-40C,non-forest,61.632477,-117.126178,well-drained
+ZF20-43A,non-forest,61.955962,-116.506199,well-drained
+ZF20-43B,non-forest,61.954022,-116.503907,well-drained
+ZF20-43C,non-forest,61.953587,-116.501038,well-drained
+ZF20-4A,non-forest,61.862593,-116.597344,well-drained
+ZF20-4B,non-forest,61.861109,-116.595506,well-drained
+ZF20-52A,non-forest,61.619688,-117.117879,well-drained
+ZF20-52B,non-forest,61.618889,-117.116484,well-drained
+ZF20-52C,non-forest,61.620689,-117.119482,well-drained
+ZF20-597A,non-forest,61.80158,-116.72756,well-drained
+ZF20-597B,non-forest,61.80063,-116.72488,well-drained
+ZF20-59A,non-forest,61.927922,-116.484564,well-drained
+ZF20-59B,non-forest,61.929622,-116.48547,well-drained
+ZF20-64A,non-forest,61.927088,-116.504774,well-drained
+ZF20-64B,non-forest,61.925931,-116.501387,well-drained
+ZF20-64C,non-forest,61.925138,-116.502498,well-drained
+ZF20-6A,non-forest,61.691005,-116.960153,well-drained
+ZF20-6B,non-forest,61.691451,-116.955514,well-drained
+ZF20-6C,non-forest,61.692834,-116.954497,well-drained
+ZF20-8A,deciduous,61.83888,-116.636206,well-drained
+ZF20-8B,non-forest,61.841343,-116.636212,well-drained
+ZF20-8C,non-forest,61.843307,-116.636047,well-drained
+ZF20-9A,spruce,61.79347,-116.731926,well-drained
+ZF20-9B,non-forest,61.795912,-116.737058,well-drained
+ZF20-9C,non-forest,61.79548,-116.740261,well-drained
+ZF26-104A,non-forest,64.136446,-114.211082,well-drained
+ZF26-104B,non-forest,64.137178,-114.20659,well-drained
+ZF26-104C,non-forest,64.138304,-114.205305,well-drained
+ZF26-112A,spruce,64.132745,-114.29137,well-drained
+ZF26-112B,non-forest,64.133176,-114.295329,well-drained
+ZF26-112C,non-forest,64.132042,-114.294503,well-drained
+ZF26-113A,non-forest,64.129663,-114.299617,well-drained
+ZF26-113B,non-forest,64.130752,-114.300754,well-drained
+ZF26-113C,non-forest,64.13228,-114.301544,well-drained
+ZF26-118A,non-forest,64.122851,-114.295261,well-drained
+ZF26-118B,non-forest,64.123146,-114.292541,well-drained
+ZF26-118C,non-forest,64.124337,-114.293096,well-drained
+ZF26-50A,non-forest,64.169108,-114.239513,well-drained
+ZF26-50B,non-forest,64.170415,-114.241935,well-drained
+ZF26-50C,non-forest,64.169876,-114.237496,well-drained
+ZF26-54A,non-forest,64.161816,-114.256523,well-drained
+ZF26-54B,non-forest,64.160961,-114.258512,well-drained
+ZF26-54C,non-forest,64.159983,-114.265107,well-drained
+ZF26-5A,non-forest,64.162024,-114.273296,well-drained
+ZF26-5B,non-forest,64.163059,-114.273805,well-drained
+ZF26-5C,spruce,64.161839,-114.275587,well-drained
+ZF26-66A,non-forest,64.144182,-114.227293,well-drained
+ZF26-66B,non-forest,64.142676,-114.224271,well-drained
+ZF26-66C,non-forest,64.142156,-114.22957,well-drained
+ZF26-6A,non-forest,64.168843,-114.22285,well-drained
+ZF26-6B,non-forest,64.168582,-114.226852,well-drained
+ZF26-6C,non-forest,64.168587,-114.230315,well-drained
+ZF26-7A,non-forest,64.142468,-114.204189,well-drained
+ZF26-7B,non-forest,64.143904,-114.200895,well-drained
+ZF26-7C,non-forest,64.14474,-114.197794,well-drained
+ZF26-96A,non-forest,64.153313,-114.267062,well-drained
+ZF26-96B,non-forest,64.154515,-114.266084,well-drained
+ZF26-96C,non-forest,64.155846,-114.270177,well-drained
+ZF26-98A,non-forest,64.142106,-114.24299,well-drained
+ZF26-98B,non-forest,64.141032,-114.244626,well-drained
+ZF26-98C,non-forest,64.142288,-114.239768,well-drained
+ZF35-11A,spruce,64.042219,-117.505311,well-drained
+ZF35-11B,spruce,64.041144,-117.505505,well-drained
+ZF35-11C,non-forest,64.041816,-117.502513,well-drained
+ZF35-24A,non-forest,64.108697,-117.459952,well-drained
+ZF35-24B,non-forest,64.10922,-117.462922,well-drained
+ZF35-24C,non-forest,64.10909,-117.465932,well-drained
+ZF35-29A,non-forest,64.09325,-117.463884,well-drained
+ZF35-29B,non-forest,64.09252,-117.461938,well-drained
+ZF35-29C,non-forest,64.093535,-117.458573,well-drained
+ZF35-2A,non-forest,64.057239,-117.472969,well-drained
+ZF35-2B,non-forest,64.056125,-117.476088,well-drained
+ZF35-2C,non-forest,64.05538,-117.472481,well-drained
+ZF35-33A,non-forest,64.079512,-117.457765,well-drained
+ZF35-33B,non-forest,64.078563,-117.456903,well-drained
+ZF35-33C,non-forest,64.076262,-117.451551,well-drained
+ZF35-37A,non-forest,64.04381,-117.495504,well-drained
+ZF35-37B,non-forest,64.042852,-117.492945,well-drained
+ZF35-37C,non-forest,64.0424,-117.498048,well-drained
+ZF35-39A,non-forest,64.096237,-117.460743,well-drained
+ZF35-39B,non-forest,64.097694,-117.458787,well-drained
+ZF35-39C,non-forest,64.098154,-117.462336,well-drained
+ZF35-40A,non-forest,64.076505,-117.461014,well-drained
+ZF35-40B,non-forest,64.075273,-117.462071,well-drained
+ZF35-40C,non-forest,64.075079,-117.459685,well-drained
+ZF35-9A,non-forest,64.109149,-117.471852,well-drained
+ZF35-9B,non-forest,64.108026,-117.471579,well-drained
+ZF35-9C,non-forest,64.10842,-117.468173,well-drained
+ZF44-16A,non-forest,64.09808,-117.26506,well-drained
+ZF44-16B,non-forest,64.099431,-117.263315,well-drained
+ZF44-16C,non-forest,64.100552,-117.265509,well-drained
+ZF44-36A,non-forest,64.104986,-117.23712,well-drained
+ZF44-36B,non-forest,64.106542,-117.236711,well-drained
+ZF44-36C,non-forest,64.106064,-117.240759,well-drained
+ZF44-37A,non-forest,64.106213,-117.260777,well-drained
+ZF44-37B,non-forest,64.106985,-117.262237,well-drained
+ZF44-37C,non-forest,64.107154,-117.25982,well-drained
+ZF44-51A,non-forest,64.159773,-117.18685,well-drained
+ZF44-51B,spruce,64.159395,-117.183239,well-drained
+ZF44-51C,non-forest,64.159362,-117.193759,well-drained
+ZF44-52A,non-forest,64.156502,-117.19015,well-drained
+ZF44-52B,non-forest,64.15645,-117.195993,well-drained
+ZF44-52C,non-forest,64.154331,-117.194007,well-drained
+ZF44-54A,non-forest,64.140734,-117.199043,well-drained
+ZF44-54B,spruce,64.143217,-117.199638,well-drained
+ZF44-54C,non-forest,64.139637,-117.204392,well-drained
+ZF44-5A,non-forest,64.102519,-117.252065,well-drained
+ZF44-5B,non-forest,64.102299,-117.255484,well-drained
+ZF44-5C,non-forest,64.101344,-117.253992,well-drained
+ZF44-71A,non-forest,64.118638,-117.197914,well-drained
+ZF44-71B,non-forest,64.11782,-117.200286,well-drained
+ZF44-71C,non-forest,64.118267,-117.203397,well-drained
+ZF44-9A,non-forest,64.105562,-117.248825,well-drained
+ZF44-9B,non-forest,64.104018,-117.249257,well-drained
+ZF44-9C,non-forest,64.104927,-117.251383,well-drained
+ZF46-15A,jack pine,62.477749,-116.50997,well-drained
+ZF46-15B,non-forest,62.479209,-116.507,well-drained
+ZF46-15C,non-forest,62.48114,-116.5082,well-drained
+ZF46-18A,non-forest,62.345521,-116.47853,well-drained
+ZF46-18B,non-forest,62.344838,-116.479873,well-drained
+ZF46-18C,jack pine,62.34368,-116.476407,well-drained
+ZF46-1A,non-forest,62.481289,-116.517971,well-drained
+ZF46-1B,non-forest,62.479949,-116.519741,well-drained
+ZF46-1C,non-forest,62.484674,-116.517876,well-drained
+ZF46-21A,non-forest,62.34956,-116.51363,well-drained
+ZF46-21B,non-forest,62.350499,-116.508761,well-drained
+ZF46-21C,jack pine,62.351207,-116.505123,well-drained
+ZF46-24A,non-forest,62.347525,-116.511635,well-drained
+ZF46-24B,non-forest,62.347227,-116.509055,well-drained
+ZF46-24C,jack pine,62.34981,-116.500331,well-drained
+ZF46-30A,jack pine,62.427287,-116.503465,well-drained
+ZF46-30B,non-forest,62.424989,-116.501221,well-drained
+ZF46-30C,jack pine,62.427253,-116.498949,well-drained
+ZF46-35A,spruce,62.45081,-116.49489,well-drained
+ZF46-35B,non-forest,62.450936,-116.497903,well-drained
+ZF46-35C,non-forest,62.449607,-116.496288,well-drained
+ZF46-37A,jack pine,62.463903,-116.504655,well-drained
+ZF46-37B,non-forest,62.464255,-116.506376,well-drained
+ZF46-37C,non-forest,62.465338,-116.506718,well-drained
+ZF46-401A,jack pine,62.344769,-116.48331,well-drained
+ZF46-401B,non-forest,62.347382,-116.487537,well-drained
+ZF46-45A,jack pine,62.37752,-116.508,well-drained
+ZF46-45B,jack pine,62.376817,-116.505267,well-drained
+ZF46-46A,jack pine,62.379622,-116.494302,well-drained
+ZF46-48A,non-forest,62.336107,-116.460835,well-drained
+ZF46-48B,non-forest,62.335501,-116.463558,well-drained
+ZF46-48C,jack pine,62.334596,-116.466773,well-drained
+ZF46-51A,non-forest,62.358387,-116.488399,well-drained
+ZF46-51B,non-forest,62.35941,-116.490063,well-drained
+ZF46-51C,non-forest,62.360056,-116.491887,well-drained
+ZF46-5A,non-forest,62.482005,-116.603527,well-drained
+ZF46-5B,non-forest,62.483731,-116.602948,well-drained
+ZF46-5C,non-forest,62.48501,-116.600188,well-drained
+ZF46-875A,jack pine,62.349765,-116.497562,well-drained
+2014-001,spruce,55.87877333,-104.4335267,well-drained
+2014-002,spruce,56.07191666,-103.89247,well-drained
+2014-003,deciduous-conifer mix,56.09285999,-103.83737,well-drained
+2014-004,spruce,55.91780666,-104.3275967,well-drained
+2014-005,conifer mix,57.53229666,-103.9555733,well-drained
+2014-006,jack pine,57.49806333,-103.9397567,well-drained
+2014-007,jack pine,57.45742333,-103.9108967,well-drained
+2014-008,spruce,57.38421333,-103.9582567,poorly-drained
+2014-009,non-forest,57.14002333,-103.8857867,poorly-drained
+2014-010,spruce,57.04312667,-103.6440633,poorly-drained
+2014-011,conifer mix,56.97442667,-103.5927367,well-drained
+2014-012,spruce,56.95792333,-103.5832233,well-drained
+2014-013,non-forest,56.56991333,-103.57531,well-drained
+2014-014,jack pine,56.52861334,-103.57351,poorly-drained
+2014-015,non-forest,56.46660334,-103.5711533,poorly-drained
+2014-016,spruce,56.44256333,-103.59468,well-drained
+2014-017,conifer mix,56.31228666,-103.5833567,well-drained
+2014-018,spruce,56.20390333,-103.88884,well-drained
+2014-019,deciduous,56.18415333,-104.0005767,well-drained
+2014-020,conifer mix,56.21986666,-103.76557,well-drained
+2014-021,spruce,56.04589667,-103.71987,well-drained
+2014-022,deciduous,56.07241,-103.75773,poorly-drained
+2014-023,jack pine,57.07513667,-103.5916967,well-drained
+2014-024,conifer mix,57.04823666,-103.60322,well-drained
+2014-025,spruce,57.03307666,-103.6104533,well-drained
+2014-026,spruce,56.32957333,-103.3886567,well-drained
+2014-027,deciduous,56.24994333,-103.55663,well-drained
+2014-028,spruce,56.20597,-103.92401,well-drained
+2014-029,spruce,56.02254,-103.9165067,poorly-drained
+2014-030,jack pine,57.58597667,-105.1547867,well-drained
+2014-031,conifer mix,57.52648333,-105.26335,well-drained
+2014-032,spruce,57.49254333,-105.1578433,poorly-drained
+2014-033,jack pine,57.47090666,-105.2327467,well-drained
+2014-034,jack pine,57.43584667,-105.2442033,well-drained
+2014-035,jack pine,57.41943333,-105.3022467,well-drained
+2014-036,jack pine,57.36798,-105.4116733,well-drained
+2014-037,jack pine,57.36628667,-105.4422133,well-drained
+2014-038,jack pine,57.33632667,-105.4610133,well-drained
+2014-039,non-forest,57.35310667,-105.5444067,poorly-drained
+2014-040,non-forest,57.29578333,-105.7014967,poorly-drained
+2014-041,non-forest,57.30940667,-105.6649533,poorly-drained
+2014-042,jack pine,57.32147333,-105.6088167,well-drained
+2014-043,jack pine,57.28200334,-105.5831667,well-drained
+2014-044,jack pine,57.17373333,-105.81814,well-drained
+2014-045,spruce,57.15373666,-105.8590433,poorly-drained
+2014-046,jack pine,57.16443667,-105.8707367,well-drained
+2014-047,jack pine,56.90831667,-106.1108733,well-drained
+2014-048,jack pine,57.02470666,-106.0453167,well-drained
+2014-049,jack pine,57.21937667,-104.2833667,well-drained
+2014-050,conifer mix,57.22324,-104.2726233,well-drained
+2014-051,jack pine,57.27867666,-104.2231367,well-drained
+2014-052,spruce,57.26993334,-104.2355033,well-drained
+2014-053,jack pine,57.25116667,-104.2563567,well-drained
+2014-054,jack pine,57.26725,-104.17505,well-drained
+2014-055,conifer mix,57.31122,-104.1272533,well-drained
+2014-056,jack pine,57.25740667,-104.2058867,well-drained
+2014-057,jack pine,57.28332333,-104.1787167,well-drained
+2014-058,spruce,57.28116667,-104.16033,well-drained
+2014-059,conifer mix,57.29390667,-104.1537433,poorly-drained
+2014-060,conifer mix,57.35012334,-104.0372333,well-drained
+2014-061,jack pine,57.33584,-104.0576567,well-drained
+2014-062,conifer mix,57.33188667,-104.0757933,poorly-drained
+2014-063,spruce,57.34040667,-104.0777667,poorly-drained
+2014-064,spruce,57.32315333,-104.0987333,poorly-drained
+2014-065,conifer mix,57.30330667,-104.0957933,well-drained
+2014-066,jack pine,57.29315333,-104.12343,well-drained
+2014-067,jack pine,57.28033,-104.1459833,well-drained
+2014-068,spruce,57.30421334,-104.1398733,well-drained
+2014-069,jack pine,57.29813333,-104.1412367,well-drained
+2014-070,jack pine,57.31597333,-104.0370967,well-drained
+2014-071,jack pine,57.32074,-104.0440433,well-drained
+2014-072,deciduous,55.59184,-102.2348433,well-drained
+2014-073,deciduous,55.54802333,-102.2841133,well-drained
+2014-074,deciduous-conifer mix,55.63902667,-102.59393,well-drained
+2014-075,deciduous,55.6461,-102.59194,well-drained
+2014-076,spruce,55.59483,-102.6347133,well-drained
+2014-077,deciduous-conifer mix,55.63567333,-102.6543467,well-drained
+2014-078,spruce,55.62988666,-102.63734,well-drained
+2014-079,deciduous,55.5766,-102.76581,well-drained
+2014-080,deciduous,55.59609,-102.7495033,well-drained
+2014-081,deciduous,55.55041334,-102.7578833,well-drained
+2014-082,deciduous-conifer mix,55.79293333,-102.51431,well-drained
+2014-083,conifer mix,55.78778666,-102.5273567,well-drained
+2014-084,deciduous,55.75061,-102.5503633,well-drained
+2014-085,deciduous,55.55316,-102.7116333,well-drained
+2014-086,deciduous,55.53769,-102.7047767,well-drained
+2014-087,spruce,55.58183,-102.6593467,well-drained
+2014-088,conifer mix,55.56996334,-102.5618233,well-drained
+2014-089,deciduous,55.55291333,-102.5611967,well-drained
+2014-090,deciduous-conifer mix,55.4793,-102.3093,well-drained
+2014-091,conifer mix,55.42424333,-102.4221067,well-drained
+2015-001,jack pine,57.27617064,-105.8186353,well-drained
+2015-002,jack pine,57.33778641,-105.7370572,well-drained
+2015-003,non-forest,57.33330022,-105.7268514,well-drained
+2015-004,jack pine,57.31994856,-105.6933833,well-drained
+2015-005,jack pine,57.34880961,-105.6772928,well-drained
+2015-006,jack pine,57.35603417,-105.6723897,well-drained
+2015-007,jack pine,57.36431612,-105.6409825,well-drained
+2015-008,jack pine,57.46728401,-105.5161083,well-drained
+2015-009,jack pine,57.49093009,-105.451377,well-drained
+2015-010,jack pine,57.48912429,-105.4446106,well-drained
+2015-011,jack pine,57.64777136,-105.2371699,well-drained
+2015-012,jack pine,57.77380656,-104.9186469,well-drained
+2015-013,jack pine,57.74779878,-104.9623464,well-drained
+2015-014,non-forest,57.2991777,-105.7145051,poorly-drained
+2015-015,jack pine,57.34003791,-105.4295933,well-drained
+2015-016,non-forest,57.36692476,-105.4431914,poorly-drained
+2015-017,jack pine,57.34151497,-105.5110268,well-drained
+2015-018,jack pine,57.22112787,-105.7030828,well-drained
+2015-019,jack pine,57.2186972,-105.8140172,well-drained
+2015-020,jack pine,57.22680418,-105.8042182,well-drained
+2015-021,spruce,57.15380053,-105.8606122,poorly-drained
+2015-022,conifer mix,56.91017569,-106.1095597,well-drained
+2015-023,jack pine,56.68988834,-103.1364823,well-drained
+2015-024,jack pine,56.53596549,-103.0578345,well-drained
+2015-025,conifer mix,56.49531315,-102.7221032,well-drained
+2015-026,non-forest,56.49303247,-102.7999565,well-drained
+2015-027,non-forest,56.50659885,-102.7990893,well-drained
+2015-028,non-forest,56.34997492,-102.9443534,poorly-drained
+2015-029,spruce,56.46040259,-102.9447042,well-drained
+2015-030,conifer mix,56.46698649,-102.8488965,well-drained
+2015-031,spruce,56.48793144,-103.2727512,poorly-drained
+2015-032,spruce,56.4955829,-103.235174,well-drained
+2015-033,deciduous-conifer mix,56.58339077,-102.9315194,well-drained
+2015-034,spruce,56.54361992,-102.9760713,well-drained
+2015-035,deciduous-conifer mix,56.53042643,-102.9395693,well-drained
+2015-036,jack pine,56.42469218,-103.2499022,well-drained
+2015-037,spruce,56.44425947,-103.2343903,well-drained
+2015-038,spruce,56.34517026,-103.4170487,well-drained
+2015-039,deciduous,56.01784262,-103.972919,poorly-drained
+2015-040,deciduous-conifer mix,55.88948807,-102.0089886,well-drained
+2015-041,deciduous,55.79837681,-102.1053125,well-drained
+2015-042,deciduous-conifer mix,55.80607694,-102.0920895,well-drained
+2015-043,deciduous,55.7282125,-102.1857884,well-drained
+2015-044,deciduous,55.74342637,-102.6017649,well-drained
+2015-045,conifer mix,55.7353997,-102.6023529,well-drained
+2015-046,deciduous-conifer mix,55.69590535,-102.6032714,well-drained
+2015-047,deciduous-conifer mix,55.47860747,-102.7620996,well-drained
+2015-048,deciduous,55.60255207,-102.7563363,well-drained
+2015-049,spruce,55.57078782,-102.6963884,well-drained
+2015-050,jack pine,58.35332749,-104.358368,well-drained
+2015-051,jack pine,58.44510754,-104.3911837,well-drained
+2015-052,jack pine,58.49762675,-104.4949148,well-drained
+2015-053,jack pine,58.56750609,-104.4561748,well-drained
+2015-054,jack pine,58.56213222,-104.4561103,well-drained
+2015-055,spruce,58.55386732,-104.4201272,well-drained
+2015-056,jack pine,58.28168103,-104.2421622,well-drained
+2015-057,spruce,58.24879881,-104.1338888,poorly-drained
+2015-058,jack pine,58.2208003,-104.1175932,well-drained
+2015-059,jack pine,58.15298298,-104.5694845,well-drained
+2015-060,conifer mix,58.21562044,-104.4869039,well-drained
+2015-061,jack pine,58.211772,-104.2607222,well-drained
+2015-062,jack pine,58.10182162,-104.3580964,well-drained
+2015-063,jack pine,58.09740687,-104.3734369,well-drained
+2015-064,spruce,58.12344089,-104.3644016,poorly-drained
+2015-065,jack pine,58.05902338,-104.4214905,well-drained
+2015-066,jack pine,58.07876757,-104.4245791,well-drained
+2015-067,jack pine,58.09082444,-104.5160328,well-drained
+2015-068,spruce,58.06063668,-104.2213658,well-drained
+2015-069,jack pine,58.06313008,-104.341751,well-drained
+2015-070,non-forest,58.14093213,-104.2842649,poorly-drained
+2015-071,jack pine,58.23980366,-103.8103722,well-drained
+2015-072,jack pine,58.22496567,-103.8603592,well-drained
+2015-073,spruce,58.22547133,-103.6355602,poorly-drained
+2015-074,spruce,58.29907658,-103.5542913,poorly-drained
+2015-075,jack pine,58.22799476,-103.7103654,well-drained
+2015-076,jack pine,58.23056062,-103.695014,well-drained
+2015-077,jack pine,58.24061146,-103.7081871,well-drained
+2015-078,deciduous,58.1763373,-103.7327645,well-drained
+2015-079,spruce,58.17696979,-103.7223239,well-drained
+2015-080,spruce,58.14500724,-103.764367,well-drained
+2015-081,spruce,58.07851183,-103.6582318,well-drained
+2015-082,jack pine,58.08475292,-103.6697678,well-drained
+2015-083,spruce,58.11995099,-103.6769396,well-drained
+2015-084,jack pine,58.21320171,-104.140032,well-drained
+2015-085,conifer mix,58.14036149,-103.837476,well-drained
+2015-086,spruce,58.03046261,-103.8088704,well-drained
+2015-087,spruce,58.02500803,-103.7955813,well-drained
+2015-088,spruce,58.05675116,-103.7402779,poorly-drained
+2015-089,spruce,58.08073039,-103.7107573,poorly-drained
+2015-090,deciduous-conifer mix,58.05199896,-103.7997784,well-drained
+2015-091,spruce,58.08353084,-103.799054,well-drained
+2015-092,spruce,58.0549178,-103.6454125,well-drained
+2015-093,spruce,57.87395673,-103.7787925,well-drained
+2015-094,non-forest,58.03569305,-103.6969616,well-drained
+2015-095,spruce,58.02020455,-103.6856963,well-drained
+2015-096,spruce,57.64040114,-104.1082632,well-drained
+2015-097,non-forest,57.8253444,-103.4418466,well-drained
+2015-098,non-forest,57.84871579,-103.5216065,well-drained
+2015-099,spruce,57.86565584,-103.586813,poorly-drained
+2015-100,non-forest,57.79312349,-103.6972996,well-drained
+2015-101,spruce,57.80183723,-103.8535676,well-drained
+2015-102,non-forest,57.78329276,-103.7918855,poorly-drained
+2015-103,non-forest,57.79448607,-103.8367708,poorly-drained
+2015-104,jack pine,57.77847207,-103.8508845,well-drained
+2015-105,jack pine,57.78283979,-103.8373018,well-drained
+2015-106,spruce,57.09056211,-103.7832133,well-drained
+2015-107,conifer mix,56.29063802,-103.5889474,well-drained
+2015-108,spruce,56.3625426,-103.5880613,poorly-drained
+2015-109,spruce,56.91432864,-103.5934007,well-drained
+2015-110,jack pine,56.92243155,-103.6012941,well-drained
+2015-111,spruce,56.8425255,-103.6880073,well-drained
+2015-112,deciduous,56.81208756,-103.7870763,well-drained
+2015-113,spruce,56.84669722,-103.6647972,well-drained
+2015-114,conifer mix,56.79847876,-103.6844912,well-drained
+2015-X1,spruce,58.30646258,-103.5486823,poorly-drained
+2016-001,jack pine,56.22061864,-103.7608284,well-drained
+2016-002,non-forest,56.21622624,-103.7738705,poorly-drained
+2016-003,deciduous-conifer mix,56.03294121,-103.5998989,well-drained
+2016-004,non-forest,56.03312881,-103.6223886,well-drained
+2016-005,deciduous-conifer mix,56.01533896,-103.637471,well-drained
+2016-006,spruce,56.03189141,-103.5919028,well-drained
+2016-007,deciduous-conifer mix,56.02050702,-103.6130671,well-drained
+2016-008,deciduous-conifer mix,56.02095539,-103.6532854,well-drained
+2016-009,conifer mix,56.02450868,-103.6547117,well-drained
+2016-010,conifer mix,56.04145835,-103.6445866,well-drained
+2016-011,jack pine,57.35520644,-106.2591898,well-drained
+2016-012,jack pine,57.36726705,-106.3061263,well-drained
+2016-013,jack pine,57.41608307,-106.281258,well-drained
+2016-014,jack pine,57.34762675,-106.3819692,well-drained
+2016-015,spruce,57.31404204,-106.4104907,poorly-drained
+2016-016,conifer mix,57.35799475,-106.7047752,well-drained
+2016-017,non-forest,57.49919279,-106.6295397,well-drained
+2016-018,jack pine,57.62383267,-106.5748172,well-drained
+2016-019,jack pine,57.5329802,-106.7898431,well-drained
+2016-020,jack pine,57.49543512,-106.5726613,well-drained
+2016-021,jack pine,57.37634939,-106.8103914,well-drained
+2016-022,conifer mix,57.39285081,-106.8694928,well-drained
+2016-023,spruce,57.38904382,-106.8707083,poorly-drained
+2016-024,jack pine,57.49067609,-106.8615427,well-drained
+2016-025,larch,57.46445003,-106.889049,poorly-drained
+2016-026,jack pine,57.45668762,-106.8567807,well-drained
+2016-027,jack pine,57.31887196,-106.8553051,well-drained
+2016-028,jack pine,57.32508956,-106.8654518,well-drained
+2016-029,spruce,57.30648175,-106.8916649,poorly-drained
+2016-030,spruce,57.30161455,-106.9201758,well-drained
+2016-031,spruce,57.29434444,-106.9474702,well-drained
+2016-032,non-forest,57.16217671,-107.1625127,poorly-drained
+2016-033,non-forest,57.166212,-107.137834,poorly-drained
+2016-034,larch,57.18546913,-107.0899513,poorly-drained
+2016-035,conifer mix,57.2214488,-107.0155149,well-drained
+2016-036,spruce,57.28168594,-106.9116553,poorly-drained
+2016-037,jack pine,57.25544119,-106.9486763,well-drained
+2016-038,spruce,57.33684621,-106.8718184,well-drained
+2016-039,spruce,57.29620886,-107.0015376,poorly-drained
+2016-040,jack pine,57.33275229,-107.1175503,well-drained
+2016-041,jack pine,57.38024013,-107.1354667,well-drained
+2016-042,jack pine,57.3778195,-107.0863788,well-drained
+2016-043,jack pine,57.31800528,-107.039359,well-drained
+2016-044,jack pine,57.34962541,-107.2565069,well-drained
+2016-045,non-forest,57.34764831,-107.2481859,poorly-drained
+2016-046,jack pine,57.39312739,-107.0911264,well-drained
+2016-047,spruce,57.46618911,-107.0969828,poorly-drained
+2016-048,non-forest,57.46137306,-106.9645657,poorly-drained
+2016-049,jack pine,57.44870512,-107.0656591,well-drained
+2016-050,jack pine,57.47465422,-106.9805662,well-drained
+2016-051,non-forest,57.44553152,-106.9636994,well-drained
+2016-052,non-forest,57.43709959,-107.0010741,poorly-drained
+2016-053,jack pine,57.40071421,-106.9513072,well-drained
+2016-054,conifer mix,55.85396033,-103.0040725,well-drained
+2016-055,conifer mix,55.94368886,-102.9994906,well-drained
+2016-056,deciduous-conifer mix,55.92803103,-102.979529,well-drained
+2016-057,spruce,55.91887084,-103.0758965,well-drained
+2016-058,non-forest,55.92123788,-103.0566583,well-drained
+2016-059,deciduous-conifer mix,55.92915673,-103.036908,well-drained
+2016-060,jack pine,55.92335783,-103.1317414,well-drained
+2016-061,spruce,55.97999539,-103.0729693,well-drained
+2016-062,spruce,55.97751397,-103.0859359,well-drained
+2016-063,deciduous,55.95620554,-103.106254,well-drained
+2016-064,spruce,55.91893579,-103.0199004,well-drained
+2016-065,deciduous,55.90607915,-102.9550951,well-drained
+2016-066,deciduous-conifer mix,55.9017932,-102.9616555,well-drained
+2016-067,deciduous-conifer mix,55.89627301,-102.9539476,well-drained
+2016-068,conifer mix,55.90082161,-102.9568803,well-drained
+2016-069,spruce,55.92731215,-102.9859535,poorly-drained
+2016-070,deciduous-conifer mix,55.88475954,-102.9641956,well-drained
+2016-071,conifer mix,55.81195716,-103.0651524,well-drained
+2016-072,spruce,55.82862653,-103.0485496,well-drained
+2016-073,spruce,57.34140393,-104.0732091,well-drained
+2016-074,spruce,57.30951028,-104.1289705,well-drained
+2016-075,spruce,56.25460463,-103.2965065,well-drained
+2016-076,spruce,56.06146208,-103.6630778,well-drained
+2016-077,deciduous-conifer mix,56.01399985,-103.6745576,well-drained
+2016-078,spruce,56.28370595,-103.8735173,well-drained
+2016-079,jack pine,56.26450154,-103.8401114,well-drained
+2016-080,deciduous-conifer mix,56.24713742,-103.9148933,poorly-drained
+2016-081,spruce,56.18969745,-103.8053339,poorly-drained
+2016-082,deciduous-conifer mix,56.23107647,-103.9201448,well-drained
+2016-083,spruce,56.06635503,-103.8782693,well-drained
+2016-084,spruce,56.95168045,-104.767432,well-drained
+2016-085,conifer mix,56.92467636,-104.7726649,well-drained
+2016-086,deciduous-conifer mix,57.01691088,-104.6255065,well-drained
+2016-087,deciduous-conifer mix,57.03823695,-104.6039193,well-drained
+2016-088,jack pine,56.98388393,-104.7180918,well-drained
+2016-089,conifer mix,56.95873757,-104.7280391,well-drained
+2016-090,spruce,56.97125846,-104.7048586,poorly-drained
+2016-091,deciduous-conifer mix,56.90411392,-104.7956833,well-drained
+2016-092,spruce,56.96679326,-104.7163525,well-drained
+2016-093,jack pine,56.94268186,-104.7789819,well-drained
+2016-094,conifer mix,56.93991678,-104.7363608,well-drained
+2016-095,jack pine,56.94337238,-104.7133137,well-drained
+2016-096,jack pine,56.94716067,-104.7395579,well-drained
+2016-097,deciduous-conifer mix,56.91929202,-104.7627484,well-drained
+2016-098,jack pine,56.91214396,-104.7841927,well-drained
+2016-099,spruce,56.91654812,-104.7907602,well-drained
+2016-100,spruce,56.92827573,-104.7709836,well-drained
+2016-X1,non-forest,57.5007189,-106.6261531,well-drained
+2016-X2,non-forest,57.23556692,-107.0780873,well-drained
+2016-X3,non-forest,57.26317231,-106.9429772,well-drained
+2016-X4,jack pine,57.45697773,-107.124591,well-drained
+2016-X5,non-forest,57.45719746,-107.1109783,well-drained
+2016-X6,jack pine,57.4183626,-106.8379212,well-drained
