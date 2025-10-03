@@ -59,7 +59,11 @@ defineModule(sim, list(
     expectsInput(objectName = "WB_VBD_BDMap", 
                  objectClass = "SpatRast", 
                  desc = "Bulk Density raster from NRCan", 
-                 sourceURL = "https://sis.agr.gc.ca/cansis/nsdb/psm/Silt/Silt_X0_5_cm_100m1980-2000v1.tif")
+                 sourceURL = "https://sis.agr.gc.ca/cansis/nsdb/psm/Silt/Silt_X0_5_cm_100m1980-2000v1.tif"),
+    expectsInput(objectName = "WB_VegBasedDrainageModel", 
+                 objectClass = "", 
+                 desc = "", 
+                 sourceURL = NA)
   ),
   outputObjects = rbind(
     createsOutput(objectName = "WB_VegBasedDrainageMap", 
