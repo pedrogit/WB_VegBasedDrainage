@@ -102,8 +102,13 @@ Init <- function(sim) {
 ### template for your event1
 ReComputeDrainageMap <- function(sim) {
   # ! ----- EDIT BELOW ----- ! #
-
-
+  
+  # Dummy use of input objects to temporarily stop SpaDES warning
+  dummy <- sim$MRDEMMap + sim$TWIMap + sim$AspectMap + sim$DownslopeDistMap +
+                                 sim$WB_VBD_ClayMap + sim$WB_VBD_SandMap + sim$WB_VBD_SiltMap + sim$WB_VBD_BDMap
+  dummy <- sim$plotPoints
+  dummy <- sim$WB_VegBasedDrainageModel
+  
   # ! ----- STOP EDITING ----- ! #
   return(invisible(sim))
 }
@@ -166,7 +171,7 @@ ReComputeDrainageMap <- function(sim) {
     new_codes <- c(3L, 1L, 2L, 4L, 5L, 7L, 6L)[as.integer(plotDF$standtype)]
     
     # Assign new codes while keeping levels the same
-    plotDF$standtype <- factor(new_codes, levels = 1:7, labels = levels(plotDF$standtype))
+    plotDF$standtype <- factor(new_codes, levels = 1:7, labels = terra::levels(plotDF$standtype))
       
     plotPoints <- vect(plotDF, geom = c("Longitude", "Latitude"), crs = "EPSG:4326")  # WGS84
     sim$plotPoints <- project(plotPoints, crs(sim$WB_HartJohnstoneForestClassesMap))
@@ -398,6 +403,18 @@ ReComputeDrainageMap <- function(sim) {
     if (!suppliedElsewhere(varMapName, sim)){
       message("Downloading/cropping/reprojecting/resampling and masking ", varMapName, " to sim$pixelGroupMap...") 
       fileName <- paste0(mapName, nameEnd, ext)
+      
+      # Assign NULL to dynamically assigned maps so SpaDES stop complaining. 
+      if (mapName == "Clay") {
+        sim$WB_VBD_ClayMap <- NULL
+      } else if (mapName == "Sand") {
+        sim$WB_VBD_SandMap <- NULL
+      } else if (mapName == "Silt") {
+        sim$WB_VBD_SiltMap <- NULL
+      } else if (mapName == "BD") {
+        sim$WB_VBD_BDMap <- NULL
+      }
+        
       sim[[varMapName]] <- Cache(
         prepInputs,
         url = paste0(baseURL, mapName, "/", fileName),
