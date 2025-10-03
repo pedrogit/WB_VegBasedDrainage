@@ -546,12 +546,16 @@ ReComputeDrainageMap <- function(sim) {
   
     # Extract values from covariate maps
     for (i in seq_along(covariatesMaps)) {
-      sim$plotPoints <- cbind(sim$plotPoints, extract(sim[[names(covariatesMaps)[i]]], sim$plotPoints)[, -1])  # Remove ID column from extract
-      if (! covariatesMaps[i] %in% names(sim$plotPoints)){
-        names(sim$plotPoints)[names(sim$plotPoints) == "y"] <- covariatesMaps[i]
+      if (names(covariatesMaps)[i] %in% names(sim) && !is.null(sim[[names(covariatesMaps)[i]]])){
+        sim$plotPoints <- cbind(sim$plotPoints, extract(sim[[names(covariatesMaps)[i]]], sim$plotPoints)[, -1])  # Remove ID column from extract
+        if (! covariatesMaps[i] %in% names(sim$plotPoints)){
+          names(sim$plotPoints)[names(sim$plotPoints) == "y"] <- covariatesMaps[i]
+        }
+      }
+      else {
+        message("WARNING: For some reason,", names(covariatesMaps)[i], " does not exist... It will not be taken into account when fittng the model...")
       }
     }
-    
     # Keep rows where specified columns are not NA
     modelData <- as.data.frame(sim$plotPoints)
     keeps <- complete.cases(modelData[, c(unname(covariatesMaps), "drainage")])
