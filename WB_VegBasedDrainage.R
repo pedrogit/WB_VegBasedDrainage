@@ -44,6 +44,10 @@ defineModule(sim, list(
                  objectClass = "SpatRast", 
                  desc = "Downslope distance to water map derived from Canada DEM", 
                  sourceURL = NA),
+    expectsInput(objectName = "AspectMap", 
+                 objectClass = "SpatRast", 
+                 desc = "Aspect raster derived from Canada DEM", 
+                 sourceURL = NA),
     expectsInput(objectName = "WB_VBD_ClayMap", 
                  objectClass = "SpatRast", 
                  desc = "Clay raster from NRCan", 
@@ -337,7 +341,24 @@ ReComputeDrainageMap <- function(sim) {
       output = downslope_dist_path
     )
   }
-  }    
+  
+  ##############################################################################
+  # Generate an aspect map from the MRDEM if it is not supplied
+  ##############################################################################
+  if(!suppliedElsewhere("AspectMap", sim)){
+    #browser()   
+    nbSteps <- 4
+    
+    message("Computing AspectMap (1/", nbSteps, ") from MRDEMMap: Breaching depressions...")
+    aspect_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_aspect.tif")
+    sim$AspectMap <- Cache(
+      cacheableWhiteboxFct,
+      cacheable_input = sim$MRDEMMap,
+      fun_name = "wbt_aspect",
+      dem = plotAndPixelGroupAreaDemPath,
+      output = aspect_path
+    )
+  }
   
   ##############################################################################
   # Download, process and cache CANSIS soil data if it is not supplied
