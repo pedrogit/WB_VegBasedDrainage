@@ -40,6 +40,10 @@ defineModule(sim, list(
                  objectClass = "SpatRast", 
                  desc = "TWI raster computed from Canada DEM", 
                  sourceURL = NA),
+    expectsInput(objectName = "DownslopeDistMap", 
+                 objectClass = "SpatRast", 
+                 desc = "Downslope distance to water map derived from Canada DEM", 
+                 sourceURL = NA),
     expectsInput(objectName = "WB_VBD_ClayMap", 
                  objectClass = "SpatRast", 
                  desc = "Clay raster from NRCan", 
@@ -161,30 +165,38 @@ ReComputeDrainageMap <- function(sim) {
     # writeVector(sim$plotPoints, "G:/Home/temp/plotPoints.shp", overwrite=TRUE)
   }
   
+  # Compute the joined area covered by the plot data AND the pixelGroupMap raster
+  # (actually WB_HartJohnstoneForestClassesMap here) in order to prepInputs() 
+  # covariates to this area to fit the model. Once the model is fitted, we crop 
+  # the covariate back to the pixelGroupMap area
+  
+  # Make a buffer around the plot data
+  plotPoints100KmBuffers <- aggregate(buffer(sim$plotPoints, width = 100000))  # 1000 m buffer (if CRS is in meters)
+  
+  # Extract the WB_HartJohnstoneForestClassesMap extent
+  WB_HartJohnstoneExtent <- ext(sim$WB_HartJohnstoneForestClassesMap)
+  WB_HartJohnstoneExtentPoly <- vect(WB_HartJohnstoneExtent, crs = crs(sim$WB_HartJohnstoneForestClassesMap))
+  crs(WB_HartJohnstoneExtentPoly) <- crs(sim$WB_HartJohnstoneForestClassesMap)
+  
+  # Merge them together
+  plotAndPixelGroupArea <- aggregate(rbind(plotPoints100KmBuffers, WB_HartJohnstoneExtentPoly))
+  # mapView(plotAndPixelGroupArea)
+  # writeVector(plotAndPixelGroupArea, file.path(getPaths()$cache, "plotAndPixelGroupArea.shp"), overwrite = TRUE)
+  
+  
   ##############################################################################
-  # Download and postProcess a DEM if required
+  # Download and postProcess the Medium Resolution Digital Elevation Model (MRDEM)
+  # for Canada if required
   ##############################################################################
   if(!suppliedElsewhere("MRDEMMap", sim) && ( 
      !suppliedElsewhere("TWIMap", sim) || 
-     !suppliedElsewhere("DistToWaterMap", sim) || 
+     !suppliedElsewhere("DownslopeDistMap", sim) || 
      !suppliedElsewhere("AspectMap", sim))){
     
     message("Downloading/cropping/reprojecting/resampling/masking medium ", 
             "resolution MRDEM dem (80GB) to union of studyarea and a 100km buffer ", 
             "around  buffered plot points...")
     
-    # Make the buffer
-    plotPoints100KmBuffers <- aggregate(buffer(sim$plotPoints, width = 100000))  # 1000 m buffer (if CRS is in meters)
-
-    # Extract the WB_HartJohnstoneForestClassesMap extent
-    WB_HartJohnstoneExtent <- ext(sim$WB_HartJohnstoneForestClassesMap)
-    WB_HartJohnstoneExtentPoly <- vect(WB_HartJohnstoneExtent, crs = crs(sim$WB_HartJohnstoneForestClassesMap))
-    crs(WB_HartJohnstoneExtentPoly) <- crs(sim$WB_HartJohnstoneForestClassesMap)
-
-    # Merge them together
-    sim$plotAndPixelGroupArea <- aggregate(rbind(plotPoints100KmBuffers, WB_HartJohnstoneExtentPoly))
-    # mapView(sim$plotAndPixelGroupArea)
-    # writeVector(sim$plotAndPixelGroupArea, file.path(getPaths()$cache, "plotAndPixelGroupArea.shp"), overwrite = TRUE)
     
     # Define the path where to save the dem
     plotAndPixelGroupAreaDemPath <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem.tif")
@@ -197,10 +209,10 @@ ReComputeDrainageMap <- function(sim) {
       targetFile = "mrdem-30-dtm.tif",
       destinationPath = getPaths()$cachePath,
       fun = terra::rast,
-      cropTo = sim$plotAndPixelGroupArea,
-      projectTo = extend(sim$WB_HartJohnstoneForestClassesMap, sim$plotAndPixelGroupArea),
+      cropTo = plotAndPixelGroupArea,
+      projectTo = extend(sim$WB_HartJohnstoneForestClassesMap, plotAndPixelGroupArea),
       align_only = TRUE,
-      maskTo = sim$plotAndPixelGroupArea,
+      maskTo = plotAndPixelGroupArea,
       method = "bilinear",
       writeTo = plotAndPixelGroupAreaDemPath,
       purge=7
@@ -220,7 +232,7 @@ ReComputeDrainageMap <- function(sim) {
   }
   
   ##############################################################################
-  # Generate a TWI map from a massive downloaded DEM 
+  # Generate a TWI map from the MRDEM if it is not supplied
   ##############################################################################
   if(!suppliedElsewhere("TWIMap", sim)){
     
@@ -270,11 +282,14 @@ ReComputeDrainageMap <- function(sim) {
     )
   }
   
-  if(!suppliedElsewhere("AspectMap", sim)){
+  ##############################################################################
+  # Generate a downslope distance to water map from the MRDEM if it is not supplied
+  ##############################################################################
+  if(!suppliedElsewhere("DownslopeDistMap", sim)){
  #browser()   
     nbSteps <- 4
     
-    message("Computing AspectMap (1/", nbSteps, ") from MRDEMMap: Breaching depressions...")
+    message("Computing DownslopeDistMap (1/", nbSteps, ") from MRDEMMap: Breaching depressions...")
     dem_breach_filled_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_breachFilledDep.tif")
     breach_dep <- Cache(
       cacheableWhiteboxFct,
@@ -285,7 +300,7 @@ ReComputeDrainageMap <- function(sim) {
       output = dem_breach_filled_path
     )
     
-    message("Computing AspectMap (2/", nbSteps, ") from MRDEMMap: Flow accumulation from breach filled...")
+    message("Computing DownslopeDistMap (2/", nbSteps, ") from MRDEMMap: Flow accumulation from breach filled...")
     bf_flow_acc_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_breachFilledFlowAccum.tif")
     flow <- Cache(
       cacheableWhiteboxFct,
@@ -296,7 +311,7 @@ ReComputeDrainageMap <- function(sim) {
       out_type = "cells"
     )
     
-    message("Computing AspectMap (3/", nbSteps, ") from MRDEMMap: Extract streams...")
+    message("Computing DownslopeDistMap (3/", nbSteps, ") from MRDEMMap: Extract streams...")
     streams_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_streams.tif")
     streams <- Cache(
       cacheableWhiteboxFct,
@@ -307,9 +322,9 @@ ReComputeDrainageMap <- function(sim) {
       threshold = 1000
     )
 
-    message("Computing AspectMap (4/", nbSteps, ") from MRDEMMap: Final step...")
+    message("Computing DownslopeDistMap (4/", nbSteps, ") from MRDEMMap: Final step...")
     downslope_dist_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_downslopeDist.tif")
-    sim$AspectMap <- Cache(
+    sim$DownslopeDistMap <- Cache(
       cacheableWhiteboxFct,
       cacheable_input = breach_dep + streams,
       fun_name = "wbt_downslope_distance_to_stream",
@@ -317,7 +332,7 @@ ReComputeDrainageMap <- function(sim) {
       streams = streams_path,
       output = downslope_dist_path
     )
-    
+  }
   }    
   
   ##############################################################################
@@ -428,6 +443,7 @@ ReComputeDrainageMap <- function(sim) {
     message("drainageModel not supplied. Fitting a model using the provided",
             "plot points (n=", nbPLotPoints, "), soil and TWI maps...") 
     covariatesMaps <- c("TWIMap" = "twi",
+                        "DownslopeDistMap" = "downslope_dist",
                         "AspectMap" = "aspect", 
                         "WB_VBD_ClayMap" = "clay", 
                         "WB_VBD_SandMap" = "sand",
