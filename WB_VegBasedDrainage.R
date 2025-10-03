@@ -149,8 +149,8 @@ ReComputeDrainageMap <- function(sim) {
   if(!suppliedElsewhere("plotPoints", sim) && !suppliedElsewhere("drainageModel", sim)){
     plotFile <- file.path(getPaths()$modulePath, currentModule(sim), "data/plotData.csv")
     plotDF <- read.csv(plotFile)
-    message("plotPoints not supplied. You must provide a CSV table with \"latitude\", ",
-            "\"longitude\", \"standtype\" and \"drainage\" following the ",
+    message("plotPoints not supplied. You must provide a CSV table with \"drainage\", ",
+            "\"latitude\", \"longitude\" and \"standtype\" following the ",
             "WB_HartJohnstone classification. Loading default plot data points ",
             "as sim$plotPoints (n=", nrow(plotDF), ")...")
     
@@ -165,23 +165,27 @@ ReComputeDrainageMap <- function(sim) {
       if (is.character(col)) factor(col) else col
     })
     
-    # Reassign factors to match WB_HartJohnstone classification used in the WB_WB_HartJohnstoneClasse module
+    # Reassign factors to match WB_HartJohnstone classification used in the 
+    # WB_WB_HartJohnstoneClasse module
     # labels = c("deci", "mixed", "conimix", "jackpine", "larch", "spruce", "non forested")
     # levels = c(1L, 2L, 3L, 4L, 5L, 6L, 7L)
     new_codes <- c(3L, 1L, 2L, 4L, 5L, 7L, 6L)[as.integer(plotDF$standtype)]
     
     # Assign new codes while keeping levels the same
     plotDF$standtype <- factor(new_codes, levels = 1:7, labels = terra::levels(plotDF$standtype))
-      
+    
+    # Convert the dataframe to a SpatVector object
     plotPoints <- vect(plotDF, geom = c("Longitude", "Latitude"), crs = "EPSG:4326")  # WGS84
     sim$plotPoints <- project(plotPoints, crs(sim$WB_HartJohnstoneForestClassesMap))
     # writeVector(sim$plotPoints, "G:/Home/temp/plotPoints.shp", overwrite=TRUE)
   }
   
+  ##############################################################################
   # Compute the joined area covered by the plot data AND the pixelGroupMap raster
   # (actually WB_HartJohnstoneForestClassesMap here) in order to prepInputs() 
   # covariates to this area to fit the model. Once the model is fitted, we crop 
   # the covariate back to the pixelGroupMap area
+  ##############################################################################
   
   # Make a buffer around the plot data
   plotPoints100KmBuffers <- aggregate(buffer(sim$plotPoints, width = 100000))  # 1000 m buffer (if CRS is in meters)
@@ -302,7 +306,7 @@ ReComputeDrainageMap <- function(sim) {
   # Generate a downslope distance to water map from the MRDEM if it is not supplied
   ##############################################################################
   if(!suppliedElsewhere("DownslopeDistMap", sim)){
- #browser()   
+
     nbSteps <- 4
     
     message("Computing DownslopeDistMap (1/", nbSteps, ") from MRDEMMap: Breaching depressions...")
@@ -354,7 +358,7 @@ ReComputeDrainageMap <- function(sim) {
   # Generate an aspect map from the MRDEM if it is not supplied
   ##############################################################################
   if(!suppliedElsewhere("AspectMap", sim)){
-    #browser()   
+
     nbSteps <- 4
     
     message("Computing AspectMap (1/", nbSteps, ") from MRDEMMap: Breaching depressions...")
@@ -518,7 +522,6 @@ ReComputeDrainageMap <- function(sim) {
   #
   ##############################################################################
   if (!suppliedElsewhere("WB_VegBasedDrainageModel", sim)){
-
     nbPLotPoints <- nrow(sim$plotPoints)
     message("WB_VegBasedDrainageModel not supplied. Fitting a model using the ",
             "provided plot points (n=", nbPLotPoints, "), soil, aspect, downslope ",
@@ -554,7 +557,7 @@ ReComputeDrainageMap <- function(sim) {
     keeps <- complete.cases(modelData[, c(unname(covariatesMaps), "drainage")])
     modelData <- modelData[keeps, ]
     if (nrow(modelData) < nbPLotPoints){
-      message("Removed plot points where covariates could not be extracted. n went from ",
+      message("Removed ", nbPLotPoints - nrow(modelData), " plot points where covariates could not be extracted. n went from ",
               nbPLotPoints, " to ", nrow(modelData), ". To fix this, make sure ",
               "plot points fall into soil and sim$WB_HartJohnstoneForestClassesMap ",
               "extents and into pixels having values (not NA)...")
