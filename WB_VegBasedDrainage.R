@@ -462,6 +462,41 @@ ReComputeDrainageMap <- function(sim) {
       )
     }
   })
+  
+  ##############################################################################
+  # Download, process and cache ecoprovince if it is not supplied
+  # https://www.epa.gov/eco-research/ecoregions-north-america
+  ##############################################################################
+  if(!suppliedElsewhere("EcoProvincesMap", sim)){
+    #browser()
+    sim$EcoProvincesMap <- Cache(
+      prepInputs,
+      url = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/Ecoregions/cec_na/NA_CEC_Eco_Level3.zip",
+      targetFile = "NA_CEC_Eco_Level3.shp",
+      destinationPath = getPaths()$cache,
+      projectTo = plotAndPixelGroupAreaRast,
+      cropTo = plotAndPixelGroupArea,
+      writeTo = file.path(getPaths()$cache, paste0("NA_CEC_Eco_Level3_postProcessed.shp")),
+      fun = terra::vect
+    )
+    sim$EcoProvincesMap <- sim$EcoProvincesMap[, c("NA_L3NAME")]
+    sim$EcoProvincesMap$NA_L3NAME <- as.factor(sim$EcoProvincesMap$NA_L3NAME)
+    
+    # Alternative dataset from Canada Open
+    # # https://open.canada.ca/data/en/dataset/98fa7335-fbfe-4289-9a0e-d6bf3874b424
+    # sim$EcoProvincesMap <- Cache(
+    #   prepInputs,
+    #   url = "https://agriculture.canada.ca/atlas/data_donnees/nationalEcologicalFramework/data_donnees/geoJSON/ep/nef_ca_ter_ecoprovince_v2_2.geojson",
+    #   targetFile = "nef_ca_ter_ecoprovince_v2_2.geojson",
+    #   destinationPath = getPaths()$cache,
+    #   projectTo = plotAndPixelGroupAreaRast,
+    #   cropTo = plotAndPixelGroupArea,
+    #   writeTo = file.path(getPaths()$cache, paste0("nef_ca_ter_ecoprovince_v2_2_postProcessed.geojson")),
+    #   fun = terra::vect
+    # )
+    # sim$EcoProvincesMap <- sim$EcoProvincesMap[, c("ECOPROVINCE_NAME_EN")]
+    # sim$EcoProvincesMap$ECOPROVINCE_NAME_EN <- as.factor(sim$EcoProvincesMap$ECOPROVINCE_NAME_EN)
+  }
 
   ##############################################################################
   # Fit a model of drainage based on :
@@ -485,8 +520,9 @@ ReComputeDrainageMap <- function(sim) {
   if (!suppliedElsewhere("WB_VegBasedDrainageModel", sim)){
 
     nbPLotPoints <- nrow(sim$plotPoints)
-    message("WB_VegBasedDrainageModel not supplied. Fitting a model using the provided ",
-            "plot points (n=", nbPLotPoints, "), soil and TWI maps...")
+    message("WB_VegBasedDrainageModel not supplied. Fitting a model using the ",
+            "provided plot points (n=", nbPLotPoints, "), soil, aspect, downslope ",
+            "distance, ecoprovince and TWI maps...")
     
     # List the covariates from which tio extract values
     # element's names are the names of sim maps to extract values from (e.g. sim$TWIMap)
@@ -497,7 +533,8 @@ ReComputeDrainageMap <- function(sim) {
                         "WB_VBD_ClayMap" = "clay", 
                         "WB_VBD_SandMap" = "sand",
                         "WB_VBD_SiltMap" = "silt",
-                        "WB_VBD_BDMap" = "bulk_den")
+                        "WB_VBD_BDMap" = "bulk_den",
+                        "EcoProvincesMap" = "ecoprov")
     
     # If standtype is not part of the plot data, get the types from sim$WB_HartJohnstoneForestClassesMap
     if (!"standtype" %in% names(sim$plotPoints)){
