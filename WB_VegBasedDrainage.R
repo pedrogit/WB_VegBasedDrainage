@@ -479,11 +479,15 @@ ReComputeDrainageMap <- function(sim) {
   #     rock.
   #
   ##############################################################################
-  if (!suppliedElsewhere("drainageModel", sim)){
+  if (!suppliedElsewhere("WB_VegBasedDrainageModel", sim)){
 
     nbPLotPoints <- nrow(sim$plotPoints)
-    message("drainageModel not supplied. Fitting a model using the provided",
-            "plot points (n=", nbPLotPoints, "), soil and TWI maps...") 
+    message("WB_VegBasedDrainageModel not supplied. Fitting a model using the provided ",
+            "plot points (n=", nbPLotPoints, "), soil and TWI maps...")
+    
+    # List the covariates from which tio extract values
+    # element's names are the names of sim maps to extract values from (e.g. sim$TWIMap)
+    # element values are the names of the column to create in the sim$plotPoints dataframe (e.g clay)
     covariatesMaps <- c("TWIMap" = "twi",
                         "DownslopeDistMap" = "downslope_dist",
                         "AspectMap" = "aspect", 
