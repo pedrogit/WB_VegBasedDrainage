@@ -196,7 +196,10 @@ ReComputeDrainageMap <- function(sim) {
   # mapView(plotAndPixelGroupArea)
   # writeVector(plotAndPixelGroupArea, file.path(getPaths()$cache, "plotAndPixelGroupArea.shp"), overwrite = TRUE)
   
-  
+  # We create a raster with the merged area so projectTo does not crop it
+  # see https://github.com/PredictiveEcology/reproducible/issues/431
+  plotAndPixelGroupAreaRast <- extend(sim$WB_HartJohnstoneForestClassesMap, plotAndPixelGroupArea)
+
   ##############################################################################
   # Download and postProcess the Medium Resolution Digital Elevation Model (MRDEM)
   # for Canada if required
@@ -223,7 +226,7 @@ ReComputeDrainageMap <- function(sim) {
       destinationPath = getPaths()$cachePath,
       fun = terra::rast,
       cropTo = plotAndPixelGroupArea,
-      projectTo = extend(sim$WB_HartJohnstoneForestClassesMap, plotAndPixelGroupArea),
+      projectTo = plotAndPixelGroupAreaRast,
       align_only = TRUE,
       maskTo = plotAndPixelGroupArea,
       method = "bilinear",
@@ -422,7 +425,7 @@ ReComputeDrainageMap <- function(sim) {
         destinationPath = getPaths()$cache,
         fun = terra::rast,
         cropTo = plotAndPixelGroupArea,
-        projectTo = extend(sim$WB_HartJohnstoneForestClassesMap, plotAndPixelGroupArea),
+        projectTo = plotAndPixelGroupAreaRast,
         maskTo = plotAndPixelGroupArea,
         writeTo = paste0("CANSIS_", mapName, nameEnd, "_postProcessed", ext),
         method = "bilinear"
@@ -445,7 +448,7 @@ ReComputeDrainageMap <- function(sim) {
         postProcess,
         rast,
         cropTo = plotAndPixelGroupArea,
-        projectTo = extend(sim$WB_HartJohnstoneForestClassesMap, plotAndPixelGroupArea),
+        projectTo = plotAndPixelGroupAreaRast,
         maskTo = plotAndPixelGroupArea,
         writeTo = file.path(getPaths()$cache, paste0("SoilGrids_", SGMapName, "_0-5cm_mean_postProcessed.tif")),
         method = "bilinear"
