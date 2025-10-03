@@ -383,9 +383,9 @@ ReComputeDrainageMap <- function(sim) {
         targetFile = fileName,
         destinationPath = getPaths()$cache,
         fun = terra::rast,
-        cropTo = sim$plotAndPixelGroupArea,
-        projectTo = extend(sim$WB_HartJohnstoneForestClassesMap, sim$plotAndPixelGroupArea),
-        maskTo = sim$plotAndPixelGroupArea,
+        cropTo = plotAndPixelGroupArea,
+        projectTo = extend(sim$WB_HartJohnstoneForestClassesMap, plotAndPixelGroupArea),
+        maskTo = plotAndPixelGroupArea,
         writeTo = paste0("CANSIS_", mapName, nameEnd, "_postProcessed", ext),
         method = "bilinear"
       )
@@ -406,9 +406,9 @@ ReComputeDrainageMap <- function(sim) {
       patchRast <- Cache(
         postProcess,
         rast,
-        cropTo = sim$plotAndPixelGroupArea,
-        projectTo = extend(sim$WB_HartJohnstoneForestClassesMap, sim$plotAndPixelGroupArea),
-        maskTo = sim$plotAndPixelGroupArea,
+        cropTo = plotAndPixelGroupArea,
+        projectTo = extend(sim$WB_HartJohnstoneForestClassesMap, plotAndPixelGroupArea),
+        maskTo = plotAndPixelGroupArea,
         writeTo = file.path(getPaths()$cache, paste0("SoilGrids_", SGMapName, "_0-5cm_mean_postProcessed.tif")),
         method = "bilinear"
       )
