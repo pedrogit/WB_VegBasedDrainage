@@ -114,10 +114,7 @@ ReComputeDrainageMap <- function(sim) {
 }
 
 .inputObjects <- function(sim) {
-  cacheTags <- c(currentModule(sim), "function:.inputObjects") ## uncomment this if Cache is being used
-  dPath <- asPath(getOption("reproducible.destinationPath", dataPath(sim)), 1)
-  message(currentModule(sim), ": using dataPath '", dPath, "'.")
-
+  userTags <- c(currentModule(sim), "function:.inputObjects") 
   ##############################################################################
   # Generate a fake WB_HartJohnstoneForestClassesMap if it is not supplied
   ##############################################################################
@@ -138,7 +135,8 @@ ReComputeDrainageMap <- function(sim) {
       crs = "ESRI:102002",
       nbregion = 2000,
       valuevect = 1:6,
-      seed = 100
+      seed = 100,
+      userTags = c(userTags, "WB_HartJohnstoneForestClassesMap")
     )
     # mapView(sim$WB_HartJohnstoneForestClassesMap)
   }
@@ -239,7 +237,8 @@ ReComputeDrainageMap <- function(sim) {
       maskTo = plotAndPixelGroupArea,
       method = "bilinear",
       writeTo = plotAndPixelGroupAreaDemPath,
-      purge=7
+      purge=7,
+      userTags = c(userTags, "MRDEMMap")
     )
   }
  
@@ -269,7 +268,8 @@ ReComputeDrainageMap <- function(sim) {
       cacheable_input = sim$MRDEMMap,
       fun_name = "wbt_fill_depressions",
       dem = plotAndPixelGroupAreaDemPath,
-      output = dem_filled_path
+      output = dem_filled_path,
+      userTags = c(userTags, "plotAndPixelGroupAreaDem_filled.tif")
     )
 
     message("Computing TWIMap (2/", nbSteps, ") from MRDEMMap: Computing slopes...")
@@ -280,7 +280,8 @@ ReComputeDrainageMap <- function(sim) {
       fun_name = "wbt_slope",
       dem = dem_filled_path,
       output = slope_path,
-      zfactor = 1
+      zfactor = 1,
+      userTags = c(userTags, "plotAndPixelGroupAreaDem_slope.tif")
     )
     
     message("Computing TWIMap (3/", nbSteps, ") from MRDEMMap: Flow accumulation...")
@@ -291,7 +292,8 @@ ReComputeDrainageMap <- function(sim) {
       fun_name = "wbt_d8_flow_accumulation",
       input = dem_filled_path,
       output = flow_acc_path,
-      out_type = "specific contributing area"
+      out_type = "specific contributing area",
+      userTags = c(userTags, "plotAndPixelGroupAreaDem_flowAccum.tif")
     )
     
     message("Computing TWIMap (4/", nbSteps, ") from MRDEMMap: Final step...")
@@ -302,7 +304,8 @@ ReComputeDrainageMap <- function(sim) {
       fun_name = "wbt_wetness_index",
       sca = flow_acc_path,
       slope = slope_path,
-      output = final_twi_path
+      output = final_twi_path,
+      userTags = c(userTags, "plotAndPixelGroupAreaDem_TWI.tif")
     )
   }
   
@@ -321,7 +324,8 @@ ReComputeDrainageMap <- function(sim) {
       fun_name = "wbt_breach_depressions_least_cost",
       dem = plotAndPixelGroupAreaDemPath,
       dist = 3,
-      output = dem_breach_filled_path
+      output = dem_breach_filled_path,
+      userTags = c(userTags, "plotAndPixelGroupAreaDem_breachFilledDep.tif")
     )
     
     message("Computing DownslopeDistMap (2/", nbSteps, ") from MRDEMMap: Flow accumulation from breach filled...")
@@ -332,7 +336,8 @@ ReComputeDrainageMap <- function(sim) {
       fun_name = "wbt_d8_flow_accumulation",
       input = dem_breach_filled_path,
       output = bf_flow_acc_path,
-      out_type = "cells"
+      out_type = "cells",
+      userTags = c(userTags, "plotAndPixelGroupAreaDem_breachFilledFlowAccum.tif")
     )
     
     message("Computing DownslopeDistMap (3/", nbSteps, ") from MRDEMMap: Extract streams...")
@@ -343,7 +348,8 @@ ReComputeDrainageMap <- function(sim) {
       fun_name = "wbt_extract_streams",
       flow_accum = bf_flow_acc_path,
       output = streams_path,
-      threshold = 1000
+      threshold = 1000,
+      userTags = c(userTags, "plotAndPixelGroupAreaDem_streams.tif")
     )
 
     message("Computing DownslopeDistMap (4/", nbSteps, ") from MRDEMMap: Final step...")
@@ -354,7 +360,8 @@ ReComputeDrainageMap <- function(sim) {
       fun_name = "wbt_downslope_distance_to_stream",
       dem = dem_breach_filled_path,
       streams = streams_path,
-      output = downslope_dist_path
+      output = downslope_dist_path,
+      userTags = c(userTags, "plotAndPixelGroupAreaDem_downslopeDist.tif")
     )
   }
   
@@ -372,7 +379,8 @@ ReComputeDrainageMap <- function(sim) {
       cacheable_input = sim$MRDEMMap,
       fun_name = "wbt_aspect",
       dem = plotAndPixelGroupAreaDemPath,
-      output = aspect_path
+      output = aspect_path,
+      userTags = c(userTags, "plotAndPixelGroupAreaDem_aspect.tif")
     )
   }
   
@@ -436,7 +444,8 @@ ReComputeDrainageMap <- function(sim) {
         projectTo = plotAndPixelGroupAreaRast,
         maskTo = plotAndPixelGroupArea,
         writeTo = paste0("CANSIS_", mapName, nameEnd, "_postProcessed", ext),
-        method = "bilinear"
+        method = "bilinear",
+        userTags = c(userTags, paste0("CANSIS_", mapName, nameEnd, "_postProcessed", ext))
       )
 
       ##############################################################################
@@ -448,7 +457,8 @@ ReComputeDrainageMap <- function(sim) {
       rast <- Cache(
         cacheableGdalTranslateVRT, 
         SGMapName, 
-        destinationPath = getPaths()$cache
+        destinationPath = getPaths()$cache,
+        userTags = c(userTags, paste0('SoilGrids_0-5cm_mean_', SGMapName, ".tif"))
       )
       
       message("Cropping/reprojecting/resampling and masking SoilGrids ", SGMapName, "...") 
@@ -459,14 +469,16 @@ ReComputeDrainageMap <- function(sim) {
         projectTo = plotAndPixelGroupAreaRast,
         maskTo = plotAndPixelGroupArea,
         writeTo = file.path(getPaths()$cache, paste0("SoilGrids_", SGMapName, "_0-5cm_mean_postProcessed.tif")),
-        method = "bilinear"
+        method = "bilinear",
+        userTags = c(userTags, paste0('SoilGrids_0-5cm_mean_', SGMapName, "_postProcessed.tif"))
       )
       
       message("Patching CANSIS soil ", mapName, " raster NAs with SoilGrids values...")
       sim[[varMapName]] <- Cache(
         cover,
         sim[[varMapName]],
-        patchRast / ifelse(SGMapName == "bdod", 100, 10)
+        patchRast / ifelse(SGMapName == "bdod", 100, 10),
+        userTags = c(userTags, paste0("CANSIS_", mapName, nameEnd, "_patched", ext))
       )
     }
   })
@@ -484,8 +496,9 @@ ReComputeDrainageMap <- function(sim) {
       destinationPath = getPaths()$cache,
       projectTo = plotAndPixelGroupAreaRast,
       cropTo = plotAndPixelGroupArea,
-      writeTo = file.path(getPaths()$cache, paste0("NA_CEC_Eco_Level3_postProcessed.shp")),
-      fun = terra::vect
+      writeTo = file.path(getPaths()$cache, "NA_CEC_Eco_Level3_postProcessed.shp"),
+      fun = terra::vect,
+      userTags = c(userTags, "NA_CEC_Eco_Level3_postProcessed.shp")
     )
     sim$EcoProvincesMap <- sim$EcoProvincesMap[, c("NA_L3NAME")]
     sim$EcoProvincesMap$NA_L3NAME <- as.factor(sim$EcoProvincesMap$NA_L3NAME)
@@ -597,7 +610,8 @@ ReComputeDrainageMap <- function(sim) {
       method = "rf", # "rf" = random forest or "xgbTree" = boosted regression trees, # See topepo.github.io/caret for more model tags that can be used here
       trControl = fitControl,
       tuneLength = 10,
-      verbose = FALSE
+      verbose = FALSE,
+      userTags = c(userTags, "WB_VegBasedDrainageModel")
     )
     
     message("Fitting the drainage model. Done...")
