@@ -159,12 +159,16 @@ ReComputeDrainageMap <- function(sim) {
       plotDF$standtype <- sub("Poorly-drained ", "", plotDF$standtype)
       plotDF$standtype <- sub("Well-drained ", "", plotDF$standtype)
     }
-    
-    # Convert character columns to factor
+    # Convert character columns to factor and fix values (factor names)
     plotDF[] <- lapply(plotDF, function(col){
-      if (is.character(col)) factor(col) else col
+    newCol <- col
+      if (is.character(newCol)) {
+        newCol <- factor(newCol)
+        levels(newCol) <- make.names(levels(newCol))
+      }
+      newCol
     })
-    
+
     # Reassign factors to match WB_HartJohnstone classification used in the 
     # WB_WB_HartJohnstoneClasse module
     # labels = c("deci", "mixed", "conimix", "jackpine", "larch", "spruce", "non forested")
