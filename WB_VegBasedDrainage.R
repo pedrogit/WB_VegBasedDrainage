@@ -569,19 +569,22 @@ ReComputeDrainageMap <- function(sim) {
 
     modelData <- modelData[, !(names(modelData) %in% c("X", "plot"))]
     
-    
-    # Split the data frame into training and test data
+    # Split the plot data into training and test data
+    set.seed(1990)
     inTraining <- createDataPartition(modelData$drainage, p = 0.7, list = FALSE)
     trainSet <- modelData[inTraining, ]
     testSet <- modelData[-inTraining, ]
     message("plot points (n=", nrow(modelData), ") were split between training (n=", 
             nrow(trainSet), ") and test (n=", nrow(testSet), ")...")
     
-    fitControl <- trainControl(method = "repeatedcv",
-                               number = 5,
-                               repeats = 5,
-                               search = "random")
-    
+    fitControl <- trainControl(
+      method = "repeatedcv",
+      repeats = 5,
+      sampling = "down",
+      summaryFunction = twoClassSummary,
+      classProbs = TRUE
+    )
+
     message("Fitting the drainage model...")
     modelFit <- Cache(
       train,
