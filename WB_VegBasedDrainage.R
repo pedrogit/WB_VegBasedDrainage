@@ -122,12 +122,10 @@ ReComputeDrainageMap <- function(sim) {
     rastWidth <- 1000
     message("##############################################################################")   
     message("WB_HartJohnstoneForestClassesMap not supplied.")   
-    message("Please couple with the WB_HartJohnstoneForestClasses module. Creating random map ",
-            rastWidth,
-            " pixels by ",
-            rastWidth,
-            " pixels for 6 forest classes (\"deci (1)\", \"mixed (2)\", \"conimix (3)\", ",
-            "\"jackpine (4)\", \"larch (5)\" and \"spruce (6)\")...")
+    message("Please couple with the WB_HartJohnstoneForestClasses module. ")   
+    message("Creating random map ", rastWidth, " pixels by ", rastWidth, " pixels for 6 forest ")   
+    message("classes (\"deci (1)\", \"mixed (2)\", \"conimix (3)\", \"jackpine (4)\", ")   
+    message("\"larch (5)\" and \"spruce (6)\")...")
 
     sim$WB_HartJohnstoneForestClassesMap <- Cache(
       getRandomCategoricalMap,
@@ -150,10 +148,9 @@ ReComputeDrainageMap <- function(sim) {
     plotDF <- read.csv(plotFile)
     message("##############################################################################")   
     message("plotPoints not supplied.")   
-    message("You must provide a CSV table with \"drainage\", ",
-            "\"latitude\", \"longitude\" and \"standtype\" following the ",
-            "WB_HartJohnstone classification. Loading default plot data points ",
-            "as sim$plotPoints (n=", nrow(plotDF), ")...")
+    message("You must provide a CSV table with \"drainage\", \"latitude\", \"longitude\" ")
+    message("and \"standtype\" following the WB_HartJohnstone classification.")
+    message(" Loading default plot data points as sim$plotPoints (n=", nrow(plotDF), ")...")
     
     # Purge standtype of drainage info
     if ("standtype" %in% names(plotDF)){
@@ -220,9 +217,8 @@ ReComputeDrainageMap <- function(sim) {
     
     message("##############################################################################")   
     message("MRDEMMap not supplied.")   
-    message("Downloading/cropping/reprojecting/resampling/masking medium ", 
-            "resolution MRDEM dem (80GB) to union of studyarea and a 100km buffer ", 
-            "around  buffered plot points...")
+    message("Downloading/cropping/reprojecting/resampling/masking medium resolution ")
+    message("MRDEM dem (80GB) to union of studyarea and a 100km buffer around buffered plot points...")
     
     # Define the path where to save the dem
     plotAndPixelGroupAreaDemPath <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem.tif")
@@ -262,12 +258,9 @@ ReComputeDrainageMap <- function(sim) {
   # Generate a TWI map from the MRDEM if it is not supplied
   ##############################################################################
   if(!suppliedElsewhere("TWIMap", sim)){
-    
-    nbSteps <- 4
-    
     message("##############################################################################")   
     message("TWIMap not supplied.")   
-    message("Computing TWIMap (1/", nbSteps, ") from MRDEMMap: Filling depressions...")
+    message("Computing TWIMap (1/4) from MRDEMMap: Filling depressions...")
     dem_filled_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_filled.tif")
     dep <- Cache(
       cacheableWhiteboxFct,
@@ -279,7 +272,7 @@ ReComputeDrainageMap <- function(sim) {
     )
 
     message("------------------------------------------------------------------------------")   
-    message("Computing TWIMap (2/", nbSteps, ") from MRDEMMap: Computing slopes...")
+    message("Computing TWIMap (2/4) from MRDEMMap: Computing slopes...")
     slope_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_slope.tif")
     slope <- Cache(
       cacheableWhiteboxFct,
@@ -292,7 +285,7 @@ ReComputeDrainageMap <- function(sim) {
     )
     
     message("------------------------------------------------------------------------------")   
-    message("Computing TWIMap (3/", nbSteps, ") from MRDEMMap: Flow accumulation...")
+    message("Computing TWIMap (3/4) from MRDEMMap: Flow accumulation...")
     flow_acc_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_flowAccum.tif")
     flow <- Cache(
       cacheableWhiteboxFct,
@@ -305,7 +298,7 @@ ReComputeDrainageMap <- function(sim) {
     )
     
     message("------------------------------------------------------------------------------")   
-    message("Computing TWIMap (4/", nbSteps, ") from MRDEMMap: Final step...")
+    message("Computing TWIMap (4/4) from MRDEMMap: Final step...")
     final_twi_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_TWI.tif")
     sim$TWIMap <- Cache(
       cacheableWhiteboxFct,
@@ -322,12 +315,9 @@ ReComputeDrainageMap <- function(sim) {
   # Generate a downslope distance to water map from the MRDEM if it is not supplied
   ##############################################################################
   if(!suppliedElsewhere("DownslopeDistMap", sim)){
-
-    nbSteps <- 4
-    
     message("##############################################################################")   
     message("DownslopeDistMap not supplied.")   
-    message("Computing DownslopeDistMap (1/", nbSteps, ") from MRDEMMap: Breaching depressions...")
+    message("Computing DownslopeDistMap (1/4) from MRDEMMap: Breaching depressions...")
     dem_breach_filled_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_breachFilledDep.tif")
     breach_dep <- Cache(
       cacheableWhiteboxFct,
@@ -340,7 +330,7 @@ ReComputeDrainageMap <- function(sim) {
     )
     
     message("------------------------------------------------------------------------------")   
-    message("Computing DownslopeDistMap (2/", nbSteps, ") from MRDEMMap: Flow accumulation from breach filled...")
+    message("Computing DownslopeDistMap (2/4) from MRDEMMap: Flow accumulation from breach filled...")
     bf_flow_acc_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_breachFilledFlowAccum.tif")
     flow <- Cache(
       cacheableWhiteboxFct,
@@ -353,7 +343,7 @@ ReComputeDrainageMap <- function(sim) {
     )
     
     message("------------------------------------------------------------------------------")   
-    message("Computing DownslopeDistMap (3/", nbSteps, ") from MRDEMMap: Extract streams...")
+    message("Computing DownslopeDistMap (3/4) from MRDEMMap: Extract streams...")
     streams_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_streams.tif")
     streams <- Cache(
       cacheableWhiteboxFct,
@@ -366,7 +356,7 @@ ReComputeDrainageMap <- function(sim) {
     )
 
     message("------------------------------------------------------------------------------")   
-    message("Computing DownslopeDistMap (4/", nbSteps, ") from MRDEMMap: Final step...")
+    message("Computing DownslopeDistMap (4/4) from MRDEMMap: Final step...")
     downslope_dist_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_downslopeDist.tif")
     sim$DownslopeDistMap <- Cache(
       cacheableWhiteboxFct,
@@ -383,12 +373,9 @@ ReComputeDrainageMap <- function(sim) {
   # Generate an aspect map from the MRDEM if it is not supplied
   ##############################################################################
   if(!suppliedElsewhere("AspectMap", sim)){
-
-    nbSteps <- 4
-    
     message("##############################################################################")   
     message("AspectMap not supplied.")   
-    message("Computing AspectMap (1/", nbSteps, ") from MRDEMMap: Breaching depressions...")
+    message("Computing AspectMap from MRDEMMap...")
     aspect_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_aspect.tif")
     sim$AspectMap <- Cache(
       cacheableWhiteboxFct,
@@ -566,9 +553,9 @@ ReComputeDrainageMap <- function(sim) {
   if (!suppliedElsewhere("WB_VegBasedDrainageModel", sim)){
     nbPLotPoints <- nrow(sim$plotPoints)
     message("##############################################################################")
-    message("WB_VegBasedDrainageModel not supplied. Fitting a model using the ",
-            "provided plot points (n=", nbPLotPoints, "), soil (caly, silt, sand and bulked ",
-            "density), aspect, downslope distance to water, ecoprovince and TWI maps...")
+    message("WB_VegBasedDrainageModel not supplied. Fitting a model using the ")
+    message("provided plot points (n=", nbPLotPoints, "), soil (caly, silt, sand and bulked ")
+    message("density), aspect, downslope distance to water, ecoprovince and TWI maps...")
     
     # List the covariates from which tio extract values
     # element's names are the names of sim maps to extract values from (e.g. sim$TWIMap)
@@ -586,7 +573,8 @@ ReComputeDrainageMap <- function(sim) {
     if (!"standtype" %in% names(sim$plotPoints)){
       covariatesMaps <- c("WB_HartJohnstoneForestClassesMap" = "standtype", covariatesMaps)
     }
-  
+    message("------------------------------------------------------------------------------")   
+    
     # Extract values from covariate maps
     for (i in seq_along(covariatesMaps)) {
       if (names(covariatesMaps)[i] %in% names(sim) && !is.null(sim[[names(covariatesMaps)[i]]])){
@@ -596,9 +584,12 @@ ReComputeDrainageMap <- function(sim) {
         }
       }
       else {
-        message("WARNING: For some reason,", names(covariatesMaps)[i], " does not exist... It will not be taken into account when fittng the model...")
+        message("WARNING: For some reason,", names(covariatesMaps)[i], " does ", 
+                "not exist... It will not be taken into account when fittng the model...")
       }
     }
+    message("------------------------------------------------------------------------------")   
+    
     # Keep rows where specified columns are not NA
     modelData <- as.data.frame(sim$plotPoints)
     keeps <- complete.cases(modelData[, c(unname(covariatesMaps), "drainage")])
@@ -617,7 +608,7 @@ ReComputeDrainageMap <- function(sim) {
     inTraining <- createDataPartition(modelData$drainage, p = 0.7, list = FALSE)
     trainSet <- modelData[inTraining, ]
     testSet <- modelData[-inTraining, ]
-    message("plot points (n=", nrow(modelData), ") were split between training (n=", 
+    message("Plot points (n=", nrow(modelData), ") were split between training (n=", 
             nrow(trainSet), ") and test (n=", nrow(testSet), ")...")
     
     fitControl <- trainControl(
@@ -646,6 +637,7 @@ ReComputeDrainageMap <- function(sim) {
     # Crop covariate maps back to groupPixelMap now that the model is fitted and 
     # we don't new to extract covariate values at plot points anymore
     for (i in seq_along(covariatesMaps[names(covariatesMaps) != "WB_HartJohnstoneForestClassesMap"])) {
+      message("------------------------------------------------------------------------------")   
       message("Cropping sim$", names(covariatesMaps)[i], " from the groupPixelMap + pointPlot area to the groupPixelMap area...")
       sim[[names(covariatesMaps)[i]]] <- Cache(
         postProcessTo,
@@ -653,6 +645,8 @@ ReComputeDrainageMap <- function(sim) {
         cropTo = sim$WB_HartJohnstoneForestClassesMap
       )
     }
+    
+    message("##############################################################################")
     
     sim$WB_VegBasedDrainageModel <- modelFit
   }
