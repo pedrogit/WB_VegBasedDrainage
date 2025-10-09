@@ -678,6 +678,12 @@ ReComputeDrainageMap <- function(sim) {
     
     message("Fitting the drainage model. Done...")
     print(modelFit)
+
+    message("------------------------------------------------------------------------------")   
+    print(confusionMatrix(predict(modelFit, testSet), testSet$drainage))
+
+    message("------------------------------------------------------------------------------")   
+    print(varImp(modelFit))
     
     # Crop covariate maps back to groupPixelMap now that the model is fitted and 
     # we don't new to extract covariate values at plot points anymore.
