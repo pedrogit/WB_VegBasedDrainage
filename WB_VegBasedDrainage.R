@@ -641,7 +641,8 @@ ReComputeDrainageMap <- function(sim) {
       message("------------------------------------------------------------------------------")   
       writeVector(sim$plotPoints[!keeps, ], file.path(getPaths()$output, "plotPointsRemoved.shp"), overwrite = TRUE)
     }
-
+    
+    # Remove the "plot" column
     modelData <- modelData[, !(names(modelData) %in% c("X", "plot"))]
     
     # Split the plot data into training and test data
@@ -652,6 +653,7 @@ ReComputeDrainageMap <- function(sim) {
     message("Plot points (n=", nrow(modelData), ") were split between training (n=", 
             nrow(trainSet), ") and test (n=", nrow(testSet), ")...")
     
+    # Parametrize the training algorithm
     fitControl <- trainControl(
       method = "repeatedcv",
       repeats = 5,
@@ -660,12 +662,14 @@ ReComputeDrainageMap <- function(sim) {
       classProbs = TRUE
     )
 
+    # Fit the model using all the covariate present in the modeldata frame
     message("Fitting the drainage model...")
     modelFit <- Cache(
       train,
-      drainage ~ ., # Can consider subsets of covariates here say; e.g. `slope + elevation + age`; `.` considers all the predictors with no interaction terms
+      drainage ~ .,
       data = trainSet,
-      method = "rf", # "rf" = random forest or "xgbTree" = boosted regression trees, # See topepo.github.io/caret for more model tags that can be used here
+      method = "rf", # "rf" = random forest or "xgbTree" = boosted regression trees, 
+                     # See topepo.github.io/caret for more model tags that can be used here
       trControl = fitControl,
       tuneLength = 10,
       verbose = FALSE,
@@ -675,9 +679,10 @@ ReComputeDrainageMap <- function(sim) {
     message("Fitting the drainage model. Done...")
     print(modelFit)
     
-    
     # Crop covariate maps back to groupPixelMap now that the model is fitted and 
-    # we don't new to extract covariate values at plot points anymore
+    # we don't new to extract covariate values at plot points anymore.
+    # From now on the module will, at each iteration step, use the model to predict 
+    # drainage from the covariate maps
     for (i in seq_along(covariatesMaps[names(covariatesMaps) != "WB_HartJohnstoneForestClassesMap"])) {
       message("------------------------------------------------------------------------------")   
       message("Cropping sim$", names(covariatesMaps)[i], " from the groupPixelMap + pointPlot area to the groupPixelMap area...")
