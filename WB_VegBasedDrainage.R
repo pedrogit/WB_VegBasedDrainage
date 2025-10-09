@@ -107,7 +107,7 @@ ReComputeDrainageMap <- function(sim) {
   
   # Dummy use of input objects to temporarily stop SpaDES warning
   dummy <- sim$MRDEMMap + sim$TWIMap + sim$AspectMap + sim$DownslopeDistMap +
-                                 sim$WB_VBD_ClayMap + sim$WB_VBD_SandMap + sim$WB_VBD_SiltMap + sim$WB_VBD_BDMap
+           sim$WB_VBD_ClayMap + sim$WB_VBD_SandMap + sim$WB_VBD_SiltMap + sim$WB_VBD_BDMap
   dummy <- sim$plotPoints
   dummy <- sim$WB_VegBasedDrainageModel
   
@@ -497,7 +497,7 @@ ReComputeDrainageMap <- function(sim) {
       )
     }
   })
-  
+
   ##############################################################################
   # Download, process and cache ecoprovince if it is not supplied
   # https://www.epa.gov/eco-research/ecoregions-north-america
@@ -573,7 +573,7 @@ ReComputeDrainageMap <- function(sim) {
                         "WB_VBD_SiltMap" = "silt",
                         "WB_VBD_BDMap" = "bulk_den",
                         "EcoProvincesMap" = "ecoprov")
-    
+
     # If standtype is not part of the plot data, get the types from sim$WB_HartJohnstoneForestClassesMap
     if (!"standtype" %in% names(sim$plotPoints)){
       covariatesMaps <- c("WB_HartJohnstoneForestClassesMap" = "standtype", covariatesMaps)
@@ -666,6 +666,7 @@ ReComputeDrainageMap <- function(sim) {
     
     message("Fitting the drainage model. Done...")
     print(modelFit)
+    
     
     # Crop covariate maps back to groupPixelMap now that the model is fitted and 
     # we don't new to extract covariate values at plot points anymore
