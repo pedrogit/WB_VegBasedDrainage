@@ -152,7 +152,7 @@ ReComputeDrainageMap <- function(sim) {
     message("plotPoints not supplied.")   
     message("You must provide a CSV table with \"drainage\", \"latitude\", \"longitude\" ")
     message("and \"standtype\" following the WB_HartJohnstone classification.")
-    message(" Loading default plot data points as sim$plotPoints (n=", nrow(plotDF), ")...")
+    message("Loading default plot data points as sim$plotPoints (n=", nrow(plotDF), ")...")
     
     # Purge standtype of drainage info
     if ("standtype" %in% names(plotDF)){
@@ -678,7 +678,8 @@ ReComputeDrainageMap <- function(sim) {
       trControl = fitControl,
       tuneLength = 10,
       verbose = FALSE,
-      userTags = c(userTags, "WB_VegBasedDrainageModel")
+      userTags = c(userTags, "WB_VegBasedDrainageModel"),
+      overwrite = TRUE
     )
     
     message("Fitting the drainage model. Done...")
