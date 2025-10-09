@@ -627,11 +627,19 @@ ReComputeDrainageMap <- function(sim) {
     modelData <- as.data.frame(sim$plotPoints)
     keeps <- complete.cases(modelData[, c(unname(covariatesMaps), "drainage")])
     modelData <- modelData[keeps, ]
+    
     if (nrow(modelData) < nbPLotPoints){
-      message("Removed ", nbPLotPoints - nrow(modelData), " plot points where covariates could not be extracted. n went from ",
-              nbPLotPoints, " to ", nrow(modelData), ". To fix this, make sure ",
-              "plot points fall into soil and sim$WB_HartJohnstoneForestClassesMap ",
-              "extents and into pixels having values (not NA)...")
+      message("------------------------------------------------------------------------------")   
+      message("WARNING: Removed ", nbPLotPoints - nrow(modelData), " plot points where ")
+      message("covariates could not be extracted. n went from ", nbPLotPoints)
+      message(" to ", nrow(modelData), ". To fix this, make sure plot points fall ")
+      message("into soil and sim$WB_HartJohnstoneForestClassesMap combined extents ")
+      message("and into pixels having values (not NA) or increase the value of the ")
+      message("\"searchDistInPixelNb\" parameter...")
+      message("Point removed (", paste(as.character(modelData[!keeps, "plot"]), collapse = ", "), 
+              ") were saved to a shapefile in the output folder (plotPointsEliminated.shp)")
+      message("------------------------------------------------------------------------------")   
+      writeVector(sim$plotPoints[!keeps, ], file.path(getPaths()$output, "plotPointsRemoved.shp"), overwrite = TRUE)
     }
 
     modelData <- modelData[, !(names(modelData) %in% c("X", "plot"))]
