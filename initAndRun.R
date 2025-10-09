@@ -15,8 +15,13 @@ getPaths() # shows where the 4 relevant paths are
 
 sim <- simInit(times = list(start = 0, end = 0),
                modules = list("WB_VegBasedDrainage"),
-               params = list(WB_VegBasedDrainage = list(
-                 WB_VegBasedDrainageTimeStep = 1)))
+               params = list(
+                 WB_VegBasedDrainage = list(
+                   WB_VegBasedDrainageTimeStep = 1,
+                   searchDistInPixelNb = 2
+                  )
+                 )
+               )
 
 sim <- spades(sim)
 

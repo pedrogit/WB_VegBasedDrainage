@@ -14,7 +14,9 @@ defineModule(sim, list(
   reqdPkgs = list("data.table", "reproducible", "LandR"),
   parameters = rbind(
     defineParameter("WB_VegBasedDrainageTimeStep", "numeric", 1, NA, NA,
-                    "Simulation time at which the drainage map is regenerated.")
+                    "Simulation time at which the drainage map is regenerated."),
+    defineParameter("searchDistInPixelNb", "numeric", 1, NA, NA,
+                    "Distance, in number of pixel, to search for \"with value\" covariate values when plot points fall into NS values.")
   ),
   inputObjects = rbind(
     expectsInput(objectName = "WB_HartJohnstoneForestClassesMap",
@@ -454,6 +456,9 @@ ReComputeDrainageMap <- function(sim) {
         method = "bilinear",
         userTags = c(userTags, paste0("CANSIS_", mapName, nameEnd, "_postProcessed", ext))
       )
+      
+      # Ensure the raster variable has the right name
+      names(sim[[varMapName]]) <- mapName
 
       ##############################################################################
       # Download, process and cache SoilGrids soil data to patch CANSIS one
@@ -577,10 +582,38 @@ ReComputeDrainageMap <- function(sim) {
     
     # Extract values from covariate maps
     for (i in seq_along(covariatesMaps)) {
+      # Extract the values only if the covariate exists and it's not NULL
       if (names(covariatesMaps)[i] %in% names(sim) && !is.null(sim[[names(covariatesMaps)[i]]])){
-        sim$plotPoints <- cbind(sim$plotPoints, extract(sim[[names(covariatesMaps)[i]]], sim$plotPoints)[, -1])  # Remove ID column from extract
+        message("Extracting values from ", names(covariatesMaps)[i], 
+                " (", class(sim[[names(covariatesMaps)[i]]]), ")...")
+        # Extract properly according to the type of the covariate (SpatRaster or SpatVector)
+        if (class(sim[[names(covariatesMaps)[i]]]) == "SpatRaster") {
+          message("  searching at a max distance of ", P(sim)$searchDistInPixelNb, " pixels for \"with value\" pixels...")
+          # For SpatRaster we can:
+          # - bind the produced column directly,
+          # - add a radius to search for the neared pixel value if the point fall into a NA pixel,
+          # - prevent the ID column to be added.
+          sim$plotPoints <- terra::extract(
+            sim[[names(covariatesMaps)[i]]], 
+            sim$plotPoints, 
+            bind = TRUE, 
+            method = "bilinear", 
+            search_radius = P(sim)$searchDistInPixelNb * mean(res(sim[[names(covariatesMaps)[i]]])), 
+            ID=FALSE
+          )
+          # Remove the last useless columns
+          sim$plotPoints <- sim$plotPoints[, -((ncol(sim$plotPoints) - 1):ncol(sim$plotPoints))]
+        }
+        else {
+          # For SpatVector we have to bind manually (as the bind option does not exist for this signature)...
+          sim$plotPoints <- cbind(sim$plotPoints, extract(sim[[names(covariatesMaps)[i]]], sim$plotPoints))
+          # ...and remove the id column manually as well
+          sim$plotPoints <- sim$plotPoints[, !names(sim$plotPoints) %in% "id.y"]
+        }
+
+        # Rename the extracted column
         if (! covariatesMaps[i] %in% names(sim$plotPoints)){
-          names(sim$plotPoints)[names(sim$plotPoints) == "y"] <- covariatesMaps[i]
+          names(sim$plotPoints)[names(sim$plotPoints) == names(sim[[names(covariatesMaps)[i]]])] <- covariatesMaps[i]
         }
       }
       else {
