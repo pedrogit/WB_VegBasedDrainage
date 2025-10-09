@@ -239,8 +239,10 @@ ReComputeDrainageMap <- function(sim) {
       maskTo = plotAndPixelGroupArea,
       method = "bilinear",
       writeTo = plotAndPixelGroupAreaDemPath,
+      userTags = c(userTags, "MRDEMMap"),
       purge=7,
-      userTags = c(userTags, "MRDEMMap")
+      verbose = 3,
+      overwrite = TRUE
     )
   }
  
@@ -454,7 +456,8 @@ ReComputeDrainageMap <- function(sim) {
         maskTo = plotAndPixelGroupArea,
         writeTo = paste0("CANSIS_", mapName, nameEnd, "_postProcessed", ext),
         method = "bilinear",
-        userTags = c(userTags, paste0("CANSIS_", mapName, nameEnd, "_postProcessed", ext))
+        userTags = c(userTags, paste0("CANSIS_", mapName, nameEnd, "_postProcessed", ext)),
+        overwrite = TRUE
       )
       
       # Ensure the raster variable has the right name
@@ -484,7 +487,8 @@ ReComputeDrainageMap <- function(sim) {
         maskTo = plotAndPixelGroupArea,
         writeTo = file.path(getPaths()$cache, paste0("SoilGrids_", SGMapName, "_0-5cm_mean_postProcessed.tif")),
         method = "bilinear",
-        userTags = c(userTags, paste0('SoilGrids_0-5cm_mean_', SGMapName, "_postProcessed.tif"))
+        userTags = c(userTags, paste0('SoilGrids_0-5cm_mean_', SGMapName, "_postProcessed.tif")),
+        overwrite = TRUE
       )
       
       message("------------------------------------------------------------------------------")   
@@ -515,7 +519,8 @@ ReComputeDrainageMap <- function(sim) {
       cropTo = plotAndPixelGroupArea,
       writeTo = file.path(getPaths()$cache, "NA_CEC_Eco_Level3_postProcessed.shp"),
       fun = terra::vect,
-      userTags = c(userTags, "NA_CEC_Eco_Level3_postProcessed.shp")
+      userTags = c(userTags, "NA_CEC_Eco_Level3_postProcessed.shp"),
+      overwrite = TRUE
     )
     sim$EcoProvincesMap <- sim$EcoProvincesMap[, c("NA_L3NAME")]
     sim$EcoProvincesMap$NA_L3NAME <- as.factor(sim$EcoProvincesMap$NA_L3NAME)
