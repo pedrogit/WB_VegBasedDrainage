@@ -669,7 +669,7 @@ ReComputeDrainageMap <- function(sim) {
 
     # Fit the model using all the covariate present in the modeldata frame
     message("Fitting the drainage model...")
-    modelFit <- Cache(
+    sim$WB_VegBasedDrainageModel <- Cache(
       train,
       drainage ~ .,
       data = trainSet,
@@ -683,13 +683,13 @@ ReComputeDrainageMap <- function(sim) {
     )
     
     message("Fitting the drainage model. Done...")
-    print(modelFit)
+    print(sim$WB_VegBasedDrainageModel)
 
     message("------------------------------------------------------------------------------")   
-    print(confusionMatrix(predict(modelFit, testSet), testSet$drainage))
+    print(confusionMatrix(predict(sim$WB_VegBasedDrainageModel, testSet), testSet$drainage))
 
     message("------------------------------------------------------------------------------")   
-    print(varImp(modelFit))
+    print(varImp(sim$WB_VegBasedDrainageModel))
     
     # Crop covariate maps back to groupPixelMap now that the model is fitted and 
     # we don't new to extract covariate values at plot points anymore.
@@ -706,8 +706,6 @@ ReComputeDrainageMap <- function(sim) {
     }
     
     message("##############################################################################")
-    
-    sim$WB_VegBasedDrainageModel <- modelFit
   }
   # ! ----- STOP EDITING ----- ! #
   return(invisible(sim))
