@@ -659,6 +659,7 @@ ReComputeDrainageMap <- function(sim) {
             nrow(trainSet), ") and test (n=", nrow(testSet), ")...")
     
     # Parametrize the training algorithm
+    set.seed(1990)
     fitControl <- trainControl(
       method = "repeatedcv",
       repeats = 5,
