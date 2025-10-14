@@ -139,7 +139,7 @@ ReComputeDrainageMap <- function(sim) {
       seed = 100,
       userTags = c(userTags, "WB_HartJohnstoneForestClassesMap")
     )
-    # mapView(sim$WB_HartJohnstoneForestClassesMap)
+    names(sim$WB_HartJohnstoneForestClassesMap) <- "standtype"
   }
   
   ##############################################################################
@@ -313,6 +313,7 @@ ReComputeDrainageMap <- function(sim) {
       output = final_twi_path,
       userTags = c(userTags, "plotAndPixelGroupAreaDem_TWI.tif")
     )
+    names(sim$TWIMap) <- "twi"
   }
   
   ##############################################################################
@@ -371,6 +372,7 @@ ReComputeDrainageMap <- function(sim) {
       output = downslope_dist_path,
       userTags = c(userTags, "plotAndPixelGroupAreaDem_downslopeDist.tif")
     )
+    names(sim$DownslopeDistMap) <- "downslope_dist"
   }
   
   ##############################################################################
@@ -389,6 +391,7 @@ ReComputeDrainageMap <- function(sim) {
       output = aspect_path,
       userTags = c(userTags, "plotAndPixelGroupAreaDem_aspect.tif")
     )
+    names(sim$AspectMap) <- "aspect"
   }
   
   ##############################################################################
@@ -461,7 +464,7 @@ ReComputeDrainageMap <- function(sim) {
       )
       
       # Ensure the raster variable has the right name
-      names(sim[[varMapName]]) <- mapName
+      names(sim[[varMapName]]) <- tolower(mapName)
 
       ##############################################################################
       # Download, process and cache SoilGrids soil data to patch CANSIS one
