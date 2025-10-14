@@ -96,6 +96,36 @@ doEvent.WB_VegBasedDrainage = function(sim, eventTime, eventType) {
 ### template initialization
 Init <- function(sim) {
   # # ! ----- EDIT BELOW ----- ! #
+  # all.vars(sim$WB_VegBasedDrainageModel$terms)
+  # attr(terms(sim$WB_VegBasedDrainageModel), "term.labels")
+  
+  # meerge classes 6 and 7 together is 7 exists sim$WB_HartJohnstoneForestClassesMap
+  predictors <- c(sim$WB_HartJohnstoneForestClassesMap, 
+                  sim$TWIMap,
+                  sim$DownslopeDistMap,
+                  sim$AspectMap,
+                  sim$WB_VBD_ClayMap,
+                  sim$WB_VBD_SandMap,
+                  sim$WB_VBD_SiltMap,
+                  sim$WB_VBD_BDMap,
+                  sim$EcoProvincesMap
+  )
+  
+  # Assign names to covariate raster so they match names in the model
+  # Assign them right after their creation instead
+  #names(predictors) <- c("standtype", "twi", "downslope_dist", "aspect", "clay", "sand", "silt", "bulk_den", "ecoprov")
+  sim$WB_VegBasedDrainageMap <- terra::predict(predictors, sim$WB_VegBasedDrainageModel, na.rm = TRUE)
+  
+  # Convert to factor and add labels (not working)
+browser()
+  values(sim$WB_VegBasedDrainageMap) <- as.numeric(values(sim$WB_VegBasedDrainageMap))
+  sim$WB_VegBasedDrainageMap <- as.factor(sim$WB_VegBasedDrainageMap)
+  levels(sim$WB_VegBasedDrainageMap) <- data.frame(value = c(1, 2),
+                                                   class = c("poorly.drained", "well.drained"))
+  
+  # Assign it a name 
+  names(sim$WB_VegBasedDrainageMap) <- "drainage"
+  
   # ! ----- STOP EDITING ----- ! #
 
   return(invisible(sim))
@@ -646,6 +676,9 @@ ReComputeDrainageMap <- function(sim) {
     
     # Remove the "plot" column
     modelData <- modelData[, !(names(modelData) %in% c("X", "plot"))]
+    
+    # Convert the standtype from factor to numeric so the model recognize the standtype raster values
+    modelData$standtype <- as.integer(modelData$standtype)
     
     # Split the plot data into training and test data
     set.seed(1990)
