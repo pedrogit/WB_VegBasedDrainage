@@ -510,7 +510,7 @@ ReComputeDrainageMap <- function(sim) {
     message("##############################################################################")   
     message("EcoProvincesMap not supplied.")   
     message("Downloading and projecting raster NAs with SoilGrids values...")
-    sim$EcoProvincesMap <- Cache(
+    ecoProv <- Cache(
       prepInputs,
       url = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/Ecoregions/cec_na/NA_CEC_Eco_Level3.zip",
       targetFile = "NA_CEC_Eco_Level3.shp",
@@ -522,9 +522,11 @@ ReComputeDrainageMap <- function(sim) {
       userTags = c(userTags, "NA_CEC_Eco_Level3_postProcessed.shp"),
       overwrite = TRUE
     )
-    sim$EcoProvincesMap <- sim$EcoProvincesMap[, c("NA_L3NAME")]
-    sim$EcoProvincesMap$NA_L3NAME <- as.factor(sim$EcoProvincesMap$NA_L3NAME)
-    
+#browser()
+    ecoProv <- ecoProv[, c("NA_L3NAME")]
+    ecoProv$NA_L3NAME <- as.factor(ecoProv$NA_L3NAME)
+    names(ecoProv)[names(ecoProv) == "NA_L3NAME"] <- "ecoprov"
+    sim$EcoProvincesMap <- rasterize(ecoProv, plotAndPixelGroupAreaRast, field = "ecoprov")
     # Alternative dataset from Canada Open
     # # https://open.canada.ca/data/en/dataset/98fa7335-fbfe-4289-9a0e-d6bf3874b424
     # sim$EcoProvincesMap <- Cache(
@@ -591,30 +593,22 @@ ReComputeDrainageMap <- function(sim) {
       if (names(covariatesMaps)[i] %in% names(sim) && !is.null(sim[[names(covariatesMaps)[i]]])){
         message("Extracting values from ", names(covariatesMaps)[i], 
                 " (", class(sim[[names(covariatesMaps)[i]]]), ")...")
-        # Extract properly according to the type of the covariate (SpatRaster or SpatVector)
-        if (class(sim[[names(covariatesMaps)[i]]]) == "SpatRaster") {
-          message("  searching at a max distance of ", P(sim)$searchDistInPixelNb, " pixels for \"with value\" pixels...")
-          # For SpatRaster we can:
-          # - bind the produced column directly,
-          # - add a radius to search for the neared pixel value if the point fall into a NA pixel,
-          # - prevent the ID column to be added.
-          sim$plotPoints <- terra::extract(
-            sim[[names(covariatesMaps)[i]]], 
-            sim$plotPoints, 
-            bind = TRUE, 
-            method = "bilinear", 
-            search_radius = P(sim)$searchDistInPixelNb * mean(res(sim[[names(covariatesMaps)[i]]])), 
-            ID=FALSE
-          )
-          # Remove the last useless columns
-          sim$plotPoints <- sim$plotPoints[, -((ncol(sim$plotPoints) - 1):ncol(sim$plotPoints))]
-        }
-        else {
-          # For SpatVector we have to bind manually (as the bind option does not exist for this signature)...
-          sim$plotPoints <- cbind(sim$plotPoints, extract(sim[[names(covariatesMaps)[i]]], sim$plotPoints))
-          # ...and remove the id column manually as well
-          sim$plotPoints <- sim$plotPoints[, !names(sim$plotPoints) %in% "id.y"]
-        }
+        message("  searching at a max distance of ", P(sim)$searchDistInPixelNb, " pixels for \"with value\" pixels...")
+        # For SpatRaster we can:
+        # - bind the produced column directly,
+        # - add a radius to search for the neared pixel value if the point fall into a NA pixel,
+        # - prevent the ID column to be added.
+        sim$plotPoints <- terra::extract(
+          sim[[names(covariatesMaps)[i]]], 
+          sim$plotPoints, 
+          bind = TRUE, 
+          method = "bilinear", 
+          search_radius = P(sim)$searchDistInPixelNb * mean(res(sim[[names(covariatesMaps)[i]]])), 
+          ID=FALSE
+        )
+        
+        # Remove the last useless columns
+        sim$plotPoints <- sim$plotPoints[, -((ncol(sim$plotPoints) - 1):ncol(sim$plotPoints))]
 
         # Rename the extracted column
         if (! covariatesMaps[i] %in% names(sim$plotPoints)){
