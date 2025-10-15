@@ -611,7 +611,7 @@ ReComputeDrainageMap <- function(sim) {
                         "WB_VBD_ClayMap" = "clay", 
                         "WB_VBD_SandMap" = "sand",
                         "WB_VBD_SiltMap" = "silt",
-                        "WB_VBD_BDMap" = "bulk_den",
+                        "WB_VBD_BDMap" = "bd",
                         "EcoProvincesMap" = "ecoprov")
 
     # If standtype is not part of the plot data, get the types from sim$WB_HartJohnstoneForestClassesMap
