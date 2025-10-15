@@ -116,8 +116,8 @@ Init <- function(sim) {
   #names(predictors) <- c("standtype", "twi", "downslope_dist", "aspect", "clay", "sand", "silt", "bulk_den", "ecoprov")
   sim$WB_VegBasedDrainageMap <- terra::predict(predictors, sim$WB_VegBasedDrainageModel, na.rm = TRUE)
   
-  # Convert to factor and add labels (not working)
-browser()
+  # Convert to factor and add proper labels
+  values(sim$WB_VegBasedDrainageMap) <- as.factor(values(sim$WB_VegBasedDrainageMap))
   values(sim$WB_VegBasedDrainageMap) <- as.numeric(values(sim$WB_VegBasedDrainageMap))
   sim$WB_VegBasedDrainageMap <- as.factor(sim$WB_VegBasedDrainageMap)
   levels(sim$WB_VegBasedDrainageMap) <- data.frame(value = c(1, 2),
