@@ -160,7 +160,8 @@ ReComputeDrainageMap <- function(sim) {
     sim$WB_HartJohnstoneForestClassesMap <- Cache(
       getRandomCategoricalMap,
       origin = c(-667296, 1758502),
-      width = rastWidth,
+      ncol = rastWidth,
+      nrow = rastWidth,
       crs = "ESRI:102002",
       nbregion = 2000,
       valuevect = 1:6,
