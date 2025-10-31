@@ -38,7 +38,7 @@ defineModule(sim, list(
     expectsInput(objectName = "MRDEMMap", 
                  objectClass = "SpatRast", 
                  desc = "Medium Resolution Digital Elevation Model (MRDEM) for Canada", 
-                 sourceURL = NA),
+                 sourceURL = "https://canelevation-dem.s3.ca-central-1.amazonaws.com/mrdem-30/mrdem-30-dtm.tif"),
     expectsInput(objectName = "TWIMap", 
                  objectClass = "SpatRast", 
                  desc = "TWI raster computed from Canada DEM", 
@@ -66,11 +66,15 @@ defineModule(sim, list(
     expectsInput(objectName = "WB_VBD_BDMap", 
                  objectClass = "SpatRast", 
                  desc = "Bulk Density raster from NRCan", 
-                 sourceURL = "https://sis.agr.gc.ca/cansis/nsdb/psm/Silt/Silt_X0_5_cm_100m1980-2000v1.tif"),
+                 sourceURL = "https://sis.agr.gc.ca/cansis/nsdb/psm/BD/BD_X0_5_cm_100m1980-2000v1.tif"),
     expectsInput(objectName = "WB_VegBasedDrainageModel", 
                  objectClass = "", 
                  desc = "", 
-                 sourceURL = NA)
+                 sourceURL = NA),
+    expectsInput(objectName = "EcoProvincesMap", 
+                 objectClass = "SpatVector", 
+                 desc = "", 
+                 sourceURL = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/Ecoregions/cec_na/NA_CEC_Eco_Level3.zip")
   ),
   outputObjects = rbind(
     createsOutput(objectName = "WB_VegBasedDrainageMap", 
@@ -277,10 +281,9 @@ reComputeDrainageMap <- function(sim) {
     plotAndPixelGroupAreaDemPath <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem.tif")
     
     # Download and process the big thing
-    # https://open.canada.ca/data/en/dataset/18752265-bda3-498c-a4ba-9dfe68cb98da
     sim$MRDEMMap <- Cache(
       prepInputs,
-      url = "https://canelevation-dem.s3.ca-central-1.amazonaws.com/mrdem-30/mrdem-30-dtm.tif",
+      url = extractURL("MRDEMMap", sim),
       targetFile = "mrdem-30-dtm.tif",
       destinationPath = getPaths()$cachePath,
       fun = terra::rast,
@@ -501,7 +504,7 @@ reComputeDrainageMap <- function(sim) {
         
       sim[[varMapName]] <- Cache(
         prepInputs,
-        url = paste0(baseURL, mapName, "/", fileName),
+        url = extractURL(varMapName, sim),
         targetFile = fileName,
         destinationPath = getPaths()$cache,
         fun = terra::rast,
@@ -566,7 +569,7 @@ reComputeDrainageMap <- function(sim) {
     message("Downloading and projecting raster NAs with SoilGrids values...")
     ecoProv <- Cache(
       prepInputs,
-      url = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/Ecoregions/cec_na/NA_CEC_Eco_Level3.zip",
+      url = extractURL("EcoProvincesMap", sim),
       targetFile = "NA_CEC_Eco_Level3.shp",
       destinationPath = getPaths()$cache,
       projectTo = plotAndPixelGroupAreaRast,
@@ -581,6 +584,7 @@ reComputeDrainageMap <- function(sim) {
     ecoProv$NA_L3NAME <- as.factor(ecoProv$NA_L3NAME)
     names(ecoProv)[names(ecoProv) == "NA_L3NAME"] <- "ecoprov"
     sim$EcoProvincesMap <- rasterize(ecoProv, plotAndPixelGroupAreaRast, field = "ecoprov")
+    
     # Alternative dataset from Canada Open
     # # https://open.canada.ca/data/en/dataset/98fa7335-fbfe-4289-9a0e-d6bf3874b424
     # sim$EcoProvincesMap <- Cache(
