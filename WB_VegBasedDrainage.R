@@ -12,6 +12,7 @@ defineModule(sim, list(
   # citation = list("citation.bib"),
   # documentation = list("NEWS.md", "README.md", "WB_VegBasedDrainage.Rmd"),
   reqdPkgs = list("data.table", "reproducible", "LandR"),
+  loadOrder = list(after = c("WB_HartJohnstoneForestClasses")),
   parameters = rbind(
     defineParameter("WB_VegBasedDrainageTimeStep", "numeric", 1, NA, NA,
                     "Simulation time at which the drainage map is regenerated."),
@@ -81,26 +82,42 @@ defineModule(sim, list(
 doEvent.WB_VegBasedDrainage = function(sim, eventTime, eventType) {
   switch(
     eventType,
+    
     init = {
-      sim <- Init(sim)
-      sim <- scheduleEvent(sim, time(sim), "WB_VegBasedDrainage", "ReComputeDrainageMap")
+      sim <- scheduleEvent(sim, time(sim), "WB_VegBasedDrainage", "reComputeDrainageMap", 2)
     },
-    ReComputeDrainageMap = {
-      sim <- scheduleEvent(sim, time(sim) + P(sim)$WB_VegBasedDrainageTimeStep, "WB_VegBasedDrainage", "ReComputeDrainageMap")
+    
+    reComputeDrainageMap = {
+      sim <- reComputeDrainageMap(sim)
+      sim <- scheduleEvent(sim, time(sim) + P(sim)$WB_VegBasedDrainageTimeStep, "WB_VegBasedDrainage", "reComputeDrainageMap")
     },
     warning(noEventWarning(sim))
   )
   return(invisible(sim))
 }
 
-### template initialization
-Init <- function(sim) {
-  # # ! ----- EDIT BELOW ----- ! #
-  # all.vars(sim$WB_VegBasedDrainageModel$terms)
-  # attr(terms(sim$WB_VegBasedDrainageModel), "term.labels")
+reComputeDrainageMap <- function(sim) {
+  message("Recomputing sim$WB_VegBasedDrainageMap for ", 
+          format(ncell(sim$WB_HartJohnstoneForestClassesMap), scientific = FALSE), " pixels..")
   
-  # meerge classes 6 and 7 together is 7 exists sim$WB_HartJohnstoneForestClassesMap
-  predictors <- c(sim$WB_HartJohnstoneForestClassesMap, 
+  newForestClassesMap <- sim$WB_HartJohnstoneForestClassesMap
+
+  # Merge WB_HartJohnstoneForestClassesMap well drained spruce and poorly drained 
+  # spruce together because WB_VegBasedDrainageModel can not be based on any
+  # drainage values (only on forest classes values independent of drainage)
+  if (any(values(newForestClassesMap) == 7, na.rm = TRUE)){
+    message("Some drainage qualified spruce values were found in sim$WB_HartJohnstoneForestClassesMap.")
+    message("Merging them together into the spruce category before predicting sim$WB_VegBasedDrainageMap...")
+    newForestClassesMap[newForestClassesMap == 7L] <- 6L
+  
+    levels(newForestClassesMap) <- data.frame(
+      value = c(1L, 2L, 3L, 4L, 5L, 6L),
+      class = c("deci", "mixed", "conimix", "jackpine", "larch", "spruce")
+    )
+    names(newForestClassesMap) <- "standtype"
+  }
+  
+  predictors <- c(newForestClassesMap, 
                   sim$TWIMap,
                   sim$DownslopeDistMap,
                   sim$AspectMap,
@@ -111,9 +128,7 @@ Init <- function(sim) {
                   sim$EcoProvincesMap
   )
   
-  # Assign names to covariate raster so they match names in the model
-  # Assign them right after their creation instead
-  #names(predictors) <- c("standtype", "twi", "downslope_dist", "aspect", "clay", "sand", "silt", "bulk_den", "ecoprov")
+  # Recompute the drainage map
   sim$WB_VegBasedDrainageMap <- terra::predict(predictors, sim$WB_VegBasedDrainageModel, na.rm = TRUE)
   
   # Convert to factor and add proper labels
@@ -124,26 +139,11 @@ Init <- function(sim) {
   # Assign it a name 
   names(sim$WB_VegBasedDrainageMap) <- "drainage"
   
-  # ! ----- STOP EDITING ----- ! #
-
-  return(invisible(sim))
-}
-
-### template for your event1
-ReComputeDrainageMap <- function(sim) {
-  # ! ----- EDIT BELOW ----- ! #
-  
-  # Dummy use of input objects to temporarily stop SpaDES warning
-  dummy <- sim$MRDEMMap + sim$TWIMap + sim$AspectMap + sim$DownslopeDistMap +
-           sim$WB_VBD_ClayMap + sim$WB_VBD_SandMap + sim$WB_VBD_SiltMap + sim$WB_VBD_BDMap
-  dummy <- sim$plotPoints
-  dummy <- sim$WB_VegBasedDrainageModel
-  
-  # ! ----- STOP EDITING ----- ! #
   return(invisible(sim))
 }
 
 .inputObjects <- function(sim) {
+  
   userTags <- c(currentModule(sim), "function:.inputObjects") 
   ##############################################################################
   # Generate a fake WB_HartJohnstoneForestClassesMap if it is not supplied
@@ -168,9 +168,33 @@ ReComputeDrainageMap <- function(sim) {
       seed = 100,
       userTags = c(userTags, "WB_HartJohnstoneForestClassesMap")
     )
+    
+    # Convert to factor and add proper labels
+    values(sim$WB_HartJohnstoneForestClassesMap) <- as.factor(values(sim$WB_HartJohnstoneForestClassesMap))
+    levels(sim$WB_HartJohnstoneForestClassesMap) <- data.frame(
+      value = c(1L, 2L, 3L, 4L, 5L, 6L),
+      class = c("deci", "mixed", "conimix", "jackpine", "larch", "spruce")
+    )
     names(sim$WB_HartJohnstoneForestClassesMap) <- "standtype"
   }
-  
+
+  if (!is.null(sim$WB_HartJohnstoneForestClassesMap)){
+    baseRast <- sim$WB_HartJohnstoneForestClassesMap
+  }
+  else if (!is.null(sim$pixelGroupMap)){
+    baseRast <- sim$pixelGroupMap
+  }
+  else if (!is.null(sim$rasterToMatch)){
+    baseRast <- sim$rasterToMatch
+  }
+  else {
+    stop(paste("At least one of WB_HartJohnstoneForestClassesMap, pixelGroupMap or ",
+               "rasterToMatch must be defined in sim before WB_VegBasedDrainage can be initialized..."))
+  }
+  baseExtent <- ext(baseRast)
+  baseCRS <- crs(baseRast)
+  baseExtentPoly <- vect(baseExtent, crs = baseCRS)
+
   ##############################################################################
   # Use our own plotPoints data if none is supplied
   ##############################################################################
@@ -180,7 +204,8 @@ ReComputeDrainageMap <- function(sim) {
     message("##############################################################################")   
     message("plotPoints not supplied.")   
     message("You must provide a CSV table with \"drainage\", \"latitude\", \"longitude\" ")
-    message("and \"standtype\" following the WB_HartJohnstone classification.")
+    message("and \"standtype\" following the WB_HartJohnstone classification in order to ")
+    message("fit the WB_VegBasedDrainageModel.")
     message("Loading default plot data points as sim$plotPoints (n=", nrow(plotDF), ")...")
     
     # Purge standtype of drainage info
@@ -200,16 +225,17 @@ ReComputeDrainageMap <- function(sim) {
 
     # Reassign factors to match WB_HartJohnstone classification used in the 
     # WB_WB_HartJohnstoneClasse module
-    # labels = c("deci", "mixed", "conimix", "jackpine", "larch", "spruce", "non forested")
+    labels = c("deci", "mixed", "conimix", "jackpine", "larch", "spruce", "nonforested")
     # levels = c(1L, 2L, 3L, 4L, 5L, 6L, 7L)
     new_codes <- c(3L, 1L, 2L, 4L, 5L, 7L, 6L)[as.integer(plotDF$standtype)]
     
-    # Assign new codes while keeping levels the same
-    plotDF$standtype <- factor(new_codes, levels = 1:7, labels = terra::levels(plotDF$standtype))
+    # Assign new codes and levels
+    # plotDF$standtype <- factor(new_codes, levels = 1:7, labels = terra::levels(plotDF$standtype))
+    plotDF$standtype <- factor(new_codes, levels = 1:7, labels = labels)
     
     # Convert the dataframe to a SpatVector object
     plotPoints <- vect(plotDF, geom = c("Longitude", "Latitude"), crs = "EPSG:4326")  # WGS84
-    sim$plotPoints <- project(plotPoints, crs(sim$WB_HartJohnstoneForestClassesMap))
+    sim$plotPoints <- project(plotPoints, baseCRS)
     # writeVector(sim$plotPoints, "G:/Home/temp/plotPoints.shp", overwrite=TRUE)
   }
   
@@ -223,19 +249,15 @@ ReComputeDrainageMap <- function(sim) {
   # Make a buffer around the plot data
   plotPoints100KmBuffers <- aggregate(buffer(sim$plotPoints, width = 100000))  # 1000 m buffer (if CRS is in meters)
   
-  # Extract the WB_HartJohnstoneForestClassesMap extent
-  WB_HartJohnstoneExtent <- ext(sim$WB_HartJohnstoneForestClassesMap)
-  WB_HartJohnstoneExtentPoly <- vect(WB_HartJohnstoneExtent, crs = crs(sim$WB_HartJohnstoneForestClassesMap))
-  crs(WB_HartJohnstoneExtentPoly) <- crs(sim$WB_HartJohnstoneForestClassesMap)
+  # Merge it with the base extent polygon
+  plotAndPixelGroupArea <- aggregate(rbind(plotPoints100KmBuffers, baseExtentPoly))
   
-  # Merge them together
-  plotAndPixelGroupArea <- aggregate(rbind(plotPoints100KmBuffers, WB_HartJohnstoneExtentPoly))
   # mapView(plotAndPixelGroupArea)
   # writeVector(plotAndPixelGroupArea, file.path(getPaths()$cache, "plotAndPixelGroupArea.shp"), overwrite = TRUE)
   
-  # We create a raster with the merged area so projectTo does not crop it
+  # Create a raster with the merged area so projectTo does not crop it
   # see https://github.com/PredictiveEcology/reproducible/issues/431
-  plotAndPixelGroupAreaRast <- extend(sim$WB_HartJohnstoneForestClassesMap, plotAndPixelGroupArea)
+  plotAndPixelGroupAreaRast <- terra::extend(baseRast, plotAndPixelGroupArea)
 
   ##############################################################################
   # Download and postProcess the Medium Resolution Digital Elevation Model (MRDEM)
@@ -554,7 +576,7 @@ ReComputeDrainageMap <- function(sim) {
       userTags = c(userTags, "NA_CEC_Eco_Level3_postProcessed.shp"),
       overwrite = TRUE
     )
-#browser()
+
     ecoProv <- ecoProv[, c("NA_L3NAME")]
     ecoProv$NA_L3NAME <- as.factor(ecoProv$NA_L3NAME)
     names(ecoProv)[names(ecoProv) == "NA_L3NAME"] <- "ecoprov"
@@ -598,8 +620,8 @@ ReComputeDrainageMap <- function(sim) {
     nbPLotPoints <- nrow(sim$plotPoints)
     message("##############################################################################")
     message("WB_VegBasedDrainageModel not supplied. Fitting a model using the ")
-    message("provided plot points (n=", nbPLotPoints, "), soil (caly, silt, sand and bulked ")
-    message("density), aspect, downslope distance to water, ecoprovince and TWI maps...")
+    message("plot points provided in the data folder (n=", nbPLotPoints, "), soil (clay, silt, ")
+    message("sand and bulked density), aspect, downslope distance to water, ecoprovince and TWI maps...")
     
     # List the covariates from which tio extract values
     # element's names are the names of sim maps to extract values from (e.g. sim$TWIMap)
@@ -618,7 +640,6 @@ ReComputeDrainageMap <- function(sim) {
       covariatesMaps <- c("WB_HartJohnstoneForestClassesMap" = "standtype", covariatesMaps)
     }
     message("------------------------------------------------------------------------------")   
-    
     # Extract values from covariate maps
     for (i in seq_along(covariatesMaps)) {
       # Extract the values only if the covariate exists and it's not NULL
@@ -677,7 +698,7 @@ ReComputeDrainageMap <- function(sim) {
     modelData <- modelData[, !(names(modelData) %in% c("X", "plot"))]
     
     # Convert the standtype from factor to numeric so the model recognize the standtype raster values
-    modelData$standtype <- as.integer(modelData$standtype)
+    #modelData$standtype <- as.integer(modelData$standtype)
     
     # Split the plot data into training and test data
     set.seed(1990)
@@ -731,7 +752,7 @@ ReComputeDrainageMap <- function(sim) {
       sim[[names(covariatesMaps)[i]]] <- Cache(
         postProcessTo,
         sim[[names(covariatesMaps)[i]]],
-        cropTo = sim$WB_HartJohnstoneForestClassesMap
+        cropTo = baseRast
       )
     }
     
