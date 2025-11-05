@@ -469,17 +469,13 @@ reComputeDrainageMap <- function(sim) {
   # output becomes cacheable
   cacheableGdalTranslateVRT <- function(mapName, destinationPath){
     baseURL="/vsicurl?max_retry=3&retry_delay=1&list_dir=no&url=https://files.isric.org/soilgrids/latest/data/"
-    bbox = c(-13597717,7513741,-10879995,5233135)
-    igh = '+proj=igh +lat_0=0 +lon_0=0 +datum=WGS84 +units=m +no_defs' # proj string for Homolosine projection
+    vrt_rast <- rast(paste0(baseURL, mapName, "/", mapName, "_0-5cm_mean.vrt"))
+    cropped_rast <- crop(vrt_rast, ext(-13597717, -10879995, 5233135, 7513741))
     
-    targetPath <- gdal_translate(
-      paste0(baseURL, mapName, "/", mapName, "_0-5cm_mean.vrt"),
-      file.path(destinationPath, paste0(mapName, '_SoilGrids', "_0-5cm_mean.tif")),
-      tr = c(250, 250),
-      projwin = bbox,
-      projwin_srs = igh
-    )
-    return(rast(targetPath))
+    processedFilePath <- file.path(destinationPath, paste0('SoilGrids_', mapName, "_0-5cm_mean.tif"))
+    writeRaster(cropped_rast, processedFilePath, overwrite = TRUE)
+    
+    return(rast(processedFilePath))
   }
   
   sapply(CANSISMapToProcess, function(mapName){
