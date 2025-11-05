@@ -477,7 +477,7 @@ reComputeDrainageMap <- function(sim) {
     
     return(rast(processedFilePath))
   }
-  
+
   sapply(CANSISMapToProcess, function(mapName){
     varMapName <- paste0("WB_VBD_", mapName, "Map") # e.g. WB_VBD_clayMap
     if (!suppliedElsewhere(varMapName, sim)){
@@ -487,7 +487,8 @@ reComputeDrainageMap <- function(sim) {
               varMapName, " to sim$pixelGroupMap...") 
       fileName <- paste0(mapName, nameEnd, ext)
       
-      # Assign NULL to dynamically assigned maps so SpaDES stop complaining. 
+      # Assign NULL to dynamically assigned maps using their explicait names
+      # so SpaDES stop complaining. 
       if (mapName == "Clay") {
         sim$WB_VBD_ClayMap <- NULL
       } else if (mapName == "Sand") {
@@ -497,7 +498,7 @@ reComputeDrainageMap <- function(sim) {
       } else if (mapName == "BD") {
         sim$WB_VBD_BDMap <- NULL
       }
-        
+
       sim[[varMapName]] <- Cache(
         prepInputs,
         url = extractURL(varMapName, sim),
@@ -522,19 +523,19 @@ reComputeDrainageMap <- function(sim) {
       # https://files.isric.org/soilgrids/latest/data/
       SGMapName <- equivSoilGridsMaps[[which(CANSISMapToProcess == mapName)]]
       message("------------------------------------------------------------------------------")   
-      message("Downloading SoilGrids ", SGMapName, "...") 
-      rast <- Cache(
-        cacheableGdalTranslateVRT, 
-        SGMapName, 
+      message("Downloading SoilGrids ", SGMapName, "...")
+      sgrast <- Cache(
+        cacheableGdalTranslateVRT,
+        SGMapName,
         destinationPath = getPaths()$cache,
         userTags = c(userTags, paste0('SoilGrids_0-5cm_mean_', SGMapName, ".tif"))
       )
-      
+
       message("------------------------------------------------------------------------------")   
       message("Cropping/reprojecting/resampling and masking SoilGrids ", SGMapName, "...") 
       patchRast <- Cache(
         postProcess,
-        rast,
+        sgrast,
         cropTo = plotAndPixelGroupArea,
         projectTo = plotAndPixelGroupAreaRast,
         maskTo = plotAndPixelGroupArea,
