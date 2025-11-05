@@ -487,7 +487,7 @@ reComputeDrainageMap <- function(sim) {
               varMapName, " to sim$pixelGroupMap...") 
       fileName <- paste0(mapName, nameEnd, ext)
       
-      # Assign NULL to dynamically assigned maps using their explicait names
+      # Assign NULL to dynamically assigned maps using their explicit names
       # so SpaDES stop complaining. 
       if (mapName == "Clay") {
         sim$WB_VBD_ClayMap <- NULL
