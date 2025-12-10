@@ -137,7 +137,7 @@ reComputeDrainageMap <- function(sim) {
   sim$WB_VegBasedDrainageMap <- terra::predict(predictors, sim$WB_VegBasedDrainageModel, na.rm = TRUE)
   
   # Convert to factor and add proper labels
-  values(sim$WB_VegBasedDrainageMap) <- as.factor(values(sim$WB_VegBasedDrainageMap))
+  sim$WB_VegBasedDrainageMap <- terra::as.factor(sim$WB_VegBasedDrainageMap)
   levels(sim$WB_VegBasedDrainageMap) <- data.frame(value = c(1, 2),
                                                    class = c("poorly.drained", "well.drained"))
   
@@ -175,7 +175,7 @@ reComputeDrainageMap <- function(sim) {
     )
     
     # Convert to factor and add proper labels
-    values(sim$WB_HartJohnstoneForestClassesMap) <- as.factor(values(sim$WB_HartJohnstoneForestClassesMap))
+    sim$WB_HartJohnstoneForestClassesMap <- terra::as.factor(sim$WB_HartJohnstoneForestClassesMap)
     levels(sim$WB_HartJohnstoneForestClassesMap) <- data.frame(
       value = c(1L, 2L, 3L, 4L, 5L, 6L),
       class = c("deci", "mixed", "conimix", "jackpine", "larch", "spruce")
