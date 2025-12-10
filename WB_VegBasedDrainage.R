@@ -24,7 +24,7 @@ defineModule(sim, list(
     expectsInput(objectName = "WB_HartJohnstoneForestClassesMap",
                  objectClass = "SpatRast",
                  desc = paste("WB_HartJohnstoneForestClassesMap from the ",
-                              "WB_HartJohnstoneForestClasses mudule used as ",
+                              "WB_HartJohnstoneForestClasses module used as ",
                               "standtype"),
                  sourceURL = NA),
     expectsInput(objectName = "plotPoints", 
