@@ -3,7 +3,8 @@ defineModule(sim, list(
   description = paste("Construct a model for drainage in western boreal canada using plot data and other covariates and reuse it to predict drainage from Biomass_core simulated maps"),
   keywords = c("drainage", "western boreal"),
   authors =  c(
-    person("Pierre", "Racine", email= "pierre.racine@sbf.ulaval.ca", role = "aut")
+    person("Pierre", "Racine", email= "pierre.racine@sbf.ulaval.ca", role = "cre"),
+    person("Andres", "Caseiro Guilhem", email= "andres.caseiro-guilhem.1@ulaval.ca", role = "aut")
   ),
   childModules = character(0),
   version = list(WB_VegBasedDrainage = "0.0.0.1"),
