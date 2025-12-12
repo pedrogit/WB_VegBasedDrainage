@@ -263,7 +263,20 @@ reComputeDrainageMap <- function(sim) {
   # Create a raster with the merged area so projectTo does not crop it
   # see https://github.com/PredictiveEcology/reproducible/issues/431
   plotAndPixelGroupAreaRast <- terra::extend(baseRast, plotAndPixelGroupArea)
-
+  
+  
+  ##############################################################################
+  # Define a function to download a portion of a VRT raster
+  ##############################################################################
+  # cropVRTToDisk <- function(vrtURL, cropTo, destinationPath){
+  #   vsicurlURL = paste0("/vsicurl?max_retry=3&retry_delay=1&list_dir=no&url=", vrtURL)
+  #   vrt <- terra::rast(vsicurlURL)
+  #   cropTo <- terra::project(cropTo, crs(vrt))
+  #   cropped_rast <- terra::crop(vrt, cropTo)
+  #   writeRaster(cropped_rast, destinationPath, overwrite = TRUE)
+  #   return(rast(destinationPath))
+  # }
+  
   ##############################################################################
   # Download and postProcess the Medium Resolution Digital Elevation Model (MRDEM)
   # for Canada if required
@@ -278,31 +291,53 @@ reComputeDrainageMap <- function(sim) {
     message("Downloading/cropping/reprojecting/resampling/masking medium resolution ")
     message("MRDEM dem (80GB) to union of studyarea and a 100km buffer around buffered plot points...")
     
-    # Define the path where to save the dem
+    # message("------------------------------------------------------------------------------")   
+    # message("Downloading a cropped version of MRDEM...")
+    # croppedDEMPath <- file.path(getPaths()$cachePath, "mrdem-30-dtm_cropped.tif")
+    # sim$MRDEMMap <- Cache(
+    #   cropVRTToDisk,
+    #   vrtURL = extractURL("MRDEMMap", sim),
+    #   cropTo = plotAndPixelGroupArea,
+    #   destinationPath = croppedDEMPath
+    # )
+    # 
+    # message("------------------------------------------------------------------------------")   
+    # message("Projecting and masking MRDEM...")
     plotAndPixelGroupAreaDemPath <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem.tif")
-    
+    # sim$MRDEMMap <- Cache(
+    #   postProcess,
+    #   from = croppedDEMPath,
+    #   projectTo = plotAndPixelGroupAreaRast,
+    #   align_only = TRUE,
+    #   maskTo = plotAndPixelGroupArea,
+    #   writeTo = plotAndPixelGroupAreaDemPath,
+    #   userTags = c(userTags, "MRDEMMap")
+    # )
+      
     # Download and process the big thing
-    sim$MRDEMMap <- Cache(
-      prepInputs,
-      url = extractURL("MRDEMMap", sim),
-      targetFile = "mrdem-30-dtm.tif",
-      destinationPath = getPaths()$cachePath,
-      fun = terra::rast,
-      cropTo = plotAndPixelGroupArea,
-      projectTo = plotAndPixelGroupAreaRast,
-      align_only = TRUE,
-      maskTo = plotAndPixelGroupArea,
-      method = "bilinear",
-      writeTo = plotAndPixelGroupAreaDemPath,
-      userTags = c(userTags, "MRDEMMap"),
-      purge=7,
-      verbose = 3,
-      overwrite = TRUE
-    )
+      sim$MRDEMMap <- Cache(
+        prepInputs,
+        url = extractURL("MRDEMMap", sim),
+        targetFile = "mrdem-30-dtm.tif",
+        destinationPath = getPaths()$cachePath,
+        fun = terra::rast,
+        cropTo = plotAndPixelGroupArea,
+        projectTo = plotAndPixelGroupAreaRast,
+        align_only = TRUE,
+        maskTo = plotAndPixelGroupArea,
+        method = "bilinear",
+        writeTo = plotAndPixelGroupAreaDemPath,
+        userTags = c(userTags, "MRDEMMap"),
+        purge=7,
+        verbose = 3,
+        overwrite = TRUE
+      )
   }
- 
+
+  ##############################################################################
   # Define a wrapper function around whitebox functions to make their arguments
   # and result cacheable
+  ##############################################################################
   cacheableWhiteboxFct <- function(fun_name, ...){
     dots <- list(...)
     dots["cacheable_input"] <- NULL
