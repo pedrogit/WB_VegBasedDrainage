@@ -49,3 +49,288 @@ computeDrainageMap <- function(
   names(WB_VegBasedDrainageMap) <- "drainage"
   return(WB_VegBasedDrainageMap)
 }
+
+##############################################################################
+# Function to read and clean the plot data used to fit the WB_VegBasedDrainageModel
+##############################################################################
+getAndcleanPlotData <- function(plotFile, crs) {
+    plotDF <- read.csv(plotFile)
+
+    # Purge standtype of drainage info
+    if ("standtype" %in% names(plotDF)){
+      plotDF$standtype <- sub("Poorly-drained ", "", plotDF$standtype)
+      plotDF$standtype <- sub("Well-drained ", "", plotDF$standtype)
+    }
+
+    # Convert character columns to factor and fix values (factor names)
+    plotDF[] <- lapply(plotDF, function(col){
+    newCol <- col
+      if (is.character(newCol)) {
+        newCol <- factor(newCol)
+        levels(newCol) <- make.names(levels(newCol))
+      }
+      newCol
+    })
+
+    # Reassign factors to match WB_HartJohnstone classification used in the 
+    # WB_WB_HartJohnstoneClasse module
+    labels = c("deci", "mixed", "conimix", "jackpine", "larch", "spruce", "nonforested")
+    # levels = c(1L, 2L, 3L, 4L, 5L, 6L, 7L)
+    new_codes <- c(3L, 1L, 2L, 4L, 5L, 7L, 6L)[as.integer(plotDF$standtype)]
+    
+    # Assign new codes and levels
+    # plotDF$standtype <- factor(new_codes, levels = 1:7, labels = terra::levels(plotDF$standtype))
+    plotDF$standtype <- factor(new_codes, levels = 1:7, labels = labels)
+    
+    # Convert the dataframe to a SpatVector object
+    plotPoints <- vect(plotDF, geom = c("Longitude", "Latitude"), crs = "EPSG:4326")  # WGS84
+    plotPoints <- project(plotPoints, crs)
+
+    return(plotPoints)
+  }
+
+##############################################################################
+# Define a wrapper function around whitebox functions to make their arguments
+# and result cacheable
+##############################################################################
+cacheableWhiteboxFct <- function(fun_name, ...){
+  dots <- list(...)
+  dots["cacheable_input"] <- NULL
+  # output <- dots$output
+  # dots["output"] <- NULL
+  # do.call(fun_name, output = output, dots)
+  do.call(fun_name, dots)
+  return (rast(dots$output))
+}
+
+##############################################################################
+# Generate a TWI map from a MRDEM map
+##############################################################################
+generateTWIMap <- function(
+  dem,
+  dem_path,
+  dem_filled_path,
+  slope_path,
+  flow_acc_path,
+  final_twi_path,
+  cachePath,
+  userTags = NULL
+){
+  message("Computing TWIMap (1/4) from MRDEMMap: Filling depressions...")
+  dep <- Cache(
+    cacheableWhiteboxFct,
+    cacheable_input = dem,
+    fun_name = "wbt_fill_depressions",
+    dem = dem_path,
+    output = dem_filled_path,
+    cachePath = cachePath,
+    userTags = c(userTags, "plotAndPixelGroupAreaDem_filled.tif")
+  )
+
+  message("------------------------------------------------------------------------------")   
+  message("Computing TWIMap (2/4) from MRDEMMap: Computing slopes...")
+  slope <- Cache(
+    cacheableWhiteboxFct,
+    cacheable_input = dep,
+    fun_name = "wbt_slope",
+    dem = dem_filled_path,
+    output = slope_path,
+    zfactor = 1,
+    cachePath = cachePath,
+    userTags = c(userTags, "plotAndPixelGroupAreaDem_slope.tif")
+  )
+  
+  message("------------------------------------------------------------------------------")   
+  message("Computing TWIMap (3/4) from MRDEMMap: Flow accumulation...")
+  flow <- Cache(
+    cacheableWhiteboxFct,
+    cacheable_input = dep,
+    fun_name = "wbt_d8_flow_accumulation",
+    input = dem_filled_path,
+    output = flow_acc_path,
+    out_type = "specific contributing area",
+    cachePath = cachePath,
+    userTags = c(userTags, "plotAndPixelGroupAreaDem_flowAccum.tif")
+  )
+  
+  message("------------------------------------------------------------------------------")   
+  message("Computing TWIMap (4/4) from MRDEMMap: Final step...")
+  TWIMap <- Cache(
+    cacheableWhiteboxFct,
+    cacheable_input = flow + slope,
+    fun_name = "wbt_wetness_index",
+    sca = flow_acc_path,
+    slope = slope_path,
+    output = final_twi_path,
+    cachePath = cachePath,
+    userTags = c(userTags, "plotAndPixelGroupAreaDem_TWI.tif")
+  )
+  names(TWIMap) <- "twi"
+  return (TWIMap)
+}
+
+##############################################################################
+# Generate a Downslope Distance map from a MRDEM map
+##############################################################################
+generateDownslopeDistMap <- function(
+  dem,
+  dem_path,
+  dem_breach_filled_path,
+  bf_flow_acc_path,
+  streams_path,
+  downslope_dist_path,
+  cachePath,
+  userTags = NULL
+){
+    message("Computing DownslopeDistMap (1/4) from MRDEMMap: Breaching depressions...")
+    breach_dep <- Cache(
+      cacheableWhiteboxFct,
+      cacheable_input = dem,
+      fun_name = "wbt_breach_depressions_least_cost",
+      dem = dem_path,
+      dist = 3,
+      output = dem_breach_filled_path,
+      cachePath = cachePath,
+      userTags = c(userTags, "plotAndPixelGroupAreaDem_breachFilledDep.tif")
+    )
+    
+    message("------------------------------------------------------------------------------")   
+    message("Computing DownslopeDistMap (2/4) from MRDEMMap: Flow accumulation from breach filled...")
+    flow <- Cache(
+      cacheableWhiteboxFct,
+      cacheable_input = breach_dep,
+      fun_name = "wbt_d8_flow_accumulation",
+      input = dem_breach_filled_path,
+      output = bf_flow_acc_path,
+      out_type = "cells",
+      cachePath = cachePath,
+      userTags = c(userTags, "plotAndPixelGroupAreaDem_breachFilledFlowAccum.tif")
+    )
+    
+    message("------------------------------------------------------------------------------")   
+    message("Computing DownslopeDistMap (3/4) from MRDEMMap: Extract streams...")
+    streams <- Cache(
+      cacheableWhiteboxFct,
+      cacheable_input = flow,
+      fun_name = "wbt_extract_streams",
+      flow_accum = bf_flow_acc_path,
+      output = streams_path,
+      threshold = 1000,
+      cachePath = cachePath,
+      userTags = c(userTags, "plotAndPixelGroupAreaDem_streams.tif")
+    )
+
+    message("------------------------------------------------------------------------------")   
+    message("Computing DownslopeDistMap (4/4) from MRDEMMap: Final step...")
+    downslopeDistMap <- Cache(
+      cacheableWhiteboxFct,
+      cacheable_input = breach_dep + streams,
+      fun_name = "wbt_downslope_distance_to_stream",
+      dem = dem_breach_filled_path,
+      streams = streams_path,
+      output = downslope_dist_path,
+      cachePath = cachePath,
+      userTags = c(userTags, "plotAndPixelGroupAreaDem_downslopeDist.tif")
+    )
+    names(downslopeDistMap) <- "downslope_dist"
+    return (downslopeDistMap)
+}
+
+##############################################################################
+# Define a wrapper around gdalTranslate for this specific dataset so it's 
+# output becomes cacheable
+##############################################################################
+cacheableGdalTranslateVRT <- function(mapName, destinationPath){
+  baseURL="/vsicurl?max_retry=3&retry_delay=1&list_dir=no&url=https://files.isric.org/soilgrids/latest/data/"
+  vrt_rast <- rast(paste0(baseURL, mapName, "/", mapName, "_0-5cm_mean.vrt"))
+  cropped_rast <- crop(vrt_rast, ext(-13597717, -10879995, 5233135, 7513741))
+  
+  processedFilePath <- file.path(destinationPath, paste0('SoilGrids_', mapName, "_0-5cm_mean.tif"))
+  writeRaster(cropped_rast, processedFilePath, overwrite = TRUE)
+  
+  return(rast(processedFilePath))
+}
+
+##############################################################################
+# Download and patch CANSIS soil maps with SoilGrids data
+##############################################################################
+getAndPatchCANSISSoilMap <- function(
+  mapName,
+  plotAndPixelGroupArea,
+  plotAndPixelGroupAreaRast,
+  CANSISMapToProcess,
+  equivSoilGridsMaps,
+  destinationPath,
+  cachePath,
+  userTags = NULL
+){
+  varMapName <- paste0("WB_VBD_", mapName, "Map") # e.g. WB_VBD_clayMap
+  message("Downloading/cropping/reprojecting/resampling and masking ", varMapName, "...")
+
+  baseURL = "https://sis.agr.gc.ca/cansis/nsdb/psm"
+  nameEnd <- "_X0_5_cm_100m1980-2000v1"
+  ext <- ".tif"
+
+  fileName <- paste0(mapName, nameEnd, ext)
+  rast <- Cache(
+    prepInputs,
+    url = paste0(baseURL, "/", mapName, "/", fileName),
+    targetFile = fileName,
+    destinationPath = destinationPath,
+    fun = terra::rast,
+    cropTo = plotAndPixelGroupArea,
+    projectTo = plotAndPixelGroupAreaRast,
+    maskTo = plotAndPixelGroupArea,
+    writeTo = paste0("CANSIS_", mapName, nameEnd, "_postProcessed", ext),
+    method = "bilinear",
+    cachePath = cachePath,
+    userTags = c(userTags, paste0("CANSIS_", mapName, nameEnd, "_postProcessed", ext)),
+    overwrite = TRUE
+  )
+  
+  # Ensure the raster variable has the right name
+  names(rast) <- tolower(mapName)
+
+  ##############################################################################
+  # Download, process and cache SoilGrids soil data to patch CANSIS one
+  # https://www.isric.org/explore/soilgrids
+  # https://files.isric.org/soilgrids/latest/data/
+  SGMapName <- equivSoilGridsMaps[[which(CANSISMapToProcess == mapName)]]
+  message("------------------------------------------------------------------------------")   
+  message("Downloading SoilGrids ", SGMapName, "...")
+  sgrast <- Cache(
+    cacheableGdalTranslateVRT,
+    SGMapName,
+    destinationPath = destinationPath,
+    cachePath = cachePath,
+    userTags = c(userTags, paste0('SoilGrids_0-5cm_mean_', SGMapName, ".tif"))
+  )
+
+  message("------------------------------------------------------------------------------")   
+  message("Cropping/reprojecting/resampling and masking SoilGrids ", SGMapName, "...") 
+  patchRast <- Cache(
+    postProcess,
+    sgrast,
+    cropTo = plotAndPixelGroupArea,
+    projectTo = plotAndPixelGroupAreaRast,
+    maskTo = plotAndPixelGroupArea,
+    writeTo = file.path(destinationPath, paste0("SoilGrids_", SGMapName, "_0-5cm_mean_postProcessed.tif")),
+    method = "bilinear",
+    cachePath = cachePath,
+    userTags = c(userTags, paste0('SoilGrids_0-5cm_mean_', SGMapName, "_postProcessed.tif")),
+    overwrite = TRUE
+  )
+  
+  message("------------------------------------------------------------------------------")   
+  message("Patching CANSIS soil ", mapName, " raster NAs with SoilGrids values...")
+  rast <- Cache(
+    cover,
+    rast,
+    patchRast / ifelse(SGMapName == "bdod", 100, 10),
+    cachePath = cachePath,
+    userTags = c(userTags, paste0("CANSIS_", mapName, nameEnd, "_patched", ext)),
+    overwrite = TRUE
+  )
+
+  return(rast)
+}

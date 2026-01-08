@@ -121,7 +121,6 @@ reComputeDrainageMap <- function(sim) {
 }
 
 .inputObjects <- function(sim) {
-  
   userTags <- c(currentModule(sim), "function:.inputObjects") 
   ##############################################################################
   # Generate a fake WB_HartJohnstoneForestClassesMap if it is not supplied
@@ -176,44 +175,15 @@ reComputeDrainageMap <- function(sim) {
   ##############################################################################
   # Use our own plotPoints data if none is supplied
   ##############################################################################
-  if(!suppliedElsewhere("plotPoints", sim) && !suppliedElsewhere("drainageModel", sim)){
-    plotFile <- file.path(getPaths()$modulePath, currentModule(sim), "data/plotData.csv")
-    plotDF <- read.csv(plotFile)
+    if(!suppliedElsewhere("plotPoints", sim) && !suppliedElsewhere("drainageModel", sim)){
     message("##############################################################################")   
     message("plotPoints not supplied.")   
     message("You must provide a CSV table with \"drainage\", \"latitude\", \"longitude\" ")
     message("and \"standtype\" following the WB_HartJohnstone classification in order to ")
     message("fit the WB_VegBasedDrainageModel.")
-    message("Loading default plot data points as sim$plotPoints (n=", nrow(plotDF), ")...")
-    
-    # Purge standtype of drainage info
-    if ("standtype" %in% names(plotDF)){
-      plotDF$standtype <- sub("Poorly-drained ", "", plotDF$standtype)
-      plotDF$standtype <- sub("Well-drained ", "", plotDF$standtype)
-    }
-    # Convert character columns to factor and fix values (factor names)
-    plotDF[] <- lapply(plotDF, function(col){
-    newCol <- col
-      if (is.character(newCol)) {
-        newCol <- factor(newCol)
-        levels(newCol) <- make.names(levels(newCol))
-      }
-      newCol
-    })
-
-    # Reassign factors to match WB_HartJohnstone classification used in the 
-    # WB_WB_HartJohnstoneClasse module
-    labels = c("deci", "mixed", "conimix", "jackpine", "larch", "spruce", "nonforested")
-    # levels = c(1L, 2L, 3L, 4L, 5L, 6L, 7L)
-    new_codes <- c(3L, 1L, 2L, 4L, 5L, 7L, 6L)[as.integer(plotDF$standtype)]
-    
-    # Assign new codes and levels
-    # plotDF$standtype <- factor(new_codes, levels = 1:7, labels = terra::levels(plotDF$standtype))
-    plotDF$standtype <- factor(new_codes, levels = 1:7, labels = labels)
-    
-    # Convert the dataframe to a SpatVector object
-    plotPoints <- vect(plotDF, geom = c("Longitude", "Latitude"), crs = "EPSG:4326")  # WGS84
-    sim$plotPoints <- project(plotPoints, baseCRS)
+    plotFilePath <- file.path(getPaths()$modulePath, currentModule(sim), "data/plotData.csv")
+    sim$plotPoints <- getAndcleanPlotData(plotFilePath, baseCRS)
+    message("Loaded default plot data points as sim$plotPoints (n=", nrow(sim$plotPoints), ")...")
     # writeVector(sim$plotPoints, "G:/Home/temp/plotPoints.shp", overwrite=TRUE)
   }
   
@@ -306,20 +276,6 @@ reComputeDrainageMap <- function(sim) {
         overwrite = TRUE
       )
   }
-
-  ##############################################################################
-  # Define a wrapper function around whitebox functions to make their arguments
-  # and result cacheable
-  ##############################################################################
-  cacheableWhiteboxFct <- function(fun_name, ...){
-    dots <- list(...)
-    dots["cacheable_input"] <- NULL
-    # output <- dots$output
-    # dots["output"] <- NULL
-    # do.call(fun_name, output = output, dots)
-    do.call(fun_name, dots)
-    return (rast(dots$output))
-  }
   
   ##############################################################################
   # Generate a TWI map from the MRDEM if it is not supplied
@@ -327,56 +283,16 @@ reComputeDrainageMap <- function(sim) {
   if(!suppliedElsewhere("TWIMap", sim)){
     message("##############################################################################")   
     message("TWIMap not supplied.")   
-    message("Computing TWIMap (1/4) from MRDEMMap: Filling depressions...")
-    dem_filled_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_filled.tif")
-    dep <- Cache(
-      cacheableWhiteboxFct,
-      cacheable_input = sim$MRDEMMap,
-      fun_name = "wbt_fill_depressions",
-      dem = plotAndPixelGroupAreaDemPath,
-      output = dem_filled_path,
-      userTags = c(userTags, "plotAndPixelGroupAreaDem_filled.tif")
+    sim$TWIMap <- generateTWIMap(
+      dem = sim$MRDEMMap,
+      dem_path = plotAndPixelGroupAreaDemPath,
+      dem_filled_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_filled.tif"),
+      slope_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_slope.tif"),
+      flow_acc_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_flowAccum.tif"),
+      final_twi_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_TWI.tif"),
+      cachePath = getPaths()$cache,
+      userTags = userTags
     )
-
-    message("------------------------------------------------------------------------------")   
-    message("Computing TWIMap (2/4) from MRDEMMap: Computing slopes...")
-    slope_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_slope.tif")
-    slope <- Cache(
-      cacheableWhiteboxFct,
-      cacheable_input = dep,
-      fun_name = "wbt_slope",
-      dem = dem_filled_path,
-      output = slope_path,
-      zfactor = 1,
-      userTags = c(userTags, "plotAndPixelGroupAreaDem_slope.tif")
-    )
-    
-    message("------------------------------------------------------------------------------")   
-    message("Computing TWIMap (3/4) from MRDEMMap: Flow accumulation...")
-    flow_acc_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_flowAccum.tif")
-    flow <- Cache(
-      cacheableWhiteboxFct,
-      cacheable_input = dep,
-      fun_name = "wbt_d8_flow_accumulation",
-      input = dem_filled_path,
-      output = flow_acc_path,
-      out_type = "specific contributing area",
-      userTags = c(userTags, "plotAndPixelGroupAreaDem_flowAccum.tif")
-    )
-    
-    message("------------------------------------------------------------------------------")   
-    message("Computing TWIMap (4/4) from MRDEMMap: Final step...")
-    final_twi_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_TWI.tif")
-    sim$TWIMap <- Cache(
-      cacheableWhiteboxFct,
-      cacheable_input = flow + slope,
-      fun_name = "wbt_wetness_index",
-      sca = flow_acc_path,
-      slope = slope_path,
-      output = final_twi_path,
-      userTags = c(userTags, "plotAndPixelGroupAreaDem_TWI.tif")
-    )
-    names(sim$TWIMap) <- "twi"
   }
   
   ##############################################################################
@@ -384,58 +300,17 @@ reComputeDrainageMap <- function(sim) {
   ##############################################################################
   if(!suppliedElsewhere("DownslopeDistMap", sim)){
     message("##############################################################################")   
-    message("DownslopeDistMap not supplied.")   
-    message("Computing DownslopeDistMap (1/4) from MRDEMMap: Breaching depressions...")
-    dem_breach_filled_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_breachFilledDep.tif")
-    breach_dep <- Cache(
-      cacheableWhiteboxFct,
-      cacheable_input = sim$MRDEMMap,
-      fun_name = "wbt_breach_depressions_least_cost",
-      dem = plotAndPixelGroupAreaDemPath,
-      dist = 3,
-      output = dem_breach_filled_path,
-      userTags = c(userTags, "plotAndPixelGroupAreaDem_breachFilledDep.tif")
+    message("DownslopeDistMap not supplied.")
+    sim$DownslopeDistMap <- generateDownslopeDistMap(
+      dem = sim$MRDEMMap,
+      dem_path = plotAndPixelGroupAreaDemPath,
+      dem_breach_filled_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_breachFilledDep.tif"),
+      bf_flow_acc_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_breachFilledFlowAccum.tif"),
+      streams_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_streams.tif"),
+      downslope_dist_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_downslopeDist.tif"),
+      cachePath = getPaths()$cache,
+      userTags = userTags
     )
-    
-    message("------------------------------------------------------------------------------")   
-    message("Computing DownslopeDistMap (2/4) from MRDEMMap: Flow accumulation from breach filled...")
-    bf_flow_acc_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_breachFilledFlowAccum.tif")
-    flow <- Cache(
-      cacheableWhiteboxFct,
-      cacheable_input = breach_dep,
-      fun_name = "wbt_d8_flow_accumulation",
-      input = dem_breach_filled_path,
-      output = bf_flow_acc_path,
-      out_type = "cells",
-      userTags = c(userTags, "plotAndPixelGroupAreaDem_breachFilledFlowAccum.tif")
-    )
-    
-    message("------------------------------------------------------------------------------")   
-    message("Computing DownslopeDistMap (3/4) from MRDEMMap: Extract streams...")
-    streams_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_streams.tif")
-    streams <- Cache(
-      cacheableWhiteboxFct,
-      cacheable_input = flow,
-      fun_name = "wbt_extract_streams",
-      flow_accum = bf_flow_acc_path,
-      output = streams_path,
-      threshold = 1000,
-      userTags = c(userTags, "plotAndPixelGroupAreaDem_streams.tif")
-    )
-
-    message("------------------------------------------------------------------------------")   
-    message("Computing DownslopeDistMap (4/4) from MRDEMMap: Final step...")
-    downslope_dist_path <- file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_downslopeDist.tif")
-    sim$DownslopeDistMap <- Cache(
-      cacheableWhiteboxFct,
-      cacheable_input = breach_dep + streams,
-      fun_name = "wbt_downslope_distance_to_stream",
-      dem = dem_breach_filled_path,
-      streams = streams_path,
-      output = downslope_dist_path,
-      userTags = c(userTags, "plotAndPixelGroupAreaDem_downslopeDist.tif")
-    )
-    names(sim$DownslopeDistMap) <- "downslope_dist"
   }
   
   ##############################################################################
@@ -452,6 +327,7 @@ reComputeDrainageMap <- function(sim) {
       fun_name = "wbt_aspect",
       dem = plotAndPixelGroupAreaDemPath,
       output = aspect_path,
+      cachePath = getPaths()$cache,
       userTags = c(userTags, "plotAndPixelGroupAreaDem_aspect.tif")
     )
     names(sim$AspectMap) <- "aspect"
@@ -470,31 +346,12 @@ reComputeDrainageMap <- function(sim) {
   ##############################################################################
   CANSISMapToProcess <- c("Clay", "Sand", "Silt", "BD") # BD is bulk_density
   equivSoilGridsMaps <- c("clay", "sand", "silt", "bdod") # bdod is bulk_density
-  baseURL <- "https://sis.agr.gc.ca/cansis/nsdb/psm/"
-  nameEnd <- "_X0_5_cm_100m1980-2000v1"
-  ext <- ".tif"
-  
-  # Define a wrapper around gdalTranslate for this specific dataset so it's 
-  # output becomes cacheable
-  cacheableGdalTranslateVRT <- function(mapName, destinationPath){
-    baseURL="/vsicurl?max_retry=3&retry_delay=1&list_dir=no&url=https://files.isric.org/soilgrids/latest/data/"
-    vrt_rast <- rast(paste0(baseURL, mapName, "/", mapName, "_0-5cm_mean.vrt"))
-    cropped_rast <- crop(vrt_rast, ext(-13597717, -10879995, 5233135, 7513741))
-    
-    processedFilePath <- file.path(destinationPath, paste0('SoilGrids_', mapName, "_0-5cm_mean.tif"))
-    writeRaster(cropped_rast, processedFilePath, overwrite = TRUE)
-    
-    return(rast(processedFilePath))
-  }
 
   sapply(CANSISMapToProcess, function(mapName){
     varMapName <- paste0("WB_VBD_", mapName, "Map") # e.g. WB_VBD_clayMap
     if (!suppliedElsewhere(varMapName, sim)){
       message("##############################################################################")   
       message(varMapName, " not supplied.")   
-      message("Downloading/cropping/reprojecting/resampling and masking ", 
-              varMapName, " to sim$pixelGroupMap...") 
-      fileName <- paste0(mapName, nameEnd, ext)
       
       # Assign NULL to dynamically assigned maps using their explicit names
       # so SpaDES stop complaining. 
@@ -508,59 +365,15 @@ reComputeDrainageMap <- function(sim) {
         sim$WB_VBD_BDMap <- NULL
       }
 
-      sim[[varMapName]] <- Cache(
-        prepInputs,
-        url = extractURL(varMapName, sim),
-        targetFile = fileName,
+      sim[[varMapName]] <- getAndPatchCANSISSoilMap(
+        mapName = mapName,
+        plotAndPixelGroupArea = plotAndPixelGroupArea,
+        plotAndPixelGroupAreaRast = plotAndPixelGroupAreaRast,
+        equivSoilGridsMaps = equivSoilGridsMaps,
+        CANSISMapToProcess = CANSISMapToProcess,
         destinationPath = getPaths()$cache,
-        fun = terra::rast,
-        cropTo = plotAndPixelGroupArea,
-        projectTo = plotAndPixelGroupAreaRast,
-        maskTo = plotAndPixelGroupArea,
-        writeTo = paste0("CANSIS_", mapName, nameEnd, "_postProcessed", ext),
-        method = "bilinear",
-        userTags = c(userTags, paste0("CANSIS_", mapName, nameEnd, "_postProcessed", ext)),
-        overwrite = TRUE
-      )
-      
-      # Ensure the raster variable has the right name
-      names(sim[[varMapName]]) <- tolower(mapName)
-
-      ##############################################################################
-      # Download, process and cache SoilGrids soil data to patch CANSIS one
-      # https://www.isric.org/explore/soilgrids
-      # https://files.isric.org/soilgrids/latest/data/
-      SGMapName <- equivSoilGridsMaps[[which(CANSISMapToProcess == mapName)]]
-      message("------------------------------------------------------------------------------")   
-      message("Downloading SoilGrids ", SGMapName, "...")
-      sgrast <- Cache(
-        cacheableGdalTranslateVRT,
-        SGMapName,
-        destinationPath = getPaths()$cache,
-        userTags = c(userTags, paste0('SoilGrids_0-5cm_mean_', SGMapName, ".tif"))
-      )
-
-      message("------------------------------------------------------------------------------")   
-      message("Cropping/reprojecting/resampling and masking SoilGrids ", SGMapName, "...") 
-      patchRast <- Cache(
-        postProcess,
-        sgrast,
-        cropTo = plotAndPixelGroupArea,
-        projectTo = plotAndPixelGroupAreaRast,
-        maskTo = plotAndPixelGroupArea,
-        writeTo = file.path(getPaths()$cache, paste0("SoilGrids_", SGMapName, "_0-5cm_mean_postProcessed.tif")),
-        method = "bilinear",
-        userTags = c(userTags, paste0('SoilGrids_0-5cm_mean_', SGMapName, "_postProcessed.tif")),
-        overwrite = TRUE
-      )
-      
-      message("------------------------------------------------------------------------------")   
-      message("Patching CANSIS soil ", mapName, " raster NAs with SoilGrids values...")
-      sim[[varMapName]] <- Cache(
-        cover,
-        sim[[varMapName]],
-        patchRast / ifelse(SGMapName == "bdod", 100, 10),
-        userTags = c(userTags, paste0("CANSIS_", mapName, nameEnd, "_patched", ext))
+        cachePath = getPaths()$cache,
+        userTags = userTags
       )
     }
   })
@@ -627,13 +440,13 @@ reComputeDrainageMap <- function(sim) {
   #
   ##############################################################################
   if (!suppliedElsewhere("WB_VegBasedDrainageModel", sim)){
-    nbPLotPoints <- nrow(sim$plotPoints)
+    nbPlotPoints <- nrow(sim$plotPoints)
     message("##############################################################################")
     message("WB_VegBasedDrainageModel not supplied. Fitting a model using the ")
-    message("plot points provided in the data folder (n=", nbPLotPoints, "), soil (clay, silt, ")
+    message("plot points provided in the data folder (n=", nbPlotPoints, "), soil (clay, silt, ")
     message("sand and bulked density), aspect, downslope distance to water, ecoprovince and TWI maps...")
     
-    # List the covariates from which tio extract values
+    # List the covariates from which to extract values
     # element's names are the names of sim maps to extract values from (e.g. sim$TWIMap)
     # element values are the names of the column to create in the sim$plotPoints dataframe (e.g clay)
     covariatesMaps <- c("TWIMap" = "twi",
@@ -690,10 +503,10 @@ reComputeDrainageMap <- function(sim) {
     keeps <- complete.cases(modelData[, c(unname(covariatesMaps), "drainage")])
     modelData <- modelData[keeps, ]
     
-    if (nrow(modelData) < nbPLotPoints){
+    if (nrow(modelData) < nbPlotPoints){
       message("------------------------------------------------------------------------------")   
-      message("WARNING: Removed ", nbPLotPoints - nrow(modelData), " plot points where ")
-      message("covariates could not be extracted. n went from ", nbPLotPoints)
+      message("WARNING: Removed ", nbPlotPoints - nrow(modelData), " plot points where ")
+      message("covariates could not be extracted. n went from ", nbPlotPoints)
       message(" to ", nrow(modelData), ". To fix this, make sure plot points fall ")
       message("into soil and sim$WB_HartJohnstoneForestClassesMap combined extents ")
       message("and into pixels having values (not NA) or increase the value of the ")
