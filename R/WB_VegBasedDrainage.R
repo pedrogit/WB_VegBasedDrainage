@@ -334,3 +334,123 @@ getAndPatchCANSISSoilMap <- function(
 
   return(rast)
 }
+
+##############################################################################
+# Download and patch CANSIS soil maps with SoilGrids data
+##############################################################################
+fit_WB_VegBasedDrainageModel <- function(
+  plotPoints,
+  covariateMapList,
+  pixelDist = 0
+){
+  nbPlotPoints <- nrow(plotPoints)
+  message("Fitting a model using the plot points provided in the data folder (n=", nbPlotPoints, "), soil (clay, silt, ")
+  message("sand and bulked density), aspect, downslope distance to water, ecoprovince and TWI maps...")
+  message("------------------------------------------------------------------------------")   
+  # Extract values from covariate maps
+  for (i in seq_along(covariateMapList)) {
+    # Extract the values only if the covariate is not NULL
+    if (!is.null(covariateMapList[i])){
+      message("Extracting values from ", names(covariateMapList)[i], "...")
+      message("  searching at a max distance of ", pixelDist, " pixels for \"with value\" pixels...")
+      # For SpatRaster we can:
+      # - bind the produced column directly,
+      # - add a radius to search for the neared pixel value if the point fall into a NA pixel,
+      # - prevent the ID column to be added.
+      plotPoints <- terra::extract(
+        covariateMapList[[i]], 
+        plotPoints, 
+        bind = TRUE, 
+        method = "bilinear", 
+        search_radius = pixelDist * mean(res(covariateMapList[[i]])), 
+        ID = FALSE
+      )
+      
+      # Remove the last useless columns
+      plotPoints <- plotPoints[, -((ncol(plotPoints) - 1):ncol(plotPoints))]
+
+      # Rename the extracted column
+      if (! names(covariateMapList)[i] %in% names(plotPoints)){
+        names(plotPoints)[names(plotPoints) == names(covariateMapList)[i]] <- names(covariateMapList)[i]
+      }
+    }
+    else {
+      message("WARNING: For some reason,", names(covariateMapList)[i], " does ", 
+              "not exist... It will not be taken into account when fittng the model...")
+    }
+  }
+  message("------------------------------------------------------------------------------")   
+
+  # Keep rows where specified columns are not NA
+  modelData <- as.data.frame(plotPoints)
+  varToKeep <- names(covariateMapList)
+  if ("drainage" %in% names(plotPoints)){
+    varToKeep <- c(varToKeep, "drainage")
+  }
+  keeps <- complete.cases(modelData[, varToKeep])
+  modelData <- modelData[keeps, ]
+  
+  if (nrow(modelData) < nbPlotPoints){
+    message("------------------------------------------------------------------------------")   
+    message("WARNING: Removed ", nbPlotPoints - nrow(modelData), " plot points where ")
+    message("covariates could not be extracted. n went from ", nbPlotPoints)
+    message(" to ", nrow(modelData), ". To fix this, make sure plot points fall ")
+    message("into soil and sim$WB_HartJohnstoneForestClassesMap combined extents ")
+    message("and into pixels having values (not NA) or increase the value of the ")
+    message("\"searchDistInPixelNb\" parameter...")
+    message("Point removed (", paste(as.character(modelData[!keeps, "plot"]), collapse = ", "), 
+            ") were saved to a shapefile in the output folder (plotPointsEliminated.shp)")
+    message("------------------------------------------------------------------------------")   
+    writeVector(plotPoints[!keeps, ], file.path(getPaths()$output, "plotPointsRemoved.shp"), overwrite = TRUE)
+  }
+  
+  # Remove the "X" and the "plot" columns
+  modelData <- modelData[, !(names(modelData) %in% c("X", "plot"))]
+  
+  # Convert the standtype from factor to numeric so the model recognize the standtype raster values
+  #modelData$standtype <- as.integer(modelData$standtype)
+  
+  # Split the plot data into training and test data
+  set.seed(1990)
+  inTraining <- createDataPartition(modelData$drainage, p = 0.7, list = FALSE)
+  trainSet <- modelData[inTraining, ]
+  testSet <- modelData[-inTraining, ]
+  message("Plot points (n=", nrow(modelData), ") were split between training (n=", 
+          nrow(trainSet), ") and test (n=", nrow(testSet), ")...")
+  
+  # Parametrize the training algorithm
+  set.seed(1990)
+  fitControl <- trainControl(
+    method = "repeatedcv",
+    repeats = 5,
+    sampling = "down",
+    summaryFunction = twoClassSummary,
+    classProbs = TRUE
+  )
+
+  # Fit the model using all the covariate present in the modeldata frame
+  message("Fitting the drainage model...")
+  drainageModel <- Cache(
+    train,
+    drainage ~ .,
+    data = trainSet,
+    method = "rf", # "rf" = random forest or "xgbTree" = boosted regression trees, 
+                    # See topepo.github.io/caret for more model tags that can be used here
+    trControl = fitControl,
+    tuneLength = 10,
+    verbose = FALSE,
+    userTags = "drainageModel",
+    overwrite = TRUE
+  )
+  
+  message("Fitting the drainage model. Done...")
+  print(drainageModel)
+
+  message("------------------------------------------------------------------------------")   
+  print(confusionMatrix(predict(drainageModel, testSet), testSet$drainage))
+
+  message("------------------------------------------------------------------------------")   
+  print(varImp(drainageModel))
+  return(drainageModel)
+}
+

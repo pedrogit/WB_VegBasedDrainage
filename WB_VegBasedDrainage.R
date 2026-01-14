@@ -430,154 +430,76 @@ reComputeDrainageMap <- function(sim) {
   #     If plot data is provided but standtype is not part of it, determine 
   #     standtype from sim$WB_HartJohnstoneForestClassesMap.
   #
-  #   - sim$TWIMap computed for the merged area of the plot data and the 
-  #     sim$WB_HartJohnstoneForestClassesMap
+  #   - sim$TWIMap
   #
-  #   - Soild data (sim$WB_VBD_ClayMap, sim$WB_VBD_SandMap, sim$WB_VBD_SiltMap 
+  #   - Soil data (sim$WB_VBD_ClayMap, sim$WB_VBD_SandMap, sim$WB_VBD_SiltMap 
   #     and sim$WB_VBD_BDMap).
   #     This dataset contains many NA areas. Those areas are considered water or
   #     rock.
   #
+  #   - sim$DownslopeDistMap
+  #
+  #   - sim$AspectMap
+  #
+  #   - sim$EcoProvincesMap
+  #
+  #   All maps were first cropped to the merged area of the plot data and the
+  #   sim$WB_HartJohnstoneForestClassesMap. after fitting the model with the 
+  #   plotPoints, they are cropped back to the study area.
+  #
   ##############################################################################
+
   if (!suppliedElsewhere("WB_VegBasedDrainageModel", sim)){
-    nbPlotPoints <- nrow(sim$plotPoints)
     message("##############################################################################")
-    message("WB_VegBasedDrainageModel not supplied. Fitting a model using the ")
-    message("plot points provided in the data folder (n=", nbPlotPoints, "), soil (clay, silt, ")
-    message("sand and bulked density), aspect, downslope distance to water, ecoprovince and TWI maps...")
-    
+    message("WB_VegBasedDrainageModel not supplied.")
     # List the covariates from which to extract values
     # element's names are the names of sim maps to extract values from (e.g. sim$TWIMap)
     # element values are the names of the column to create in the sim$plotPoints dataframe (e.g clay)
-    covariatesMaps <- c("TWIMap" = "twi",
-                        "DownslopeDistMap" = "downslope_dist",
-                        "AspectMap" = "aspect", 
-                        "WB_VBD_ClayMap" = "clay", 
-                        "WB_VBD_SandMap" = "sand",
-                        "WB_VBD_SiltMap" = "silt",
-                        "WB_VBD_BDMap" = "bd",
-                        "EcoProvincesMap" = "ecoprov")
+    covariateMapList = list(
+      twi = sim$TWIMap,
+      downslope_dist = sim$DownslopeDistMap,
+      aspect = sim$AspectMap,
+      clay = sim$WB_VBD_ClayMap,
+      sand = sim$WB_VBD_SandMap,
+      silt = sim$WB_VBD_SiltMap,
+      bd = sim$WB_VBD_BDMap,
+      ecoprov = sim$EcoProvincesMap
+    )
 
     # If standtype is not part of the plot data, get the types from sim$WB_HartJohnstoneForestClassesMap
     if (!"standtype" %in% names(sim$plotPoints)){
-      covariatesMaps <- c("WB_HartJohnstoneForestClassesMap" = "standtype", covariatesMaps)
+      covariateMapList <- c(standtype = sim$WB_HartJohnstoneForestClassesMap, covariateMapList)
     }
-    message("------------------------------------------------------------------------------")   
-    # Extract values from covariate maps
-    for (i in seq_along(covariatesMaps)) {
-      # Extract the values only if the covariate exists and it's not NULL
-      if (names(covariatesMaps)[i] %in% names(sim) && !is.null(sim[[names(covariatesMaps)[i]]])){
-        message("Extracting values from ", names(covariatesMaps)[i], 
-                " (", class(sim[[names(covariatesMaps)[i]]]), ")...")
-        message("  searching at a max distance of ", P(sim)$searchDistInPixelNb, " pixels for \"with value\" pixels...")
-        # For SpatRaster we can:
-        # - bind the produced column directly,
-        # - add a radius to search for the neared pixel value if the point fall into a NA pixel,
-        # - prevent the ID column to be added.
-        sim$plotPoints <- terra::extract(
-          sim[[names(covariatesMaps)[i]]], 
-          sim$plotPoints, 
-          bind = TRUE, 
-          method = "bilinear", 
-          search_radius = P(sim)$searchDistInPixelNb * mean(res(sim[[names(covariatesMaps)[i]]])), 
-          ID=FALSE
-        )
-        
-        # Remove the last useless columns
-        sim$plotPoints <- sim$plotPoints[, -((ncol(sim$plotPoints) - 1):ncol(sim$plotPoints))]
 
-        # Rename the extracted column
-        if (! covariatesMaps[i] %in% names(sim$plotPoints)){
-          names(sim$plotPoints)[names(sim$plotPoints) == names(sim[[names(covariatesMaps)[i]]])] <- covariatesMaps[i]
-        }
-      }
-      else {
-        message("WARNING: For some reason,", names(covariatesMaps)[i], " does ", 
-                "not exist... It will not be taken into account when fittng the model...")
-      }
-    }
-    message("------------------------------------------------------------------------------")   
-    
-    # Keep rows where specified columns are not NA
-    modelData <- as.data.frame(sim$plotPoints)
-    keeps <- complete.cases(modelData[, c(unname(covariatesMaps), "drainage")])
-    modelData <- modelData[keeps, ]
-    
-    if (nrow(modelData) < nbPlotPoints){
-      message("------------------------------------------------------------------------------")   
-      message("WARNING: Removed ", nbPlotPoints - nrow(modelData), " plot points where ")
-      message("covariates could not be extracted. n went from ", nbPlotPoints)
-      message(" to ", nrow(modelData), ". To fix this, make sure plot points fall ")
-      message("into soil and sim$WB_HartJohnstoneForestClassesMap combined extents ")
-      message("and into pixels having values (not NA) or increase the value of the ")
-      message("\"searchDistInPixelNb\" parameter...")
-      message("Point removed (", paste(as.character(modelData[!keeps, "plot"]), collapse = ", "), 
-              ") were saved to a shapefile in the output folder (plotPointsEliminated.shp)")
-      message("------------------------------------------------------------------------------")   
-      writeVector(sim$plotPoints[!keeps, ], file.path(getPaths()$output, "plotPointsRemoved.shp"), overwrite = TRUE)
-    }
-    
-    # Remove the "plot" column
-    modelData <- modelData[, !(names(modelData) %in% c("X", "plot"))]
-    
-    # Convert the standtype from factor to numeric so the model recognize the standtype raster values
-    #modelData$standtype <- as.integer(modelData$standtype)
-    
-    # Split the plot data into training and test data
-    set.seed(1990)
-    inTraining <- createDataPartition(modelData$drainage, p = 0.7, list = FALSE)
-    trainSet <- modelData[inTraining, ]
-    testSet <- modelData[-inTraining, ]
-    message("Plot points (n=", nrow(modelData), ") were split between training (n=", 
-            nrow(trainSet), ") and test (n=", nrow(testSet), ")...")
-    
-    # Parametrize the training algorithm
-    set.seed(1990)
-    fitControl <- trainControl(
-      method = "repeatedcv",
-      repeats = 5,
-      sampling = "down",
-      summaryFunction = twoClassSummary,
-      classProbs = TRUE
+    # Fit the model
+    sim$WB_VegBasedDrainageModel <- fit_WB_VegBasedDrainageModel(
+      plotPoints = sim$plotPoints,
+      covariateMapList = covariateMapList,
+      pixelDist = P(sim)$searchDistInPixelNb
     )
 
-    # Fit the model using all the covariate present in the modeldata frame
-    message("Fitting the drainage model...")
-    sim$WB_VegBasedDrainageModel <- Cache(
-      train,
-      drainage ~ .,
-      data = trainSet,
-      method = "rf", # "rf" = random forest or "xgbTree" = boosted regression trees, 
-                     # See topepo.github.io/caret for more model tags that can be used here
-      trControl = fitControl,
-      tuneLength = 10,
-      verbose = FALSE,
-      userTags = c(userTags, "WB_VegBasedDrainageModel"),
-      overwrite = TRUE
-    )
-    
-    message("Fitting the drainage model. Done...")
-    print(sim$WB_VegBasedDrainageModel)
-
-    message("------------------------------------------------------------------------------")   
-    print(confusionMatrix(predict(sim$WB_VegBasedDrainageModel, testSet), testSet$drainage))
-
-    message("------------------------------------------------------------------------------")   
-    print(varImp(sim$WB_VegBasedDrainageModel))
-    
     # Crop covariate maps back to groupPixelMap now that the model is fitted and 
-    # we don't new to extract covariate values at plot points anymore.
-    # From now on the module will, at each iteration step, use the model to predict 
-    # drainage from the covariate maps
-    for (i in seq_along(covariatesMaps[names(covariatesMaps) != "WB_HartJohnstoneForestClassesMap"])) {
-      message("------------------------------------------------------------------------------")   
-      message("Cropping sim$", names(covariatesMaps)[i], " from the groupPixelMap + pointPlot area to the groupPixelMap area...")
-      sim[[names(covariatesMaps)[i]]] <- Cache(
+    # we don't need to extract covariate values at plot points anymore.
+    # From now on, the module will, at each iteration step, use the model to predict 
+    # drainage from the list of covariate maps.
+    
+    # for (i in seq_along(covariateNamesToColumnNamesMap[names(covariateNamesToColumnNamesMap) != "WB_HartJohnstoneForestClassesMap"])) {
+    #   message("------------------------------------------------------------------------------")   
+    #   message("Cropping sim$", names(covariateNamesToColumnNamesMap)[i], " from the groupPixelMap + pointPlot area to the groupPixelMap area...")
+    #   sim[[names(covariateNamesToColumnNamesMap)[i]]] <- Cache(
+    #     postProcessTo,
+    #     sim[[names(covariateNamesToColumnNamesMap)[i]]],
+    #     cropTo = baseRast
+    #   )
+    # }
+    
+    sapply(covariateMapList, function(map){
+      map <- Cache(
         postProcessTo,
-        sim[[names(covariatesMaps)[i]]],
+        map,
         cropTo = baseRast
       )
-    }
+    })
     
     message("##############################################################################")
   }
