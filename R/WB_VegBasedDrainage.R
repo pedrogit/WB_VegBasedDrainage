@@ -291,7 +291,7 @@ getAndPatchCANSISSoilMap <- function(
   # Ensure the raster variable has the right name
   names(rast) <- tolower(mapName)
 
-  ##############################################################################
+  #-------------------------------------------------------------------------------
   # Download, process and cache SoilGrids soil data to patch CANSIS one
   # https://www.isric.org/explore/soilgrids
   # https://files.isric.org/soilgrids/latest/data/
