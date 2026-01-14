@@ -155,15 +155,13 @@ generateTWIMap <- function(
   
   message("------------------------------------------------------------------------------")   
   message("Computing TWIMap (4/4) from MRDEMMap: Final step...")
-  TWIMap <- Cache(
-    cacheableWhiteboxFct,
+  # The final result is not cached. It is the responsability of the caller to cache the result.
+  TWIMap <- cacheableWhiteboxFct(
     cacheable_input = flow + slope,
     fun_name = "wbt_wetness_index",
     sca = flow_acc_path,
     slope = slope_path,
-    output = final_twi_path,
-    cachePath = cachePath,
-    userTags = c(userTags, "plotAndPixelGroupAreaDem_TWI.tif")
+    output = final_twi_path
   )
   names(TWIMap) <- "twi"
   return (TWIMap)
@@ -222,15 +220,13 @@ generateDownslopeDistMap <- function(
 
     message("------------------------------------------------------------------------------")   
     message("Computing DownslopeDistMap (4/4) from MRDEMMap: Final step...")
-    downslopeDistMap <- Cache(
-      cacheableWhiteboxFct,
+    # The final result is not cached. It is the responsability of the caller to cache the result.
+    downslopeDistMap <- cacheableWhiteboxFct(
       cacheable_input = breach_dep + streams,
       fun_name = "wbt_downslope_distance_to_stream",
       dem = dem_breach_filled_path,
       streams = streams_path,
-      output = downslope_dist_path,
-      cachePath = cachePath,
-      userTags = c(userTags, "plotAndPixelGroupAreaDem_downslopeDist.tif")
+      output = downslope_dist_path
     )
     names(downslopeDistMap) <- "downslope_dist"
     return (downslopeDistMap)
@@ -323,13 +319,10 @@ getAndPatchCANSISSoilMap <- function(
   
   message("------------------------------------------------------------------------------")   
   message("Patching CANSIS soil ", mapName, " raster NAs with SoilGrids values...")
-  rast <- Cache(
-    cover,
+  # The final result is not cached. It is the responsability of the caller to cache the result.
+  rast <- cover(
     rast,
-    patchRast / ifelse(SGMapName == "bdod", 100, 10),
-    cachePath = cachePath,
-    userTags = c(userTags, paste0("CANSIS_", mapName, nameEnd, "_patched", ext)),
-    overwrite = TRUE
+    patchRast / ifelse(SGMapName == "bdod", 100, 10)
   )
 
   return(rast)

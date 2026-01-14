@@ -283,15 +283,19 @@ reComputeDrainageMap <- function(sim) {
   if(!suppliedElsewhere("TWIMap", sim)){
     message("##############################################################################")   
     message("TWIMap not supplied.")   
-    sim$TWIMap <- generateTWIMap(
-      dem = sim$MRDEMMap,
-      dem_path = plotAndPixelGroupAreaDemPath,
-      dem_filled_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_filled.tif"),
-      slope_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_slope.tif"),
-      flow_acc_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_flowAccum.tif"),
-      final_twi_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_TWI.tif"),
+    sim$TWIMap <- Cache(
+      generateTWIMap(
+        dem = sim$MRDEMMap,
+        dem_path = plotAndPixelGroupAreaDemPath,
+        dem_filled_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_filled.tif"),
+        slope_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_slope.tif"),
+        flow_acc_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_flowAccum.tif"),
+        final_twi_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_TWI.tif"),
+        cachePath = getPaths()$cache,
+        userTags = userTags
+      ),
       cachePath = getPaths()$cache,
-      userTags = userTags
+      userTags = c(userTags,  "plotAndPixelGroupAreaDem_TWI.tif")
     )
   }
   
@@ -301,16 +305,19 @@ reComputeDrainageMap <- function(sim) {
   if(!suppliedElsewhere("DownslopeDistMap", sim)){
     message("##############################################################################")   
     message("DownslopeDistMap not supplied.")
-    sim$DownslopeDistMap <- generateDownslopeDistMap(
-      dem = sim$MRDEMMap,
-      dem_path = plotAndPixelGroupAreaDemPath,
-      dem_breach_filled_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_breachFilledDep.tif"),
-      bf_flow_acc_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_breachFilledFlowAccum.tif"),
-      streams_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_streams.tif"),
-      downslope_dist_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_downslopeDist.tif"),
-      cachePath = getPaths()$cache,
-      userTags = userTags
-    )
+    sim$DownslopeDistMap <- Cache(
+      generateDownslopeDistMap(
+        dem = sim$MRDEMMap,
+        dem_path = plotAndPixelGroupAreaDemPath,
+        dem_breach_filled_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_breachFilledDep.tif"),
+        bf_flow_acc_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_breachFilledFlowAccum.tif"),
+        streams_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_streams.tif"),
+        downslope_dist_path = file.path(getPaths()$cachePath, "plotAndPixelGroupAreaDem_downslopeDist.tif"),
+        cachePath = getPaths()$cache,
+        userTags = userTags
+      ),
+      cachePath = cachePath,
+      userTags = c(userTags, "plotAndPixelGroupAreaDem_downslopeDist.tif"
   }
   
   ##############################################################################
