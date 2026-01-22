@@ -316,8 +316,9 @@ reComputeDrainageMap <- function(sim) {
         cachePath = getPaths()$cache,
         userTags = userTags
       ),
-      cachePath = cachePath,
-      userTags = c(userTags, "plotAndPixelGroupAreaDem_downslopeDist.tif"
+      cachePath = getPaths()$cache,
+      userTags = c(userTags, "plotAndPixelGroupAreaDem_downslopeDist.tif")
+    )
   }
   
   ##############################################################################
