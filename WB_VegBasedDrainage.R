@@ -373,13 +373,17 @@ reComputeDrainageMap <- function(sim) {
         sim$WB_VBD_BDMap <- NULL
       }
 
-      sim[[varMapName]] <- getAndPatchCANSISSoilMap(
-        mapName = mapName,
-        plotAndPixelGroupArea = plotAndPixelGroupArea,
-        plotAndPixelGroupAreaRast = plotAndPixelGroupAreaRast,
-        equivSoilGridsMaps = equivSoilGridsMaps,
-        CANSISMapToProcess = CANSISMapToProcess,
-        destinationPath = getPaths()$cache,
+      sim[[varMapName]] <- Cache(
+        getAndPatchCANSISSoilMap(
+          mapName = mapName,
+          plotAndPixelGroupArea = plotAndPixelGroupArea,
+          plotAndPixelGroupAreaRast = plotAndPixelGroupAreaRast,
+          equivSoilGridsMaps = equivSoilGridsMaps,
+          CANSISMapToProcess = CANSISMapToProcess,
+          destinationPath = getPaths()$cache,
+          cachePath = getPaths()$cache,
+          userTags = userTags
+        ),
         cachePath = getPaths()$cache,
         userTags = userTags
       )
