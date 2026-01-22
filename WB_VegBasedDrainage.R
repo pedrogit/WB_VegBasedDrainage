@@ -105,16 +105,16 @@ reComputeDrainageMap <- function(sim) {
   message("Recomputing sim$WB_VegBasedDrainageMap for ", 
           format(ncell(sim$WB_HartJohnstoneForestClassesMap), scientific = FALSE), " pixels..")
   sim$WB_VegBasedDrainageMap <- computeDrainageMap(
-    sim$WB_VegBasedDrainageModel,
-    sim$WB_HartJohnstoneForestClassesMap,
-    sim$TWIMap,
-    sim$DownslopeDistMap,
-    sim$AspectMap,
-    sim$WB_VBD_ClayMap,
-    sim$WB_VBD_SandMap,
-    sim$WB_VBD_SiltMap,
-    sim$WB_VBD_BDMap,
-    sim$EcoProvincesMap
+    WB_VegBasedDrainageModel = sim$WB_VegBasedDrainageModel,
+    HJForestClassesMap = sim$WB_HartJohnstoneForestClassesMap,
+    TWIMap = sim$TWIMap,
+    DownslopeDistMap = sim$DownslopeDistMap,
+    AspectMap = sim$AspectMap,
+    WB_VBD_ClayMap = sim$WB_VBD_ClayMap,
+    WB_VBD_SandMap = sim$WB_VBD_SandMap,
+    WB_VBD_SiltMap = sim$WB_VBD_SiltMap,
+    WB_VBD_BDMap = sim$WB_VBD_BDMap,
+    EcoProvincesMap = sim$EcoProvincesMap
   )
   
   return(invisible(sim))
