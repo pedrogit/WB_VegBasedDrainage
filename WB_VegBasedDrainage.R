@@ -18,7 +18,7 @@ defineModule(sim, list(
     defineParameter("WB_VegBasedDrainageTimeStep", "numeric", 1, NA, NA,
                     "Simulation time at which the drainage map is regenerated."),
     defineParameter("searchDistInPixelNb", "numeric", 1, NA, NA,
-                    "Distance, in number of pixel, to search for \"with value\" covariate values when plot points fall into NS values.")
+                    "Distance, in number of pixel, to search for \"with value\" covariate values when plot points fall into NA pixels.")
   ),
   inputObjects = rbind(
     expectsInput(objectName = "WB_HartJohnstoneForestClassesMap",
@@ -33,8 +33,8 @@ defineModule(sim, list(
                               "latitude, a longitude and at least one column named ",
                               "\"drainage\" with drainage classes. Can also contain a ",
                               "\"standtype\". Standtype will be extracted from the ",
-                              "WB_HartJohnstoneMap if it was produced by the corresponding ",
-                              "module is present."), 
+                              "WB_HartJohnstoneForestClasses map if this module ",
+                              "is present."), 
                  sourceURL = NA),
     expectsInput(objectName = "MRDEMMap", 
                  objectClass = "SpatRast", 
