@@ -329,7 +329,7 @@ getAndPatchCANSISSoilMap <- function(
 }
 
 ##############################################################################
-# Download and patch CANSIS soil maps with SoilGrids data
+# Fit the drainage model with plot data points
 ##############################################################################
 fit_WB_VegBasedDrainageModel <- function(
   plotPoints,
