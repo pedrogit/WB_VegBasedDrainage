@@ -38,7 +38,12 @@ computeDrainageMap <- function(
   )
   
   # Recompute the drainage map
-  WB_VegBasedDrainageMap <- terra::predict(predictors, WB_VegBasedDrainageModel, na.rm = TRUE)
+  WB_VegBasedDrainageMap <- terra::predict(
+    predictors, 
+    WB_VegBasedDrainageModel, 
+    na.rm = TRUE,
+    cores = 4
+  )
   
   # Convert to factor and add proper labels
   WB_VegBasedDrainageMap <- terra::as.factor(WB_VegBasedDrainageMap)
