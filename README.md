@@ -2,19 +2,20 @@
 
 ### Overview
 
+<!-- Pierre: This two paragraphshould be included, with obvious mods, in each of the four module .mds -->
 WB_VegBasedDrainage is a [SpaDES](https://spades.predictiveecology.org/) module 
 complementing the [LandR](https://landr-manual.predictiveecology.org/) ecosystem of modules for forest biomass and succession 
-simulation. It is part of a series of modules modelling boreal forests in Western 
-Canada adding some layers of information to the LandR ecosystem. Those modules are:
+simulation. It is part of an ensemble of modules that provide to LandR the statistical prediction of terrestrial lichen biomass from stand type, time-since fire, and terrestrial ecoprovince. The modules are an implementatiom of [Greuel and Degré-Timmons et al (2021)](https://esajournals-onlinelibrary-wiley-com.acces.bibl.ulaval.ca/doi/full/10.1002/ecs2.3481), developed to support lichen biomass modelling for woodland caribou conservation in the Northwest Territories. The geographical zone wherein the model may reasonably be applied should be assessed from Figure 2 of the cited paper. 
 
-- [WB_HartJohnstoneForestClasses](https://github.com/pedrogit/WB_HartJohnstoneForestClasses) - Generates a map with classifying LandR forested pixels to 6 (or 7) classes.
-- [WB_VegBasedDrainage](https://github.com/pedrogit/WB_VegBasedDrainage) - This module. Generates a map with two drainage classes.
-- [WB_NonForestedVegClasses](https://github.com/pedrogit/WB_NonForestedVegClasses) - Generates a map of land cover classes for areas not covered by LandR (non-forested).
-- [WB_LichenBiomass](https://github.com/pedrogit/WB_LichenBiomass) - Generates a map of lichen biomass for forested and non-forested areas.
 
-As their names suggest, those modules were developed using field data collected 
-in the western boreal forest of Canada. They were developed to support lichen 
-biomass modelling for woodland caribou conservation.
+The components of the module ensemble are:
+
+- [WB_HartJohnstoneForestClasses](https://github.com/pedrogit/WB_HartJohnstoneForestClasses) - Generates a map classifying LandR forested pixels to 6 (or 7) classes.
+- [WB_VegBasedDrainage](https://github.com/pedrogit/WB_VegBasedDrainage) - This module. Generates a drainage class map.
+- [WB_NonForestedVegClasses](https://github.com/pedrogit/WB_NonForestedVegClasses) - Generates a map of land cover classes for areas LandR considers to be non-forested.
+- [WB_LichenBiomass](https://github.com/pedrogit/WB_LichenBiomass) - Generates a wall-to-wall map of predicted lichen biomass density for forested and non-forested pixels.
+
+The modules are based on extenisve samples of field data collected as described in [Greuel and Degré-Timmons et al (2021)](https://esajournals-onlinelibrary-wiley-com.acces.bibl.ulaval.ca/doi/full/10.1002/ecs2.3481), Casheiro-Guilhem et. al (in prep.) and foundational papers by Harte and Johstone (citations to be added).
 
 At each simulation step, WB_VegBasedDrainage creates a drainage raster map of 
 well-drained and poorly-drained pixels for the forested areas covered by LandR 
@@ -22,8 +23,8 @@ only. It produces a raster with two classes:
 
 | Class Code | Description |
 |-----------|-------------|
-| 1 | Poorly-drained spruce |
-| 2 | Well-drained spruce |
+| 1 | Poorly-drained |
+| 2 | Well-drained |
 
 WB_HartJohnstoneForestClasses (and hence LandR) pixels set to NA are also set to 
 NA by WB_VegBasedDrainage.
