@@ -1,12 +1,11 @@
 # WB_VegBasedDrainage
 
-### Overview
+## Introduction
 
-<!-- Pierre: This two paragraphshould be included, with obvious mods, in each of the four module .mds -->
+<!-- Pierre: This introduction be included, with obvious mods, in each of the four module .mds -->
 WB_VegBasedDrainage is a [SpaDES](https://spades.predictiveecology.org/) module 
 complementing the [LandR](https://landr-manual.predictiveecology.org/) ecosystem of modules for forest biomass and succession 
-simulation. It is part of an ensemble of modules that provide to LandR the statistical prediction of terrestrial lichen biomass from stand type, time-since fire, and terrestrial ecoprovince. The modules are an implementatiom of [Greuel and Degré-Timmons et al (2021)](https://esajournals-onlinelibrary-wiley-com.acces.bibl.ulaval.ca/doi/full/10.1002/ecs2.3481), developed to support lichen biomass modelling for woodland caribou conservation in the Northwest Territories. The geographical zone wherein the model may reasonably be applied should be assessed from Figure 2 of the cited paper. 
-
+simulation. It is part of an ensemble of modules that provide to LandR the statistical prediction of terrestrial lichen biomass from stand type, time-since fire, and terrestrial ecoprovince. The modules are an implementatiom of [Greuel and Degré-Timmons et al (2021)](https://esajournals-onlinelibrary-wiley-com.acces.bibl.ulaval.ca/doi/full/10.1002/ecs2.3481), developed to support lichen biomass modelling for woodland caribou conservation in the Northwest Territories. The geographical area wherein the model may reasonably be applied should be assessed from Figure 2 of the cited paper. 
 
 The components of the module ensemble are:
 
@@ -15,32 +14,34 @@ The components of the module ensemble are:
 - [WB_NonForestedVegClasses](https://github.com/pedrogit/WB_NonForestedVegClasses) - Generates a map of land cover classes for areas LandR considers to be non-forested.
 - [WB_LichenBiomass](https://github.com/pedrogit/WB_LichenBiomass) - Generates a wall-to-wall map of predicted lichen biomass density for forested and non-forested pixels.
 
-The modules are based on extenisve samples of field data collected as described in [Greuel and Degré-Timmons et al (2021)](https://esajournals-onlinelibrary-wiley-com.acces.bibl.ulaval.ca/doi/full/10.1002/ecs2.3481), Casheiro-Guilhem et. al (in prep.) and foundational papers by Harte and Johstone (citations to be added).
+The modules are derived from extensive empirical research in the northwest boreal of North America, as described in [Greuel and Degré-Timmons et al (2021)](https://esajournals-onlinelibrary-wiley-com.acces.bibl.ulaval.ca/doi/full/10.1002/ecs2.3481), Casheiro-Guilhem et. al (in prep.) and foundational papers by Harte and Johstone (citations to be added).
 
-At each simulation step, WB_VegBasedDrainage creates a drainage raster map of 
-well-drained and poorly-drained pixels for the forested areas covered by LandR 
-only. It produces a raster with two classes:
+## Module overview
+
+This module creates a binary SpatRaster of drainage class for pixels that, according to LandR, are forested. The two drainage classes are:
 
 | Class Code | Description |
 |-----------|-------------|
+| NA | LandR non-forested |
 | 1 | Poorly-drained |
 | 2 | Well-drained |
 
-WB_HartJohnstoneForestClasses (and hence LandR) pixels set to NA are also set to 
-NA by WB_VegBasedDrainage.
+The module time step would normally be the 10 year period used by LandR
 
-WB_VegBasedDrainage determines drainage using a machine learning algorithm 
-trained on field-observed drainage conditions, against a set of static (TWI, 
-downslope distance, aspect, ecoprovince and soil data (clay, sand", silt, 
-bulk_density)) and dynamic (forest classes) covariates.
+The purpose of module WB_VegBasedDrainage is to refine the vegetation classes produced by WB_HartJohnstoneForestClasses module 
+by considering drainge class. Among the broad forest stand classes produced by that module, only one is stratified by drainage class: he published Hart & Johnstone classes include  well-drained and poorly drained spruce, here coded classes 6 and 7, respectively. The present is module is necessary because a) the lichen biomass models differ between spruce drainage classd; and b) drainage class can not be determined from LandR. 
 
-The forest classes are provided by the WB_HartJohnstoneForestClasses module which 
-is also based on WB_VegBasedDrainage making an optional cyclic dependency between 
-the two modules. Normally a first run of WB_HartJohnstoneForestClasses during 
-module initialization will classify the forest to classes 1-6, without taking 
-drainage into account. A WB_VegBasedDrainage map will then be computed and used, 
-at the next simulation step, by the WB_HartJohnstoneForestClasses module to 
-refine the classification of spruce from classes 6 to classes 6 and 7.
+The drainage classification is predicted from a machine learning algorithm trained on a sample of drainage clsses observed in the field. 
+The model uses both static and dynamic explanatory variables. Static variables include Topgraphic Wetness Index (TWI), 
+downslope distance, aspect, categorical ecoprovince and mapped soils attributes (proportions of clay, sand, and silt, and
+bulk_density). The sources for these covariates are documented in the modules .Rmd file.  
+The only dynamic covariate is forest class as determined from LandR state by module WB_HartJohnstoneForestClasses.
+
+There is a potential cyclic dependency between this module and WB_HartJohnstoneForestClasses, 
+because drainage class depends on forest class, and the spruce forest class depends on drainage class. 
+Normally, module initialization will classify the forest to classes 1-6, without taking drainage into account. This effectively creates a single "spruce" class based only on tree speceies composition.  A WB_VegBasedDrainage map will then be computed based on the dynamic forest type and the static covariates. This will then be available at the next simulation step, enabling the WB_HartJohnstoneForestClasses module to 
+refine the classification of the spruce class from generic to well-drined and poorly drained. 
+
 
 1. Initialization:
    - WB_HartJohnstoneForestClasses runs without drainage
@@ -54,8 +55,8 @@ refine the classification of spruce from classes 6 to classes 6 and 7.
    - Spruce pixels are refined into well- or poorly-drained classes (6 or 7)
 
 WB_VegBasedDrainage is dynamic because it depends on forest classes produced by 
-WB_HartJohnstoneForestClasses which is itself dynamic. As relative biomass 
-changes through time, forest classification is updated, which in turn influences 
+WB_HartJohnstoneForestClasses which is itself dynamic. As relative tree speciecs' biomass
+change through time, the forest classification is updated, which in turn influences 
 the predicted drainage classes.
 
 ### Authors and Citation
