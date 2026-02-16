@@ -15,7 +15,7 @@ defineModule(sim, list(
   reqdPkgs = list("data.table", "reproducible", "LandR"),
   loadOrder = list(after = c("WB_HartJohnstoneForestClasses")),
   parameters = rbind(
-    defineParameter("WB_VegBasedDrainageTimeStep", "numeric", 1, NA, NA,
+    defineParameter("WB_VegBasedDrainageTimeStep", "numeric", 10, NA, NA,
                     "Simulation time at which the drainage map is regenerated."),
     defineParameter("searchDistInPixelNb", "numeric", 1, NA, NA,
                     "Distance, in number of pixel, to search for \"with value\" covariate values when plot points fall into NA pixels.")

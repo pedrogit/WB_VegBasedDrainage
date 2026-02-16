@@ -75,7 +75,7 @@ Racine, P., Caseiro Guilhem, A., Cumming, S.G. (2026) *WB_VegBasedDrainage: A Sp
 
 | Parameter | Class | Default | Description |
 | --- | --- | --- | --- |
-| WB_VegBasedDrainageTimeStep | integer | 10? | Module return interval, at which the SpatRaster is recalculated. |
+| WB_VegBasedDrainageTimeStep | integer | 10 | Module return interval, at which the SpatRaster is recalculated. |
 | searchDistInPixelNb | integer | 1 | Distance, in number of pixels, to search for \"with value\" covariate values when plot points fall into NA pixels. This is generally when plot points are close to water which are set to NA by LandR. |
 
 
