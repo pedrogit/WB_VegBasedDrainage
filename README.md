@@ -4,7 +4,7 @@
 
 WB_VegBasedDrainage is a [SpaDES](https://spades.predictiveecology.org/) module complementing the [LandR](https://landr-manual.predictiveecology.org/) ecosystem of modules for forest biomass and succession simulation. It is part of an ensemble of modules that provide to LandR the statistical prediction of terrestrial lichen biomass from stand type, time-since fire, and terrestrial ecoprovince.
 
-The modules are an implementatiom of [Greuel and Degré-Timmons et al (2021)](https://esajournals-onlinelibrary-wiley-com.acces.bibl.ulaval.ca/doi/full/10.1002/ecs2.3481), developed to support lichen biomass modelling for woodland caribou conservation in the Northwest Territories. The geographical area wherein the model may reasonably be applied should be assessed from Figure 2 of the cited paper. 
+These modules are an implementatiom of [Greuel and Degré-Timmons et al (2021)](https://esajournals-onlinelibrary-wiley-com.acces.bibl.ulaval.ca/doi/full/10.1002/ecs2.3481), developed to support lichen biomass modelling for woodland caribou conservation in the Northwest Territories. The geographical area wherein the model may reasonably be applied should be assessed from Figure 2 of the cited paper. 
 
 The components of the module ensemble are:
 
@@ -54,14 +54,14 @@ WB_VegBasedDrainage is dynamic because it depends on forest classes produced by 
 * Andres Caseiro Guilhem <andres.caseiro-guilhem.1@ulaval.ca> [aut]
 * Steven G. Cumming <stevec.boreal@gmail.com> [aut]
 
-Racine, P., Caseiro Guilhem, A., Cumming, S.G. (2026) *WB_VegBasedDrainage: A SpaDES module for drainage classification in boreal forests.* SpaDES Module.
+Racine, P., Caseiro Guilhem, A., Cumming, S.G. (2026) *WB_VegBasedDrainage: A SpaDES module for drainage classification in western boreal forests of Canada.* SpaDES Module.
 
 
 ### Module Parameters
 
 | Parameter | Class | Default | Description |
 | --- | --- | --- | --- |
-| WB_VegBasedDrainageTimeStep | integer | 10 | Module return interval, at which the SpatRaster is recalculated. |
+| WB_VegBasedDrainageTimeStep | integer | 10 | Module return interval, at which the SpatRaster is regenerated. |
 | searchDistInPixelNb | integer | 1 | Distance, in number of pixels, to search for \"with value\" covariate values when plot points fall into NA pixels. This is generally when plot points are close to water which are set to NA by LandR. |
 
 
