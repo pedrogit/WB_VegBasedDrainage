@@ -467,21 +467,27 @@ reComputeDrainageMap <- function(sim) {
     # List the covariates from which to extract values
     # element's names are the names of sim maps to extract values from (e.g. sim$TWIMap)
     # element values are the names of the column to create in the sim$plotPoints dataframe (e.g clay)
-    covariateMapList = list(
-      twi = sim$TWIMap,
-      downslope_dist = sim$DownslopeDistMap,
-      aspect = sim$AspectMap,
-      clay = sim$WB_VBD_ClayMap,
-      sand = sim$WB_VBD_SandMap,
-      silt = sim$WB_VBD_SiltMap,
-      bd = sim$WB_VBD_BDMap,
-      ecoprov = sim$EcoProvincesMap
+    
+    covariateMapNameList = list(
+      twi = "TWIMap",
+      downslope_dist = "DownslopeDistMap",
+      aspect = "AspectMap",
+      clay = "WB_VBD_ClayMap",
+      sand = "WB_VBD_SandMap",
+      silt = "WB_VBD_SiltMap",
+      bd = "WB_VBD_BDMap",
+      ecoprov = "EcoProvincesMap"
     )
-
+    
     # If standtype is not part of the plot data, get the types from sim$WB_HartJohnstoneForestClassesMap
     if (!"standtype" %in% names(sim$plotPoints)){
-      covariateMapList <- c(standtype = sim$WB_HartJohnstoneForestClassesMap, covariateMapList)
+      covariateMapNameList <- c(standtype = "WB_HartJohnstoneForestClassesMap", covariateMapList)
     }
+    
+    covariateMapList <- setNames(
+      lapply(covariateMapNameList, function(nm) sim[[nm]]),
+      names(covariateMapNameList)
+    )
 
     # Fit the model
     sim$WB_VegBasedDrainageModel <- fit_WB_VegBasedDrainageModel(
@@ -505,13 +511,17 @@ reComputeDrainageMap <- function(sim) {
     #   )
     # }
     
-    sapply(covariateMapList, function(map){
-      map <- Cache(
-        postProcessTo,
-        map,
-        cropTo = baseRast
+    for (mapName in names(covariateMapNameList)) {
+      #browser()
+      message("------------------------------------------------------------------------------")   
+      message("Cropping sim$", covariateMapNameList[[mapName]], " from the groupPixelMap + pointPlot area to the groupPixelMap area...")
+      sim[[covariateMapNameList[[mapName]]]] <- Cache(
+        postProcessTo(
+          sim[[covariateMapNameList[[mapName]]]],
+          cropTo = baseRast
+        )
       )
-    })
+    }
     
     message("##############################################################################")
   }
