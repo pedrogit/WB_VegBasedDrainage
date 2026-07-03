@@ -195,11 +195,11 @@ reComputeDrainageMap <- function(sim) {
   ##############################################################################
   
   # Make a buffer around the plot data
-  plotPoints100KmBuffers <- aggregate(buffer(sim$plotPoints, width = 100000))  # 1000 m buffer (if CRS is in meters)
-  
+  plotPoints100KmBuffers <- terra::aggregate(terra::buffer(sim$plotPoints, width = 100000))  # 1000 m buffer (if CRS is in meters)
+
   # Merge it with the base extent polygon
-  plotAndPixelGroupArea <- aggregate(rbind(plotPoints100KmBuffers, baseExtentPoly))
-  
+  plotAndPixelGroupArea <- terra::aggregate(rbind(plotPoints100KmBuffers, baseExtentPoly))
+
   # mapView(plotAndPixelGroupArea)
   # writeVector(plotAndPixelGroupArea, file.path(getPaths()$cache, "plotAndPixelGroupArea.shp"), overwrite = TRUE)
   
