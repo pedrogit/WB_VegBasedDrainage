@@ -12,7 +12,7 @@ defineModule(sim, list(
   timeunit = "year",
   # citation = list("citation.bib"),
   # documentation = list("NEWS.md", "README.md", "WB_VegBasedDrainage.Rmd"),
-  reqdPkgs = list("data.table", "reproducible", "LandR", "whitebox"),
+  reqdPkgs = list("data.table", "reproducible", "LandR", "whitebox", "caret"),
   loadOrder = list(after = c("WB_HartJohnstoneForestClasses")),
   parameters = rbind(
     defineParameter("WB_VegBasedDrainageTimeStep", "numeric", 10, NA, NA,

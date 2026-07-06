@@ -410,7 +410,7 @@ fit_WB_VegBasedDrainageModel <- function(
   
   # Split the plot data into training and test data
   set.seed(1990)
-  inTraining <- createDataPartition(modelData$drainage, p = 0.7, list = FALSE)
+  inTraining <- caret::createDataPartition(modelData$drainage, p = 0.7, list = FALSE)
   trainSet <- modelData[inTraining, ]
   testSet <- modelData[-inTraining, ]
   message("Plot points (n=", nrow(modelData), ") were split between training (n=", 
@@ -418,7 +418,7 @@ fit_WB_VegBasedDrainageModel <- function(
   
   # Parametrize the training algorithm
   set.seed(1990)
-  fitControl <- trainControl(
+  fitControl <- caret::trainControl(
     method = "repeatedcv",
     repeats = 5,
     sampling = "down",
